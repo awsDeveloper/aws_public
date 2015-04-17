@@ -1,0 +1,11 @@
+#Name コードアート　M・G・T
+#Level 3
+#Power 7000
+#BurstIcon True
+#Type 2
+#Color 3
+#Class 3:0
+#LrigLimit 3
+#Text 
+出->あなたのトラッシュからコスト１の＜電機＞のシグニ１枚を手札に加える。 
+☆->あなたのトラッシュから＜電機＞のシグニ１枚を手札に加える。 

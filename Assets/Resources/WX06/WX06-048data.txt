@@ -1,0 +1,12 @@
+﻿#Name 幻獣　コモリグ
+#Type 2
+#Level 2
+#Power 5000
+#Color 4
+#LrigLimit 0
+#Class 5:1
+#BurstIcon False
+#Text
+常->：あなたの場に他の＜空獣＞または＜地獣＞のシグニがあるかぎり、このシグニのパワーは8000になる。
+
+

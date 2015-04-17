@@ -1,0 +1,10 @@
+﻿#Name 成長する未来
+#Type 3
+#Cost 0/0/0/0/0/0/
+#Color 0
+#LrigLimit 0
+#BurstIcon True
+#Text
+あなたのデッキの一番上のカードをエナゾーンに置く。
+
+☆->：【エナチャ―ジ1】

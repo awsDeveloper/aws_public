@@ -1,0 +1,9 @@
+#Name 大剣　カリバン
+#Level 3
+#Power 10000
+#BurstIcon False
+#Type 2
+#Color 1
+#Class 1:0
+#LrigLimit 0
+#Text 

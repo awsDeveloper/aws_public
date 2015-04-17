@@ -1,0 +1,9 @@
+#Name 想像の創造　アン＝ファースト
+#Level 1
+#Limit 2
+#GrowCost 0/0/0/0/0/0/
+#Type 0
+#Color 4
+#LrigType 12
+#LrigType2 0
+#Text 

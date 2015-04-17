@@ -1,0 +1,10 @@
+﻿#Name コードアンチ　パルベック
+#Level 4
+#Power 10000
+#BurstIcon False
+#Type 2
+#Color 5
+#Class 3:1
+#LrigLimit 0
+#Text 
+起->【黒】【転】：あなたのトラッシュからシグニ1枚を場に出す。

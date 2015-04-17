@@ -1,0 +1,9 @@
+#Name 包括する知識
+#BurstIcon True
+#Cost 2/0/0/0/0/0/
+#Type 3
+#Color 0
+#LrigLimit 0
+#Text 
+カードを2枚引く。 
+☆->エナチャージ1 

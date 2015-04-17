@@ -1,0 +1,9 @@
+#Name 幻獣　スパロウ
+#Level 2
+#Power 7000
+#BurstIcon False
+#Type 2
+#Color 4
+#Class 5:2
+#LrigLimit 0
+#Text 

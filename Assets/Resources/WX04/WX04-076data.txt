@@ -1,0 +1,12 @@
+﻿#Name コードアート　Ｄ・Ｅ・Ｆ
+#Type 2
+#Level 3
+#Power 7000
+#Color 3
+#LrigLimit 3
+#Class 3:0
+#BurstIcon False
+#Text
+起->【転】：レベル3以下の凍結状態のシグニ1体をバニッシュする。
+
+

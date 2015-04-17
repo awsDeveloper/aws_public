@@ -1,0 +1,10 @@
+#Name 創造の鍵主　ウムル＝トレ
+#Level 3
+#Limit 7
+#GrowCost 0/0/0/0/0/2/
+#Type 0
+#Color 5
+#LrigType 8
+#LrigType2 0
+#Text 
+出->【黒】：あなたのトラッシュから＜古代兵器＞のシグニ1枚を場に出す。 

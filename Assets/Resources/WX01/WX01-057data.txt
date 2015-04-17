@@ -1,0 +1,11 @@
+#Name 出弓　セフィラム
+#Level 2
+#Power 5000
+#BurstIcon True
+#Type 2
+#Color 1
+#Class 1:0
+#LrigLimit 1
+#Text 
+出->あなたのデッキの一番上を見る。それがレベル2以下のシグニであなたの場にほかのシグニがない場合、それを場に出してもよい。 
+☆->カードを1枚引く 

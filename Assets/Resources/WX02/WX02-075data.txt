@@ -1,0 +1,8 @@
+﻿#Name グレイブ・メイカー
+#BurstIcon False
+#Cost 0/0/0/0/0/0/
+#Type 3
+#Color 5
+#LrigLimit 0
+#Text 
+あなたのデッキの上からカードを6枚トラッシュに置く。

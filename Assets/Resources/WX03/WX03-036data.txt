@@ -1,0 +1,8 @@
+#Name 焚発する知識
+#BurstIcon False
+#Cost 3/0/0/0/0/0/
+#Type 3
+#Color 0
+#LrigLimit 0
+#Text 
+カードを3枚引く。 

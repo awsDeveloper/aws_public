@@ -1,0 +1,10 @@
+﻿#Name ＰＲＥＣＩＯＵＳ
+#Type 3
+#Cost 0/0/0/2/0/0/
+#Color 3
+#LrigLimit 3
+#BurstIcon False
+#Text
+カードを5枚引く。その後、手札を2枚捨てる。
+
+

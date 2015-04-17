@@ -1,0 +1,12 @@
+﻿#Name コードアンチ　カブレラ
+#Type 2
+#Level 2
+#Power 5000
+#Color 5
+#LrigLimit 0
+#Class 3:1
+#BurstIcon False
+#Text
+常->：あなたのトラッシュに＜古代兵器＞のシグニが3枚以上あるかぎり、このシグニのパワーは8000になる。
+
+

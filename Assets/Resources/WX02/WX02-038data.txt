@@ -1,0 +1,11 @@
+﻿#Name 幻獣　キジ
+#Level 3
+#Power 7000
+#BurstIcon True
+#Type 2
+#Color 4
+#Class 5:2
+#LrigLimit 0
+#Text 
+出->手札から＜空獣＞または＜地獣＞のシグニを１枚捨てる：あなたのデッキの上からカードを２枚エナゾーンに置く。
+☆->エナチャ―ジ１

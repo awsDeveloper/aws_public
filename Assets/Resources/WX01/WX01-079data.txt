@@ -1,0 +1,11 @@
+#Name コードアート　Ｗ・Ｔ・Ｃ
+#Level 2
+#Power 5000
+#BurstIcon True
+#Type 2
+#Color 3
+#Class 3:0
+#LrigLimit 3
+#Text 
+出->対戦相手のレベル２以下のシグニ1体を凍結する。（それは次のアップフェイズにアップしない） 
+☆->カードを1枚引く

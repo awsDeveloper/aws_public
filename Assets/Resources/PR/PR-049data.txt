@@ -1,0 +1,9 @@
+#Name 星占の巫女　リメンバ・モーニ
+#Level 1
+#Limit 2
+#GrowCost 0/0/0/0/0/0/
+#Type 0
+#Color 1
+#LrigType 10
+#LrigType2 3
+#Text 

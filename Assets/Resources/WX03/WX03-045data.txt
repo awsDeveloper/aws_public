@@ -1,0 +1,11 @@
+#Name 幻獣　コマリス
+#Level 1
+#Power 2000
+#BurstIcon True
+#Type 2
+#Color 4
+#Class 5:1
+#LrigLimit 0
+#Text 
+起->【転】：ターン終了時まで、あなたのすべてのシグニのパワーを＋5000する。
+☆->カードを1枚引く。 

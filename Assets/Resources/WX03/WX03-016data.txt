@@ -1,0 +1,10 @@
+#Name 聖技の護り手　ラビエル
+#Level 2
+#Power 5000
+#BurstIcon False
+#Type 2
+#Color 1
+#Class 4:0
+#LrigLimit 0
+#Text 
+出->【白】あなたのルリグデッキから白のアーツ1枚をルリグトラッシュに置く：対戦相手のシグニ1体を手札に戻す。 

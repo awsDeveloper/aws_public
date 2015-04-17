@@ -1,0 +1,11 @@
+#Name コードアンチ　テキサハンマ
+#Level 1
+#Power 1000
+#BurstIcon True
+#Type 2
+#Color 5
+#Class 3:1
+#LrigLimit 0
+#Text 
+常->このシグニがデッキからトラッシュに置かれたとき、このシグニをトラッシュから場に出してもよい。
+☆->カードを1枚引く

@@ -1,0 +1,9 @@
+#Name SNATCHER
+#BurstIcon True
+#Cost 1/0/0/2/0/0/
+#Type 3
+#Color 3
+#LrigLimit 3
+#Text 
+対戦相手は手札を２枚捨てる。その後、対戦相手の手札が０枚の場合、カードを１枚引く。 
+☆->対戦相手の手札を1枚見ないで選び、捨てさせる。 

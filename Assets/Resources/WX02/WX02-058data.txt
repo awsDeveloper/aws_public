@@ -1,0 +1,10 @@
+#Name コードアート　Ｍ・Ｍ・Ｒ
+#Level 2
+#Power 3000
+#BurstIcon False
+#Type 2
+#Color 3
+#Class 3:0
+#LrigLimit 0
+#Text 
+出->カードを1枚引く。その後、手札を1枚捨てる。 

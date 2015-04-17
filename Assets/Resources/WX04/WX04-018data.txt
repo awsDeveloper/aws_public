@@ -1,0 +1,9 @@
+#Name 過知の価値　アン＝セカンド
+#Level 2
+#Limit 5
+#GrowCost 0/0/0/0/1/0/
+#Type 0
+#Color 4
+#LrigType 12
+#LrigType2 0
+#Text 

@@ -1,0 +1,9 @@
+#Name 背徳の象徴　コスモ
+#Level 2
+#Power 7000
+#BurstIcon False
+#Type 2
+#Color 5
+#Class 4:1
+#LrigLimit 0
+#Text 

@@ -1,0 +1,11 @@
+﻿#Name ツヴァイ＝コブラ
+#Type 2
+#Level 2
+#Power 7000
+#Color 5
+#LrigLimit 0
+#Class 1:2
+#BurstIcon False
+#Text
+
+

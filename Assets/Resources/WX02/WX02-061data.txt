@@ -1,0 +1,8 @@
+#Name ＢＬＵＥＧＡＩＮ
+#BurstIcon False
+#Cost 1/0/0/1/0/0/
+#Type 3
+#Color 3
+#LrigLimit 0
+#Text 
+あなたの場にある＜電機＞と＜水獣＞のシグニ1体につき、カードを1枚引く。 

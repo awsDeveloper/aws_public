@@ -1,0 +1,8 @@
+#Name 芽生
+#BurstIcon False
+#Cost 0/0/0/0/1/0/
+#Type 3
+#Color 4
+#LrigLimit 0
+#Text 
+あなたのデッキの上からカードを2枚エナゾーンに置く。 

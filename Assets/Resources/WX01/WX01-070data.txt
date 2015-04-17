@@ -1,0 +1,11 @@
+#Name 羅石　マクリ
+#Level 1
+#Power 7000
+#BurstIcon True
+#Type 2
+#Color 2
+#Class 2:0
+#LrigLimit 2
+#Text 
+出->あなたは手札を1枚捨てる。
+☆->カードを1枚引く 

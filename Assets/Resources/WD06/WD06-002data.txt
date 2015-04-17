@@ -1,0 +1,10 @@
+#Name エルドラ＝マークⅢ´
+#Level 3
+#Limit 7
+#GrowCost 0/0/0/2/0/0/
+#Type 0
+#Color 3
+#LrigType 6
+#LrigType2 0
+#Text 
+出->：あなたのライフクロスの上からカードを2枚見る。その後、それらを好きな順番で戻す。 

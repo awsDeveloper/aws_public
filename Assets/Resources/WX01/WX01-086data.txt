@@ -1,0 +1,9 @@
+#Name 幻獣　イグル
+#Level 4
+#Power 15000
+#BurstIcon False
+#Type 2
+#Color 4
+#Class 5:2
+#LrigLimit 0
+#Text 

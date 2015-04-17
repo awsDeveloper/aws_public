@@ -1,0 +1,10 @@
+#Name 幻水　ウナ
+#Level 1
+#Power 1000
+#BurstIcon False
+#Type 2
+#Color 3
+#Class 5:0
+#LrigLimit 6
+#Text 
+出->：あなたのライフクロスの一番上を見る。 

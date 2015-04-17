@@ -1,0 +1,10 @@
+#Name 犠牲の微笑　キュアラル
+#Level 3
+#Power 8000
+#BurstIcon False
+#Type 2
+#Color 1
+#Class 4:0
+#LrigLimit 0
+#Text 
+常->あなたの場に他の＜天使＞のシグニがあるかぎり、このシグニのパワーは12000になる。

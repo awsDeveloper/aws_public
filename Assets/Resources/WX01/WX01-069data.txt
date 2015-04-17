@@ -1,0 +1,10 @@
+#Name 爆砲　ランチャン
+#Level 2
+#Power 3000
+#BurstIcon False
+#Type 2
+#Color 2
+#Class 1:1
+#LrigLimit 0
+#Text 
+起->手札を1枚捨てる【転】：対戦相手のパワー5000以下のシグニ1体をバニッシュする。 

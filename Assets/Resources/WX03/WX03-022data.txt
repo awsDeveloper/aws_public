@@ -1,0 +1,10 @@
+#Name 極剣　サミダレ
+#Level 4
+#Power 12000
+#BurstIcon False
+#Type 2
+#Color 1
+#Class 1:0
+#LrigLimit 0
+#Text 
+出->【赤】：あなたのデッキから＜ウェポン＞のシグニ1枚を探して公開し手札に加える。その後、デッキをシャッフルする。 

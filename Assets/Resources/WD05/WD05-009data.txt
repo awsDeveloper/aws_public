@@ -1,0 +1,11 @@
+#Name 堕落の砲女　メツム
+#Level 4
+#Power 12000
+#BurstIcon True
+#Type 2
+#Color 5
+#Class 4:1
+#LrigLimit 5
+#Text 
+出->すべてのプレイヤーは自分のデッキの上からカードを7枚トラッシュに置く。 
+☆->あなたのトラッシュからカード1枚を手札に加える。 

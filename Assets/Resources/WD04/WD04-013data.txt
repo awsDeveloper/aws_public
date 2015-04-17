@@ -1,0 +1,10 @@
+#Name 幻獣　コゲンプ
+#Level 2
+#Power 3000
+#BurstIcon False
+#Type 2
+#Color 4
+#Class 5:1
+#LrigLimit 4
+#Text 
+常->このシグニがアタックしたとき、このシグニのパワーが5000以上である場合、あなたのデッキの一番上のカードをエナゾーンに置く。 

@@ -1,0 +1,11 @@
+#Name 篭手　トレット
+#Level 3
+#Power 7000
+#BurstIcon True
+#Type 2
+#Color 1
+#Class 1:0
+#LrigLimit 1
+#Text 
+出->【白】：あなたのデッキから《甲冑　ローメイル》１枚を探して公開し手札に加える。その後、デッキをシャッフルする。 
+☆->カードを1枚引く 

@@ -1,0 +1,11 @@
+﻿#Name アイン＝ガス
+#Type 2
+#Level 1
+#Power 3000
+#Color 5
+#LrigLimit 0
+#Class 1:2
+#BurstIcon False
+#Text
+
+

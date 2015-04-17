@@ -1,0 +1,10 @@
+#Name 轟砲　ランチャーギア
+#Level 3
+#Power 8000
+#BurstIcon False
+#Type 2
+#Color 2
+#Class 1:1
+#LrigLimit 0
+#Text 
+常->あなたの場に他の＜ウェポン＞のシグニがあるかぎり、このシグニのパワーは12000になる。

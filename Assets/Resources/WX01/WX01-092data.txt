@@ -1,0 +1,10 @@
+#Name 幻獣　シロ
+#Level 2
+#Power 5000
+#BurstIcon False
+#Type 2
+#Color 4
+#Class 5:1
+#LrigLimit 0
+#Text 
+常->あなたのエナゾーンにあるカードが対戦相手より３枚以上多いかぎり、このシグニのパワーは8000になる。 

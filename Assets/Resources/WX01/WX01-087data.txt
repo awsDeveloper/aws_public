@@ -1,0 +1,10 @@
+#Name 幻獣　ケットシー
+#Level 4
+#Power 12000
+#BurstIcon False
+#Type 2
+#Color 4
+#Class 5:1
+#LrigLimit 0
+#Text 
+常->あなたのエナゾーンにあるカードが対戦相手より５枚以上多いかぎり、このシグニのパワーは18000になる。 

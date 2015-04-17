@@ -1,0 +1,9 @@
+#Name 太陽の巫女　タマヨリヒメ
+#Level 4
+#Limit 11
+#GrowCost 0/3/0/0/0/0/
+#Type 0
+#Color 1
+#LrigType 1
+#Text 
+起->【白】手札から白のシグニを１枚捨てる：対戦相手のシグニ1体を手札に戻す。 

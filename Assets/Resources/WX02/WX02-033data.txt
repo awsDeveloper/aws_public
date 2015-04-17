@@ -1,0 +1,11 @@
+#Name 羅石　カーネリアン
+#Level 1
+#Power 1000
+#BurstIcon True
+#Type 2
+#Color 2
+#Class 2:1
+#LrigLimit 0
+#Text 
+起->【転】：あなたのデッキの一番上を公開する。それが<鉱石>または<宝石>のシグニの場合、それを手札に加える。
+☆->カードを1枚引く。

@@ -1,0 +1,10 @@
+#Name 羅石　ヒスイ
+#Level 2
+#Power 3000
+#BurstIcon False
+#Type 2
+#Color 2
+#Class 2:1
+#LrigLimit 2
+#Text 
+出->対戦相手のパワー2000以下のシグニ1体をバニッシュする。

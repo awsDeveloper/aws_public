@@ -1,0 +1,10 @@
+﻿#Name 混沌の鍵主　ウムル＝エット
+#Type 0
+#Level 1
+#Limit 2
+#GrowCost 0/0/0/0/0/0/
+#Color 5
+#LrigType 8
+#Text
+
+

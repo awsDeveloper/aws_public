@@ -1,0 +1,11 @@
+#Name 羅石　オバーラル
+#Level 3
+#Power 7000
+#BurstIcon True
+#Type 2
+#Color 2
+#Class 2:1
+#LrigLimit 2
+#Text 
+出->手札から＜鉱石＞または＜宝石＞のシグニ1枚捨てる：パワー7000以下のシグニ1体をバニッシュする。
+☆->エナチャージ1

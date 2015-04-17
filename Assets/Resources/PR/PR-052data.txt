@@ -1,0 +1,9 @@
+#Name 創造の鍵主　ウムル＝ノル
+#Level 0
+#Limit 0
+#GrowCost 0/0/0/0/0/0/
+#Type 0
+#Color 5
+#LrigType 8
+#LrigType2 0
+#Text 

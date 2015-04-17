@@ -1,0 +1,11 @@
+﻿#Name 画一の条件　オリガミ
+#Type 2
+#Level 1
+#Power 3000
+#Color 4
+#LrigLimit 0
+#Class 4:2
+#BurstIcon False
+#Text
+
+

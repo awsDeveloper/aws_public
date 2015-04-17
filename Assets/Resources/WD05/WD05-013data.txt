@@ -1,0 +1,9 @@
+#Name 小悪の象徴　コオニ
+#Level 1
+#Power 3000
+#BurstIcon False
+#Type 2
+#Color 5
+#Class 4:1
+#LrigLimit 0
+#Text 

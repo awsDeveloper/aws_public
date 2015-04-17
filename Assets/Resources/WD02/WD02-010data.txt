@@ -1,0 +1,9 @@
+#Name 羅石　シルバン
+#Level 3
+#Power 10000
+#BurstIcon False
+#Type 2
+#Color 2
+#Class 2:0
+#LrigLimit 0
+#Text 

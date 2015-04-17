@@ -1,0 +1,9 @@
+#Name 流星の巫女　タマヨリヒメ
+#Level 2
+#Limit 4
+#GrowCost 0/1/0/0/0/0/
+#Type 0
+#Color 1
+#LrigType 1
+#Text 
+常->あなたのすべての白のシグニのパワーを＋1000する。 

@@ -1,0 +1,12 @@
+﻿#Name ＴＲＩＣＫ　ＯＲ　ＴＲＥＡＴ
+#Type 3
+#Cost 1/0/0/1/0/0/
+#Color 3
+#LrigLimit 0
+#BurstIcon False
+#Text
+以下の2つから1つを選ぶ。
+「カードを2枚引く。」
+「対戦相手は手札を2枚捨てる。」
+
+

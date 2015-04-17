@@ -1,0 +1,10 @@
+#Name コードアート　Ｓ・Ｔ・Ｇ
+#Level 2
+#Power 5000
+#BurstIcon False
+#Type 2
+#Color 3
+#Class 3:0
+#LrigLimit 0
+#Text 
+常->あなたの手札が対戦相手より2枚以上多いかぎり、このシグニのパワーは8000になる 

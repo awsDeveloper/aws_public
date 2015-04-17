@@ -1,0 +1,10 @@
+﻿#Name 遊月・参戎
+#Level 3
+#Limit 7
+#GrowCost 0/0/2/0/0/0/
+#Type 0
+#Color 2
+#LrigType 7
+#LrigType2 0
+#Text 
+出->：対戦相手は自分のエナゾーンから【マルチエナ】を持つカード1枚をトラッシュに置く。 

@@ -1,0 +1,9 @@
+#Name 三型雌々娘　緑姫
+#Level 3
+#Limit 7
+#GrowCost 0/0/0/0/2/0/
+#Type 0
+#Color 4
+#LrigType 4
+#Text 
+出->あなたのデッキの一番上のカードをエナゾーンに置く。 

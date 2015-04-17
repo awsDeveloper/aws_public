@@ -1,0 +1,11 @@
+﻿#Name 幻水　クラゲ
+#Type 2
+#Level 3
+#Power 10000
+#Color 3
+#LrigLimit 0
+#Class 5:0
+#BurstIcon False
+#Text
+
+

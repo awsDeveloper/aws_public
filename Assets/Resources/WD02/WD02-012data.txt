@@ -1,0 +1,9 @@
+#Name 羅石　ブロンダ
+#Level 2
+#Power 7000
+#BurstIcon False
+#Type 2
+#Color 2
+#Class 2:0
+#LrigLimit 0
+#Text 

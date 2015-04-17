@@ -1,0 +1,10 @@
+#Name ネプト/メイデン　イオナ
+#Level 1
+#Limit 2
+#GrowCost 0/0/0/0/0/0/
+#Type 0
+#Color 5
+#LrigType 9
+#LrigType2 0
+#Text 
+ 

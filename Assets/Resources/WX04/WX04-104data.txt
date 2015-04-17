@@ -1,0 +1,10 @@
+﻿#Name エンド・スラッシュ
+#Type 3
+#Cost 1/1/0/0/0/2/
+#Color 5
+#LrigLimit 0
+#BurstIcon True
+#Text
+対戦相手のシグニ1体をトラッシュに置く。
+
+☆->：対戦相手のシグニ1体をトラッシュに置く。

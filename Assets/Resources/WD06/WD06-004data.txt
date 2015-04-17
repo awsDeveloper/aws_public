@@ -1,0 +1,10 @@
+#Name エルドラ＝マークⅠ´
+#Level 1
+#Limit 1
+#GrowCost 0/0/0/0/0/0/
+#Type 0
+#Color 3
+#LrigType 6
+#LrigType2 0
+#Text 
+出->カードを1枚捨てる：カードを1枚引く。 

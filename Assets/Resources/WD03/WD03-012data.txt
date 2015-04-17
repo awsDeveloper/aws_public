@@ -1,0 +1,9 @@
+#Name コードアート　Ｊ・V
+#Level 2
+#Power 7000
+#BurstIcon False
+#Type 2
+#Color 3
+#Class 3:0
+#LrigLimit 0
+#Text 

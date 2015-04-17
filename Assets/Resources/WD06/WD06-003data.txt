@@ -1,0 +1,10 @@
+#Name エルドラ＝マークⅡ´
+#Level 2
+#Limit 4
+#GrowCost 0/0/0/1/0/0/
+#Type 0
+#Color 3
+#LrigType 6
+#LrigType2 0
+#Text 
+常->：あなたのすべての青のシグニのパワーを＋1000する。 

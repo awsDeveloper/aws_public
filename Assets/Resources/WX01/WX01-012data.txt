@@ -1,0 +1,9 @@
+#Name 剛炎　花代・爾
+#Level 2
+#Limit 4
+#GrowCost 0/0/1/0/0/0/
+#Type 0
+#Color 2
+#LrigType 2
+#Text 
+常->あなたのすべての赤のシグニのパワーを＋1000する。 

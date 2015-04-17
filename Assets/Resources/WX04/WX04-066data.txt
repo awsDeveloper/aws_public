@@ -1,0 +1,12 @@
+﻿#Name 羅石　タンザ
+#Type 2
+#Level 3
+#Power 8000
+#Color 2
+#LrigLimit 2
+#Class 2:1
+#BurstIcon True
+#Text
+起->【赤】【赤】このシグニを場からトラッシュに置く：対戦相手のパワー8000以下のシグニ1体をバニッシュする。
+
+☆->：カードを1枚引く。

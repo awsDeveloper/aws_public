@@ -1,0 +1,10 @@
+#Name 羅植　サルビア
+#Level 1
+#Power 1000
+#BurstIcon False
+#Type 2
+#Color 4
+#Class 2:2
+#LrigLimit 0
+#Text 
+起->手札を1枚捨てる【転】：あなたのデッキの一番上のカードをエナゾーンに置く。 

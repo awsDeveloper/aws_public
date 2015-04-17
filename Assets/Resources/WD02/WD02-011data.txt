@@ -1,0 +1,11 @@
+#Name 羅石　ガーネット
+#Level 3
+#Power 7000
+#BurstIcon True
+#Type 2
+#Color 2
+#Class 2:1
+#LrigLimit 2
+#Text 
+出->ターン終了時まで、このシグニのパワーは15000になる。 
+☆->カードを1枚引く 

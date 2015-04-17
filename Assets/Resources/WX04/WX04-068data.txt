@@ -1,0 +1,12 @@
+﻿#Name 幻竜　ワイバーン
+#Type 2
+#Level 2
+#Power 5000
+#Color 2
+#LrigLimit 7
+#Class 5:3
+#BurstIcon False
+#Text
+出->手札を1枚捨てる：対戦相手のエナゾーンから【マルチエナ】を持つカード1枚をトラッシュに置く。
+
+

@@ -1,0 +1,10 @@
+#Name 博愛の集束　サニエル
+#Level 1
+#Power 2000
+#BurstIcon False
+#Type 2
+#Color 1
+#Class 4:0
+#LrigLimit 0
+#Text 
+常->あなたの場に他の＜天使＞のシグニがあるかぎり、このシグニのパワーは5000になる。 

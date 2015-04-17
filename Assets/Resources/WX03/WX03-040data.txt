@@ -1,0 +1,11 @@
+#Name 羅石　コランダム
+#Level 1
+#Power 2000
+#BurstIcon False
+#Type 2
+#Color 2
+#Class 2:1
+#LrigLimit 0
+#Text 
+常->あなたのすべての緑のシグニのパワーを＋2000する。
+常->あなたの場に緑のシグニがあるかぎり、このシグニのパワーは5000になる。 

@@ -1,0 +1,9 @@
+﻿#Name コード　ピルルク・Α
+#Level 1
+#Limit 1
+#GrowCost 0/0/0/0/0/0/
+#Type 0
+#Color 3
+#LrigType 3
+#Text 
+出->手札を1枚捨てる：カードを1枚引く。 

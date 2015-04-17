@@ -1,0 +1,10 @@
+#Name コードアンチ　マチュピ
+#Level 2
+#Power 3000
+#BurstIcon False
+#Type 2
+#Color 5
+#Class 3:1
+#LrigLimit 0
+#Text 
+起->【転】手札を1枚捨てる：ターン終了時まで、対戦相手のシグニ１体のパワーをー５０００する。（パワーが０以下のシグニはバニッシュされる）

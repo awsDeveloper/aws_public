@@ -1,0 +1,9 @@
+#Name 廃悪の象徴　ベルゼ
+#Level 3
+#Power 10000
+#BurstIcon False
+#Type 2
+#Color 5
+#Class 4:1
+#LrigLimit 0
+#Text 

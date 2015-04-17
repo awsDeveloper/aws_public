@@ -1,0 +1,10 @@
+#Name 祝福の女神　アテナ
+#Level 4
+#Power 10000
+#BurstIcon False
+#Type 2
+#Color 1
+#Class 4:0
+#LrigLimit 1
+#Text 
+起->【白】【転】対戦相手のシグニ1体を手札に戻す。

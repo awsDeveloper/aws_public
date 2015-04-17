@@ -1,0 +1,9 @@
+#Name 逆出
+#BurstIcon True
+#Cost 0/0/0/0/1/0/
+#Type 3
+#Color 4
+#LrigLimit 0
+#Text 
+あなたのエナゾーンから、シグニ1枚を場に出す。 
+☆->あなたのエナゾーンから、カード1枚を手札に加える。 

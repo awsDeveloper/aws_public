@@ -1,0 +1,11 @@
+﻿#Name 突然の壊乱　ウリエ
+#Type 2
+#Level 2
+#Power 7000
+#Color 1
+#LrigLimit 0
+#Class 4:0
+#BurstIcon False
+#Text
+
+

@@ -1,0 +1,9 @@
+#Name 天空の巫女　タマヨリヒメ
+#Level 4
+#Limit 12
+#GrowCost 0/2/0/0/0/0/
+#Type 0
+#Color 1
+#LrigType 1
+#LrigType2 0
+#Text 

@@ -1,0 +1,10 @@
+#Name 探求の思想　ハニエル
+#Level 1
+#Power 1000
+#BurstIcon False
+#Type 2
+#Color 1
+#Class 4:0
+#LrigLimit 0
+#Text 
+起->手札を1枚捨てる【転】：あなたのデッキからレベル2以下の白のシグニ1枚を探して公開し手札に加える。その後、デッキをシャッフルする。 

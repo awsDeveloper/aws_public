@@ -1,0 +1,11 @@
+#Name コードアート　Ｋ・Ｅ・Ｙ
+#Level 1
+#Power 1000
+#BurstIcon True
+#Type 2
+#Color 3
+#Class 3:0
+#LrigLimit 0
+#Text 
+起->【転】：対戦相手のレベル2以下のシグニ1体を凍結する。（それは次のアップフェイズにアップしない）
+☆->カードを1枚引く。 

@@ -1,0 +1,10 @@
+#Name コードアンチ　アステカ
+#Level 2
+#Power 3000
+#BurstIcon False
+#Type 2
+#Color 5
+#Class 3:1
+#LrigLimit 0
+#Text 
+出->あなたのトラッシュからレベル1の＜古代兵器＞のシグニ1枚を場に出す。ターン終了時に、そのシグニを場からトラッシュに置く。 

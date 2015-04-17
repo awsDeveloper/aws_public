@@ -1,0 +1,10 @@
+#Name 羅石　シズク
+#Level 4
+#Power 12000
+#BurstIcon False
+#Type 2
+#Color 2
+#Class 2:1
+#LrigLimit 0
+#Text 
+出->【緑】：あなたのデッキから＜植物＞のシグニ1枚を探して公開し手札に加える。その後、デッキをシャッフルする。 

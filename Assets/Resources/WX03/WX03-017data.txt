@@ -1,0 +1,10 @@
+#Name 爆砲　ペンシルロケッツ
+#Level 2
+#Power 5000
+#BurstIcon False
+#Type 2
+#Color 2
+#Class 1:1
+#LrigLimit 0
+#Text 
+出->【赤赤】あなたのルリグデッキから赤のアーツ1枚をルリグトラッシュに置く：対戦相手のパワー10000以下のシグニ1体をバニッシュする。 

@@ -1,0 +1,10 @@
+#Name 羅石　エメラルダ
+#Level 4
+#Power 12000
+#BurstIcon False
+#Type 2
+#Color 2
+#Class 2:1
+#LrigLimit 0
+#Text 
+常->あなたのターンの間、このシグニのパワーは18000になる。 

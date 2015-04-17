@@ -1,0 +1,9 @@
+#Name 二型闘婚娘　緑姫
+#Level 2
+#Limit 4
+#GrowCost 0/0/0/0/1/0/
+#Type 0
+#Color 4
+#LrigType 4
+#Text 
+常->あなたのすべての緑のシグニのパワーを＋1000する。 

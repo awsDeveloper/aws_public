@@ -1,0 +1,10 @@
+﻿#Name 天罰覿面(「selector spread WIXOSS」 BOX2 初回限定特典)
+#Type 1
+#Cost 1/1/0/0/1/0/
+#Color 4
+#LrigLimit 0
+#Text
+使用タイミング【メインフェイズ】
+対戦相手のシグニのうち、最も大きいパワーを持つすべてのシグニを手札に戻す。
+
+

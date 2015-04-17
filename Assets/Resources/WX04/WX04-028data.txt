@@ -1,0 +1,10 @@
+#Name バニシング
+#Cost 4/0/0/0/0/0/
+#Type 1
+#Color 0
+#LrigLimit 0
+#LrigLimit2 0
+#Text 
+使用タイミング
+【メインフェイズ】
+対戦相手のシグニ1体をバニッシュする。 

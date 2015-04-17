@@ -1,0 +1,10 @@
+#Name 十六夜の巫女　タマヨリヒメ
+#Level 3
+#Limit 7
+#GrowCost 0/2/0/0/0/0/
+#Type 0
+#Color 1
+#LrigType 1
+#LrigType2 0
+#Text 
+出->【無】：あなたのデッキから白のスペル1枚を探して公開し手札に加える。その後、デッキをシャッフルする。 

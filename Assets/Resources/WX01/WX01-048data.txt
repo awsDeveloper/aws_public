@@ -1,0 +1,11 @@
+#Name 幻獣　ビグタット
+#Level 3
+#Power 8000
+#BurstIcon True
+#Type 2
+#Color 4
+#Class 5:1
+#LrigLimit 4
+#Text 
+出->ターン終了時まで、あなたのすべてのシグニのパワーを＋2000する。
+☆->エナチャージ1 

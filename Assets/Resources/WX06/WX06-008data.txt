@@ -1,0 +1,10 @@
+﻿#Name 永らえし者　タウィル＝トヴォ
+#Type 0
+#Level 2
+#Limit 5
+#GrowCost 0/1/0/0/0/0/
+#Color 1
+#LrigType 13
+#Text
+
+

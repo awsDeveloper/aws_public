@@ -1,0 +1,7 @@
+#Name 新月の巫女　タマヨリヒメ
+#Level 0
+#Limit 0
+#GrowCost 0/0/0/0/0/0/
+#Type 0
+#Color 1
+#LrigType 1

@@ -1,0 +1,8 @@
+#Name 二ノ娘　緑姫
+#Level 2
+#Limit 5
+#GrowCost 0/0/0/0/1/0/
+#Type 0
+#Color 4
+#LrigType 4
+#Text 

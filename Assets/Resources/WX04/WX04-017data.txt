@@ -1,0 +1,9 @@
+#Name 信託する神託　アン＝サード
+#Level 3
+#Limit 8
+#GrowCost 0/1/0/0/1/0/
+#Type 0
+#Color 4
+#LrigType 12
+#LrigType2 0
+#Text 

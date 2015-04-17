@@ -1,0 +1,10 @@
+#Name 羅石　アメジスト
+#Level 1
+#Power 1000
+#BurstIcon False
+#Type 2
+#Color 2
+#Class 2:1
+#LrigLimit 2
+#Text 
+出->対戦相手のパワー1000のシグニ1体をバニッシュしてもよい。

@@ -1,0 +1,10 @@
+#Name コードアート　Ｉ・Ｄ・Ｏ・Ｌ
+#Level 4
+#Power 12000
+#BurstIcon False
+#Type 2
+#Color 3
+#Class 3:0
+#LrigLimit 0
+#Text 
+常->あなたの手札が対戦相手より3枚以上多いかぎり、このシグニのパワーは18000になる。 

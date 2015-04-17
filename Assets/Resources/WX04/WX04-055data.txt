@@ -1,0 +1,11 @@
+﻿#Name 君からの明日　ラファエ
+#Type 2
+#Level 3
+#Power 10000
+#Color 1
+#LrigLimit 0
+#Class 4:0
+#BurstIcon False
+#Text
+
+

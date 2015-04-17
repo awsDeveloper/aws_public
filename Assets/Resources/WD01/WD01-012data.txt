@@ -1,0 +1,9 @@
+#Name 中剣　フランベル
+#Level 2
+#Power 7000
+#BurstIcon False
+#Type 2
+#Color 1
+#Class 1:0
+#LrigLimit 0
+#Text 

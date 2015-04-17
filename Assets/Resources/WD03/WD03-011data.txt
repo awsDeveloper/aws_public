@@ -1,0 +1,11 @@
+#Name コードアート　Ｓ・Ｍ・Ｐ
+#Level 3
+#Power 7000
+#BurstIcon True
+#Type 2
+#Color 3
+#Class 3:0
+#LrigLimit 3
+#Text 
+出->対戦相手の手札を見て、その中からレベル１のカード1枚を選び、捨てさせる。 
+☆->カードを1枚引く 

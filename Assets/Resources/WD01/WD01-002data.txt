@@ -1,0 +1,8 @@
+#Name 弦月の巫女　タマヨリヒメ
+#Level 3
+#Limit 8
+#GrowCost 0/2/0/0/0/0/
+#Type 0
+#Color 1
+#LrigType 1
+#Text 

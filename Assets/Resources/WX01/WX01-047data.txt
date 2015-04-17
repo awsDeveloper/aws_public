@@ -1,0 +1,10 @@
+#Name 羅植　マンドレ
+#Level 4
+#Power 10000
+#BurstIcon False
+#Type 2
+#Color 4
+#Class 2:2
+#LrigLimit 4
+#Text 
+起->【転】あなたのエナゾーンから、カード1枚を手札に加える。  

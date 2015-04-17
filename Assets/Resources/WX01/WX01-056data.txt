@@ -1,0 +1,10 @@
+#Name 中盾　スクエア
+#Level 2
+#Power 5000
+#BurstIcon False
+#Type 2
+#Color 1
+#Class 1:0
+#LrigLimit 0
+#Text 
+常->対戦相手のターンの間、このシグニのパワーは8000になる。 

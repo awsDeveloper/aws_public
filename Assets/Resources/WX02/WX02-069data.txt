@@ -1,0 +1,10 @@
+#Name コードアンチ　ネビュラ
+#Level 3
+#Power 8000
+#BurstIcon False
+#Type 2
+#Color 5
+#Class 3:1
+#LrigLimit 0
+#Text 
+起->【黒黒】：このシグニをあなたのトラッシュから場に出す。（この能力は、このシグニがトラッシュにある場合にしか使用できない）

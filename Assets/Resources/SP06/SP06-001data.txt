@@ -1,0 +1,11 @@
+﻿#Name ミルルン・ゼプト (「selector spread WIXOSS」 BOX1 初回限定特典)
+#Type 0
+#Level 4
+#Limit 11
+#GrowCost 0/0/0/3/0/0/
+#Color 3
+#LrigType 11
+#Text
+常->：あなたの場にそれぞれ名前の異なる＜原子＞のシグニが3体があるかぎり、あなたのすべてのシグニパワーを+2000する。
+
+

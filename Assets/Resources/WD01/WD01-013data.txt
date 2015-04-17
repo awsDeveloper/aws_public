@@ -1,0 +1,9 @@
+#Name 小剣　ククリ
+#Level 1
+#Power 3000
+#BurstIcon False
+#Type 2
+#Color 1
+#Class 1:0
+#LrigLimit 0
+#Text 

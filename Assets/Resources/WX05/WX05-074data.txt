@@ -1,0 +1,11 @@
+﻿#Name ドライ＝スポアー
+#Type 2
+#Level 3
+#Power 10000
+#Color 5
+#LrigLimit 0
+#Class 1:2
+#BurstIcon False
+#Text
+
+

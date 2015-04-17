@@ -1,0 +1,10 @@
+#Name 幻獣　クロ
+#Level 3
+#Power 8000
+#BurstIcon False
+#Type 2
+#Color 4
+#Class 5:1
+#LrigLimit 0
+#Text 
+常->あなたのエナゾーンにあるカードが対戦相手より４枚以上多いかぎり、このシグニのパワーは12000になる。 

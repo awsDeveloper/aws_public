@@ -1,0 +1,9 @@
+﻿#Name ロココ・バウンダリー
+#BurstIcon False
+#Cost 2/3/0/0/0/0/
+#Type 1
+#Color 1
+#LrigLimit 1
+#Text 
+使用タイミング【メインフェイズ】
+対戦相手のシグニを2体まで手札に戻す。

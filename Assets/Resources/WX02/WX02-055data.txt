@@ -1,0 +1,8 @@
+#Name 光欲の宝剣
+#BurstIcon False
+#Cost 0/0/1/0/0/0/
+#Type 3
+#Color 2
+#LrigLimit 0
+#Text 
+ターン終了時まで、あなたの<鉱石>、<宝石>、<ウェポン>のシグニいずれか1体は【ダブルクラッシュ】を得る。

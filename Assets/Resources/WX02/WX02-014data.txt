@@ -1,0 +1,9 @@
+#Name 黒縄の閻魔　ウリス
+#Level 2
+#Limit 4
+#GrowCost 0/0/0/0/0/1/
+#Type 0
+#Color 5
+#LrigType 5
+#Text 
+常->あなたのすべての黒のシグニのパワーを+1000する。

@@ -1,0 +1,11 @@
+﻿#Name 大天使の未来　ガブリエ
+#Type 2
+#Level 4
+#Power 15000
+#Color 1
+#LrigLimit 0
+#Class 4:0
+#BurstIcon False
+#Text
+
+

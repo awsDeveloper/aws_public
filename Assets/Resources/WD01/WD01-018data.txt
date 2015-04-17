@@ -1,0 +1,9 @@
+#Name 噴流する知識
+#BurstIcon True
+#Cost 0/0/0/0/0/0/
+#Type 3
+#Color 0
+#LrigLimit 0
+#Text 
+カードを1枚引く 
+☆->エナチャージ1 

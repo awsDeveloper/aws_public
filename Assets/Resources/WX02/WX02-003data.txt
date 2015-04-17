@@ -1,0 +1,9 @@
+#Name エルドラ×マークⅣ
+#Level 4
+#Limit 11
+#GrowCost 0/0/0/3/0/0/
+#Type 0
+#Color 3
+#LrigType 6
+#Text 
+常->あなたのライフクロスがクラッシュされるたび、カードを1枚引いてもよい。 

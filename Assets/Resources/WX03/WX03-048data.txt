@@ -1,0 +1,10 @@
+#Name コードアンチ　クリスカル
+#Level 1
+#Power 2000
+#BurstIcon False
+#Type 2
+#Color 5
+#Class 3:1
+#LrigLimit 0
+#Text 
+出->このシグニがトラッシュから場に出たとき、ターン終了時まで、このシグニのパワーは5000になる。 

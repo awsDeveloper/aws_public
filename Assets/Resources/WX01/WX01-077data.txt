@@ -1,0 +1,10 @@
+#Name コードアート　Ａ・Ｄ・Ｂ
+#Level 3
+#Power 8000
+#BurstIcon False
+#Type 2
+#Color 3
+#Class 3:0
+#LrigLimit 0
+#Text 
+常->あなたの手札が対戦相手より2枚以上多いかぎり、このシグニのパワーは12000になる 

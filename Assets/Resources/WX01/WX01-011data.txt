@@ -1,0 +1,9 @@
+#Name 熾炎舞　花代・参
+#Level 3
+#Limit 7
+#GrowCost 0/0/2/0/0/0/
+#Type 0
+#Color 2
+#LrigType 2
+#Text 
+出->【赤】対戦相手のパワー7000以下のシグニ1体をバニッシュする。

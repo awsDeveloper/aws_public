@@ -1,0 +1,10 @@
+#Name 忘得ぬ幻想　ヴァルキリー
+#Level 3
+#Power 7000
+#BurstIcon False
+#Type 2
+#Color 1
+#Class 4:0
+#LrigLimit 1
+#Text 
+起->【転】あなたのデッキから《忘得ぬ幻想　ヴァルキリー》以外のレベル3以下のシグニ1枚を探して公開し手札に加える。その後、デッキをシャッフルする。 

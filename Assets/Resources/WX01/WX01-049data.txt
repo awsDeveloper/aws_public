@@ -1,0 +1,10 @@
+#Name 羅植　バロメット
+#Level 3
+#Power 7000
+#BurstIcon False
+#Type 2
+#Color 4
+#Class 2:2
+#LrigLimit 4
+#Text 
+起->【転】あなたのデッキの一番上のカードをエナゾーンに置く。

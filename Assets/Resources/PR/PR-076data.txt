@@ -1,0 +1,10 @@
+#Name 羅石　アンモライト
+#Level 2
+#Power 1000
+#BurstIcon False
+#Type 2
+#Color 2
+#Class 2:0
+#LrigLimit 0
+#Text 
+常->あなたが赤のスペルを使用したとき、ターン終了時まで、このシグニは【ダブルクラッシュ】を得る。 

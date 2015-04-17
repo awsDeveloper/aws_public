@@ -1,0 +1,8 @@
+#Name 断罪の轢断
+#BurstIcon False
+#Cost 0/0/3/0/0/0/
+#Type 3
+#Color 2
+#LrigLimit 2
+#Text 
+対戦相手のライフクロス1枚をクラッシュする。 

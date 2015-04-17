@@ -1,0 +1,10 @@
+#Name 星占の巫女　リメンバ・ドウン
+#Level 3
+#Limit 7
+#GrowCost 0/1/0/1/0/0/
+#Type 0
+#Color 1
+#LrigType 10
+#LrigType2 3
+#Text 
+出->：対戦相手のレベル2以下のシグニ1体を凍結する。 

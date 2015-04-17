@@ -1,0 +1,8 @@
+#Name 轟音の火柱
+#BurstIcon False
+#Cost 0/0/1/0/0/0/
+#Type 3
+#Color 2
+#LrigLimit 0
+#Text 
+対戦相手のパワー5000以下のシグニ1体をバニッシュする。 

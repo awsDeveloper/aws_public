@@ -1,0 +1,9 @@
+﻿#Name コード　ピルルク・Ω
+#Level 4
+#Limit 11
+#GrowCost 0/0/0/3/0/0/
+#Type 0
+#Color 3
+#LrigType 3
+#Text 
+起->手札から青のシグニを1枚捨てる：対戦相手の手札を1枚見ないで選び、捨てさせる。 

@@ -1,0 +1,10 @@
+#Name 羅植　マリゴールド
+#Level 2
+#Power 5000
+#BurstIcon False
+#Type 2
+#Color 4
+#Class 2:2
+#LrigLimit 0
+#Text 
+出->あなたのルリグデッキから緑のアーツ1枚をルリグトラッシュに置く：あなたのデッキの上からカードを2枚エナゾーンに置く。 

@@ -1,0 +1,11 @@
+﻿#Name 爆砲　ナインティーン
+#Type 2
+#Level 2
+#Power 7000
+#Color 2
+#LrigLimit 0
+#Class 1:1
+#BurstIcon False
+#Text
+
+

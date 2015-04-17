@@ -1,0 +1,8 @@
+#Name 硝煙の気焔
+#BurstIcon False
+#Cost 0/0/0/0/0/0/
+#Type 3
+#Color 2
+#LrigLimit 2
+#Text 
+あなたのシグニ1体をバニッシュする。そうした場合、パワー1００００以下のシグニ1体をバニッシュする。 

@@ -1,0 +1,10 @@
+﻿#Name 永らえし者　タウィル＝トレ
+#Type 0
+#Level 3
+#Limit 8
+#GrowCost 0/2/0/0/0/0/
+#Color 1
+#LrigType 13
+#Text
+
+

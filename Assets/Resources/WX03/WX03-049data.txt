@@ -1,0 +1,9 @@
+#Name セルフ・スラッシュ
+#BurstIcon True
+#Cost 0/0/0/0/0/2/
+#Type 3
+#Color 5
+#LrigLimit 0
+#Text 
+対戦相手は自分のシグニ1体をバニッシュする。
+☆->対戦相手は自分のシグニ1体をバニッシュする。 

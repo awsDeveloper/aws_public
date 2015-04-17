@@ -1,0 +1,8 @@
+#Name ＴＯＯ　ＢＡＤ
+#BurstIcon False
+#Cost 0/0/0/1/0/0/
+#Type 3
+#Color 3
+#LrigLimit 0
+#Text 
+対戦相手の手札を1枚見ないで選び、捨てさせる。 

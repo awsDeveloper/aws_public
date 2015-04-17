@@ -1,0 +1,11 @@
+#Name コードアート　Ｒ・Ｇ・Ｎ
+#Level 4
+#Power 10000
+#BurstIcon False
+#Type 2
+#Color 3
+#Class 3:0
+#LrigLimit 0
+#Text 
+常->あなたの使用する青のアーツは無コストが1減る。
+常->あなたのルリグデッキが0枚であるかぎり、このシグニのパワーは18000になる。 

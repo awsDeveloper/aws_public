@@ -1,0 +1,10 @@
+#Name 幻水　オクト
+#Level 3
+#Power 8000
+#BurstIcon False
+#Type 2
+#Color 3
+#Class 5:0
+#LrigLimit 0
+#Text 
+常->あなたの場に他の＜水獣＞のシグニがあるかぎり、このシグニのパワーは12000になる。 

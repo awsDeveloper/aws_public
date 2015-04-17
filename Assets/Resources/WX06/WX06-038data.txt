@@ -1,0 +1,24 @@
+﻿#Name 大拳　メリサ
+#Type 2
+#Level 3
+#Power 8000
+#Color 1
+#LrigLimit 0
+#Class 1:0
+#BurstIcon False
+#Text
+常->：あなたの場に他の＜アーム＞のシグニがあるかぎり、このシグニのパワーは12000になる。
+
+
+#Name 大拳　メリサ
+#Type 2
+#Level 3
+#Power 8000
+#Color 1
+#LrigLimit 0
+#Class 1:0
+#BurstIcon False
+#Text
+常->：あなたの場に他の＜アーム＞のシグニがあるかぎり、このシグニのパワーは12000になる。
+
+

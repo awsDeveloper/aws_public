@@ -1,0 +1,11 @@
+﻿#Name 羅植　ドロウソ
+#Type 2
+#Level 3
+#Power 10000
+#Color 4
+#LrigLimit 0
+#Class 2:2
+#BurstIcon False
+#Text
+
+

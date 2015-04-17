@@ -1,0 +1,9 @@
+#Name BAD　CONDITION
+#BurstIcon False
+#Cost 0/0/0/1/0/0/
+#Type 3
+#Color 3
+#LrigLimit 3
+#Text 
+このカードは対戦相手の手札が0枚の場合にしか使用できない。
+対戦相手のシグニ1体をバニッシュする。 

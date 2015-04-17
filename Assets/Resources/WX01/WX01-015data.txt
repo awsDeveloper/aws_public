@@ -1,0 +1,9 @@
+﻿#Name コード　ピルルク・Γ
+#Level 3
+#Limit 7
+#GrowCost 0/0/0/2/0/0/
+#Type 0
+#Color 3
+#LrigType 3
+#Text 
+出->【青】対戦相手は手札を1枚捨てる。 

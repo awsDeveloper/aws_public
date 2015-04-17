@@ -1,0 +1,8 @@
+#Name 一ノ娘　緑姫
+#Level 1
+#Limit 2
+#GrowCost 0/0/0/0/0/0/
+#Type 0
+#Color 4
+#LrigType 4
+#Text 

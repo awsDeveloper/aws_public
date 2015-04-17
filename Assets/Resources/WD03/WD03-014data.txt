@@ -1,0 +1,10 @@
+#Name コードアート　Ｒ・Ｆ・Ｒ
+#Level 1
+#Power 1000
+#BurstIcon False
+#Type 2
+#Color 3
+#Class 3:0
+#LrigLimit 3
+#Text 
+出->カードを1枚引く。その後、手札を1枚捨てる。 

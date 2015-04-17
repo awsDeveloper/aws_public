@@ -1,0 +1,10 @@
+#Name 幻水　シャークランス
+#Level 3
+#Power 7000
+#BurstIcon False
+#Type 2
+#Color 3
+#Class 5:0
+#LrigLimit 3
+#Text 
+起->【転】カードを1枚引く。

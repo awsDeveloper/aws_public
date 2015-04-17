@@ -1,0 +1,11 @@
+#Name コードアート　Ｒ・Ｍ・Ｎ
+#Level 4
+#Power 12000
+#BurstIcon True
+#Type 2
+#Color 3
+#Class 3:0
+#LrigLimit 3
+#Text 
+出->【青】対戦相手の手札を1枚見ないで選び、捨てさせる。 
+☆->対戦相手は手札を１枚捨てる。 

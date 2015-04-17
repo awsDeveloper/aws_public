@@ -1,0 +1,8 @@
+#Name コード・ピルルク・Ｍ
+#Level 2
+#Limit 5
+#GrowCost 0/0/0/1/0/0/
+#Type 0
+#Color 3
+#LrigType 3
+#Text 

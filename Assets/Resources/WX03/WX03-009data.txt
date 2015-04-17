@@ -1,0 +1,9 @@
+#Name 四型緑姫
+#Level 4
+#Limit 12
+#GrowCost 0/0/0/0/2/0/
+#Type 0
+#Color 4
+#LrigType 4
+#LrigType2 0
+#Text 

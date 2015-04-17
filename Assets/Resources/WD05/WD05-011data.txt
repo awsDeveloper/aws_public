@@ -1,0 +1,11 @@
+#Name 堕落の砲女　キャリ
+#Level 3
+#Power 7000
+#BurstIcon True
+#Type 2
+#Color 5
+#Class 4:1
+#LrigLimit 5
+#Text 
+常->あなたのトラッシュにカードが10枚以上あるかぎり、このシグニのパワーを＋5000する。 
+☆->カードを1枚引く。

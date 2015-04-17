@@ -1,0 +1,9 @@
+#Name 一型舞闘娘　緑姫
+#Level 1
+#Limit 1
+#GrowCost 0/0/0/0/0/0/
+#Type 0
+#Color 4
+#LrigType 4
+#Text 
+出->手札を1枚捨てる：カードを1枚引く。

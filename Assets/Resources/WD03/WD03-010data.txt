@@ -1,0 +1,9 @@
+#Name コードアート　Ｄ・Ｒ・Ｓ
+#Level 3
+#Power 10000
+#BurstIcon False
+#Type 2
+#Color 3
+#Class 3:0
+#LrigLimit 0
+#Text 

@@ -1,0 +1,10 @@
+#Name 幻水　カレイラ
+#Level 2
+#Power 5000
+#BurstIcon False
+#Type 2
+#Color 3
+#Class 5:0
+#LrigLimit 0
+#Text 
+出->【青】あなたのルリグデッキから青のアーツ1枚をルリグトラッシュに置く：カードを2枚引く。 

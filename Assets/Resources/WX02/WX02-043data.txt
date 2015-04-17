@@ -1,0 +1,10 @@
+#Name コードアンチ　キティラ
+#Level 3
+#Power 7000
+#BurstIcon False
+#Type 2
+#Color 5
+#Class 3:1
+#LrigLimit 0
+#Text 
+起->【転】：あなたのデッキの上からカードを3枚公開する。その中から＜古代兵器＞のシグニ1体を手札に加え、残りをトラッシュに置く。

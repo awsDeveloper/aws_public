@@ -1,0 +1,10 @@
+#Name 幻獣　ミケ
+#Level 1
+#Power 2000
+#BurstIcon False
+#Type 2
+#Color 4
+#Class 5:1
+#LrigLimit 0
+#Text 
+常->あなたのエナゾーンにあるカードが対戦相手より２枚以上多いかぎり、このシグニのパワーは5000になる。 

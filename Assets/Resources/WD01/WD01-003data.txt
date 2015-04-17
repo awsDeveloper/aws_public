@@ -1,0 +1,8 @@
+#Name 半月の巫女　タマヨリヒメ
+#Level 2
+#Limit 5
+#GrowCost 0/1/0/0/0/0/
+#Type 0
+#Color 1
+#LrigType 1
+#Text 

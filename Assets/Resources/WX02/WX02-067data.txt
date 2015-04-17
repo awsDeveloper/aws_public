@@ -1,0 +1,9 @@
+#Name 悪夢の続発　リリス
+#Level 4
+#Power 15000
+#BurstIcon False
+#Type 2
+#Color 5
+#Class 4:1
+#LrigLimit 0
+#Text 

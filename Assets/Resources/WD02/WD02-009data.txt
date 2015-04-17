@@ -1,0 +1,11 @@
+#Name 羅石　ヴォルカノ
+#Level 4
+#Power 12000
+#BurstIcon True
+#Type 2
+#Color 2
+#Class 2:0
+#LrigLimit 2
+#Text 
+出->【赤×3】対戦相手のパワー15000以下のシグニ1体をバニッシュする。 
+☆->対戦相手のパワー7000以下のシグニ1体をバニッシュする。 

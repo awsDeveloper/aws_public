@@ -1,0 +1,10 @@
+#Name 小砲　ドラグノフ
+#Level 1
+#Power 1000
+#BurstIcon False
+#Type 2
+#Color 2
+#Class 1:1
+#LrigLimit 0
+#Text 
+起->手札を1枚捨てる【転】：対戦相手のパワー2000以下のシグニ1体をバニッシュする。 

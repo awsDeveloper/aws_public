@@ -1,0 +1,11 @@
+#Name 大罪の所以　バアル
+#Level 1
+#Power 1000
+#BurstIcon True
+#Type 2
+#Color 5
+#Class 4:1
+#LrigLimit 0
+#Text 
+起->【転】：あなたのデッキの一番上を公開する。それが＜悪魔＞のシグニだった場合、それを手札に加える。
+☆->カードを1枚引く。

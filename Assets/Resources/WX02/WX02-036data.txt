@@ -1,0 +1,11 @@
+#Name コードアート　G・Ｒ・Ｂ
+#Level 1
+#Power 1000
+#BurstIcon True
+#Type 2
+#Color 3
+#Class 3:0
+#LrigLimit 0
+#Text 
+起->【転】：あなたのデッキの一番上を公開する。それが＜電機＞のシグニの場合、それを手札に加える。
+☆->カードを1枚引く 

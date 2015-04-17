@@ -1,0 +1,10 @@
+#Name 轟砲　オルドナンス
+#Level 3
+#Power 7000
+#BurstIcon False
+#Type 2
+#Color 2
+#Class 1:1
+#LrigLimit 2
+#Text 
+起->【転】対戦相手のパワー7000以下のシグニ1体をバニッシュする。 

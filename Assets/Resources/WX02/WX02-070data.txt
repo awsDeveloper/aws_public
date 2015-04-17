@@ -1,0 +1,10 @@
+#Name 真実の死神　アニマ
+#Level 2
+#Power 3000
+#BurstIcon False
+#Type 2
+#Color 5
+#Class 4:1
+#LrigLimit 0
+#Text 
+出->あなたのデッキの上からカードを３枚トラッシュに置く。 

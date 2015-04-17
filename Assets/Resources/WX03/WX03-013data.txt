@@ -1,0 +1,10 @@
+#Name 創造の鍵主　ウムル＝エット
+#Level 1
+#Limit 2
+#GrowCost 0/0/0/0/0/0/
+#Type 0
+#Color 5
+#LrigType 8
+#LrigType2 0
+#Text 
+出->カードを1枚捨てる：カードを1枚引く。 

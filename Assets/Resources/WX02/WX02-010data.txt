@@ -1,0 +1,8 @@
+#Name エルドラ×マークⅢ
+#Level 3
+#Limit 8
+#GrowCost 0/0/0/2/0/0/
+#Type 0
+#Color 3
+#LrigType 6
+#Text 

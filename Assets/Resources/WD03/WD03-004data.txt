@@ -1,0 +1,8 @@
+#Name コード・ピルルク・Ｋ
+#Level 1
+#Limit 2
+#GrowCost 0/0/0/0/0/0/
+#Type 0
+#Color 3
+#LrigType 3
+#Text 

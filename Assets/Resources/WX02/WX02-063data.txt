@@ -1,0 +1,10 @@
+#Name 羅植　ハス
+#Level 2
+#Power 5000
+#BurstIcon False
+#Type 2
+#Color 4
+#Class 2:2
+#LrigLimit 0
+#Text 
+常->あなたの場に他の＜植物＞のシグニがあるかぎり、このシグニのパワーは8000になる。  

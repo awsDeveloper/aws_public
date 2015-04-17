@@ -1,0 +1,10 @@
+#Name 宝具　マガタマ
+#Level 2
+#Power 3000
+#BurstIcon False
+#Type 2
+#Color 1
+#Class 1:0
+#LrigLimit 1
+#Text 
+出->あなたのデッキの上からカードを3枚見る。それらを好きな順番でデッキの一番上に戻す。 

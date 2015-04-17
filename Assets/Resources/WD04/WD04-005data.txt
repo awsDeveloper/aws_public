@@ -1,0 +1,8 @@
+#Name 闘姫　緑姫
+#Level 0
+#Limit 0
+#GrowCost 0/0/0/0/0/0/
+#Type 0
+#Color 4
+#LrigType 4
+#Text 

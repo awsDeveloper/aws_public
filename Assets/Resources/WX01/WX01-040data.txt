@@ -1,0 +1,11 @@
+#Name 羅石　オリハルク
+#Level 3
+#Power 8000
+#BurstIcon True
+#Type 2
+#Color 2
+#Class 2:0
+#LrigLimit 2
+#Text 
+出->対戦相手のパワー3000以下のシグニ1体をバニッシュする。
+☆->対戦相手のパワー5000以下のシグニ1体をバニッシュする。 

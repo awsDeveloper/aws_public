@@ -1,0 +1,9 @@
+#Name 幻獣　オウル
+#Level 3
+#Power 10000
+#BurstIcon False
+#Type 2
+#Color 4
+#Class 5:2
+#LrigLimit 0
+#Text 

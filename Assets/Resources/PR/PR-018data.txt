@@ -1,0 +1,12 @@
+#Name 羅石　ミスリル
+#Level 3
+#Power 15000
+#BurstIcon True
+#Type 2
+#Color 2
+#Class 2:1
+#LrigLimit 2
+#Text 
+出->手札を1枚捨てる。
+常->あなたのターンの間、このシグニのパワーは18000になる。
+☆->カードを1枚引く。

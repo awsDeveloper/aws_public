@@ -1,0 +1,9 @@
+#Name 羅石　メタリカ
+#Level 4
+#Power 15000
+#BurstIcon False
+#Type 2
+#Color 2
+#Class 2:0
+#LrigLimit 0
+#Text 

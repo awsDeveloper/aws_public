@@ -1,0 +1,10 @@
+#Name コードアンチ　モア
+#Level 2
+#Power 5000
+#BurstIcon False
+#Type 2
+#Color 5
+#Class 3:1
+#LrigLimit 0
+#Text 
+常->：あなたの場に他の＜古代兵器＞のシグニがあるかぎり、このシグニのパワーは8000になる。 

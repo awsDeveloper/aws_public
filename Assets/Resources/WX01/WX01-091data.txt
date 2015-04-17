@@ -1,0 +1,11 @@
+#Name 幻獣　コアラン
+#Level 2
+#Power 5000
+#BurstIcon True
+#Type 2
+#Color 4
+#Class 5:1
+#LrigLimit 4
+#Text 
+出->ターン終了時まで、あなたのシグニ1体のパワーを＋3000する。 
+☆->カードを1枚引く

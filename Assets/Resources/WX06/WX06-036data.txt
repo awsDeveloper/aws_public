@@ -1,0 +1,12 @@
+﻿#Name コードアンチ　ゴルスペ　
+#Type 2
+#Level 2
+#Power 5000
+#Color 5
+#LrigLimit 0
+#Class 3:1
+#BurstIcon False
+#Text
+出->あなたのルリグデッキから黒のアーツ1枚をルリグトラッシュに置く：あなたのトラッシュから＜古代兵器＞のシグニ1枚を場に出す。
+
+

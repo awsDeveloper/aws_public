@@ -1,0 +1,11 @@
+#Name 宝具　ミカガミ
+#Level 1
+#Power 1000
+#BurstIcon True
+#Type 2
+#Color 1
+#Class 1:0
+#LrigLimit 0
+#Text 
+起->【転】：あなたのデッキの一番上を公開する。それが＜アーム＞のシグニの場合、それを手札に加える。
+☆->カードを１枚引く。

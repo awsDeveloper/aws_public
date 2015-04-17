@@ -1,0 +1,10 @@
+#Name クレセント/メイデン　イオナ
+#Level 1
+#Limit 1
+#GrowCost 0/0/0/0/0/0/
+#Type 0
+#Color 5
+#LrigType 9
+#LrigType2 0
+#Text 
+常->：対戦相手のシグニは可能ならばアタックしなければならない。

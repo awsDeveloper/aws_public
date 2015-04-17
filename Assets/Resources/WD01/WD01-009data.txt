@@ -1,0 +1,11 @@
+#Name 甲冑　ローメイル
+#Level 4
+#Power 12000
+#BurstIcon True
+#Type 2
+#Color 1
+#Class 1:0
+#LrigLimit 1
+#Text 
+常->対戦相手のターンの間、あなたのすべてのシグニのパワーを＋1000する。 
+☆->対戦相手のシグニ1体を手札に戻す。 

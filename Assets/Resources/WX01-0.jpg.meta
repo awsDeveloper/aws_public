@@ -1,0 +1,641 @@
+fileFormatVersion: 2
+guid: 2d3c677b7e9583c4e8b466eeb57ab161
+TextureImporter:
+  fileIDToRecycleName:
+    21300000: WX01-001
+    21300002: WX01-002
+    21300004: WX01-003
+    21300006: WX01-004
+    21300008: WX01-005
+    21300010: WX01-006
+    21300012: WX01-007
+    21300014: WX01-008
+    21300016: WX01-009
+    21300018: WX01-010
+    21300020: WX01-011
+    21300022: WX01-012
+    21300024: WX01-013
+    21300026: WX01-014
+    21300028: WX01-015
+    21300030: WX01-016
+    21300032: WX01-017
+    21300034: WX01-018
+    21300036: WX01-019
+    21300038: WX01-020
+    21300040: WX01-021
+    21300042: WX01-022
+    21300044: WX01-023
+    21300046: WX01-024
+    21300048: WX01-025
+    21300050: WX01-026
+    21300052: WX01-027
+    21300054: WX01-028
+    21300056: WX01-029
+    21300058: WX01-030
+    21300060: WX01-031
+    21300062: WX01-032
+    21300064: WX01-033
+    21300066: WX01-034
+    21300068: WX01-035
+    21300070: WX01-036
+    21300072: WX01-037
+    21300074: WX01-038
+    21300076: WX01-039
+    21300078: WX01-040
+    21300080: WX01-041
+    21300082: WX01-042
+    21300084: WX01-043
+    21300086: WX01-044
+    21300088: WX01-045
+    21300090: WX01-046
+    21300092: WX01-047
+    21300094: WX01-048
+    21300096: WX01-049
+    21300098: WX01-050
+    21300100: WX01-051
+    21300102: WX01-052
+    21300104: WX01-0_52
+    21300106: WX01-0_53
+  serializedVersion: 2
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    linearTexture: 0
+    correctGamma: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: .25
+    normalMapFilter: 0
+  isReadable: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 0
+  seamlessCubemap: 0
+  textureFormat: -1
+  maxTextureSize: 1024
+  textureSettings:
+    filterMode: -1
+    aniso: 1
+    mipBias: -1
+    wrapMode: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: .5, y: .5}
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spritePixelsToUnits: 100
+  alphaIsTransparency: 1
+  textureType: 8
+  buildTargetSettings: []
+  spriteSheet:
+    sprites:
+    - name: WX01-001
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 2792
+        width: 250
+        height: 349
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: WX01-002
+      rect:
+        serializedVersion: 2
+        x: 250
+        y: 2792
+        width: 250
+        height: 349
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: WX01-003
+      rect:
+        serializedVersion: 2
+        x: 500
+        y: 2792
+        width: 250
+        height: 349
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: WX01-004
+      rect:
+        serializedVersion: 2
+        x: 750
+        y: 2792
+        width: 250
+        height: 349
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: WX01-005
+      rect:
+        serializedVersion: 2
+        x: 1000
+        y: 2792
+        width: 250
+        height: 349
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: WX01-006
+      rect:
+        serializedVersion: 2
+        x: 1250
+        y: 2792
+        width: 250
+        height: 349
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: WX01-007
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 2443
+        width: 250
+        height: 349
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: WX01-008
+      rect:
+        serializedVersion: 2
+        x: 250
+        y: 2443
+        width: 250
+        height: 349
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: WX01-009
+      rect:
+        serializedVersion: 2
+        x: 500
+        y: 2443
+        width: 250
+        height: 349
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: WX01-010
+      rect:
+        serializedVersion: 2
+        x: 750
+        y: 2443
+        width: 250
+        height: 349
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: WX01-011
+      rect:
+        serializedVersion: 2
+        x: 1000
+        y: 2443
+        width: 250
+        height: 349
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: WX01-012
+      rect:
+        serializedVersion: 2
+        x: 1250
+        y: 2443
+        width: 250
+        height: 349
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: WX01-013
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 2094
+        width: 250
+        height: 349
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: WX01-014
+      rect:
+        serializedVersion: 2
+        x: 250
+        y: 2094
+        width: 250
+        height: 349
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: WX01-015
+      rect:
+        serializedVersion: 2
+        x: 500
+        y: 2094
+        width: 250
+        height: 349
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: WX01-016
+      rect:
+        serializedVersion: 2
+        x: 750
+        y: 2094
+        width: 250
+        height: 349
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: WX01-017
+      rect:
+        serializedVersion: 2
+        x: 1000
+        y: 2094
+        width: 250
+        height: 349
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: WX01-018
+      rect:
+        serializedVersion: 2
+        x: 1250
+        y: 2094
+        width: 250
+        height: 349
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: WX01-019
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1745
+        width: 250
+        height: 349
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: WX01-020
+      rect:
+        serializedVersion: 2
+        x: 250
+        y: 1745
+        width: 250
+        height: 349
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: WX01-021
+      rect:
+        serializedVersion: 2
+        x: 500
+        y: 1745
+        width: 250
+        height: 349
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: WX01-022
+      rect:
+        serializedVersion: 2
+        x: 750
+        y: 1745
+        width: 250
+        height: 349
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: WX01-023
+      rect:
+        serializedVersion: 2
+        x: 1000
+        y: 1745
+        width: 250
+        height: 349
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: WX01-024
+      rect:
+        serializedVersion: 2
+        x: 1250
+        y: 1745
+        width: 250
+        height: 349
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: WX01-025
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1396
+        width: 250
+        height: 349
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: WX01-026
+      rect:
+        serializedVersion: 2
+        x: 250
+        y: 1396
+        width: 250
+        height: 349
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: WX01-027
+      rect:
+        serializedVersion: 2
+        x: 500
+        y: 1396
+        width: 250
+        height: 349
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: WX01-028
+      rect:
+        serializedVersion: 2
+        x: 750
+        y: 1396
+        width: 250
+        height: 349
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: WX01-029
+      rect:
+        serializedVersion: 2
+        x: 1000
+        y: 1396
+        width: 250
+        height: 349
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: WX01-030
+      rect:
+        serializedVersion: 2
+        x: 1250
+        y: 1396
+        width: 250
+        height: 349
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: WX01-031
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1047
+        width: 250
+        height: 349
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: WX01-032
+      rect:
+        serializedVersion: 2
+        x: 250
+        y: 1047
+        width: 250
+        height: 349
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: WX01-033
+      rect:
+        serializedVersion: 2
+        x: 500
+        y: 1047
+        width: 250
+        height: 349
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: WX01-034
+      rect:
+        serializedVersion: 2
+        x: 750
+        y: 1047
+        width: 250
+        height: 349
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: WX01-035
+      rect:
+        serializedVersion: 2
+        x: 1000
+        y: 1047
+        width: 250
+        height: 349
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: WX01-036
+      rect:
+        serializedVersion: 2
+        x: 1250
+        y: 1047
+        width: 250
+        height: 349
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: WX01-037
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 698
+        width: 250
+        height: 349
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: WX01-038
+      rect:
+        serializedVersion: 2
+        x: 250
+        y: 698
+        width: 250
+        height: 349
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: WX01-039
+      rect:
+        serializedVersion: 2
+        x: 500
+        y: 698
+        width: 250
+        height: 349
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: WX01-040
+      rect:
+        serializedVersion: 2
+        x: 750
+        y: 698
+        width: 250
+        height: 349
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: WX01-041
+      rect:
+        serializedVersion: 2
+        x: 1000
+        y: 698
+        width: 250
+        height: 349
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: WX01-042
+      rect:
+        serializedVersion: 2
+        x: 1250
+        y: 698
+        width: 250
+        height: 349
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: WX01-043
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 349
+        width: 250
+        height: 349
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: WX01-044
+      rect:
+        serializedVersion: 2
+        x: 250
+        y: 349
+        width: 250
+        height: 349
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: WX01-045
+      rect:
+        serializedVersion: 2
+        x: 500
+        y: 349
+        width: 250
+        height: 349
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: WX01-046
+      rect:
+        serializedVersion: 2
+        x: 750
+        y: 349
+        width: 250
+        height: 349
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: WX01-047
+      rect:
+        serializedVersion: 2
+        x: 1000
+        y: 349
+        width: 250
+        height: 349
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: WX01-048
+      rect:
+        serializedVersion: 2
+        x: 1250
+        y: 349
+        width: 250
+        height: 349
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: WX01-049
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 250
+        height: 349
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: WX01-050
+      rect:
+        serializedVersion: 2
+        x: 250
+        y: 0
+        width: 250
+        height: 349
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: WX01-051
+      rect:
+        serializedVersion: 2
+        x: 500
+        y: 0
+        width: 250
+        height: 349
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: WX01-052
+      rect:
+        serializedVersion: 2
+        x: 750
+        y: 0
+        width: 250
+        height: 349
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: WX01-0_52
+      rect:
+        serializedVersion: 2
+        x: 1000
+        y: 0
+        width: 250
+        height: 349
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: WX01-0_53
+      rect:
+        serializedVersion: 2
+        x: 1250
+        y: 0
+        width: 250
+        height: 349
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+  spritePackingTag: 
+  userData: 

@@ -1,0 +1,10 @@
+﻿#Name 混沌の鍵主　ウムル＝トヴォ
+#Type 0
+#Level 2
+#Limit 5
+#GrowCost 0/0/0/0/0/1/
+#Color 5
+#LrigType 8
+#Text
+
+

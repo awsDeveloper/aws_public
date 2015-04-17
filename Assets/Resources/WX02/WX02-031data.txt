@@ -1,0 +1,9 @@
+#Name ゲット・バウンド
+#BurstIcon True
+#Cost 0/2/0/0/0/0/
+#Type 3
+#Color 1
+#LrigLimit 1
+#Text 
+対戦相手のシグニ1体を手札に戻す。
+☆->対戦相手のレベル２以下のシグニ1体を手札に戻す。 
