@@ -1,0 +1,11 @@
+﻿#Name 羅原　Ｒｎ
+#Type 2
+#Level 4
+#Power 15000
+#Color 3
+#LrigLimit 0
+#Class 2:3
+#BurstIcon False
+#Text
+
+
