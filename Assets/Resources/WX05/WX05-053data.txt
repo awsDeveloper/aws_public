@@ -1,0 +1,11 @@
+﻿#Name 幻竜　エインガナ
+#Type 2
+#Level 3
+#Power 10000
+#Color 2
+#LrigLimit 0
+#Class 5:3
+#BurstIcon False
+#Text
+
+

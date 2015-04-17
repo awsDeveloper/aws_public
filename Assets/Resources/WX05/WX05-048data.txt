@@ -1,0 +1,12 @@
+﻿#Name コードメイズ　メトロン
+#Type 2
+#Level 2
+#Power 5000
+#Color 1
+#LrigLimit 9
+#Class 3:2
+#BurstIcon False
+#Text
+常->：あなたの場に＜迷宮＞のシグニが3体あるかぎり、あなたのすべてのシグニのパワーを＋2000する。
+
+
