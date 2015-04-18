@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class getPlaneScrript : MonoBehaviour
-{
+public class getPlaneScrript : MonoBehaviour{
+    public bool notGetScr = false;
 
 	bool setFlag = false;
 
@@ -35,7 +35,7 @@ public class getPlaneScrript : MonoBehaviour
 //			renderer.material.mainTexture = (Texture)Resources.Load (s [0] + "/" + sNum);
 
 			//component
-            if (check != string.Empty)
+            if (check != string.Empty && !notGetScr)
                 gameObject.AddComponent(System.Type.GetType(s[0] + "_" + s[1]));
 		}
 	}

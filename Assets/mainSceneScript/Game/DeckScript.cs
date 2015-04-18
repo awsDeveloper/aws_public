@@ -5286,11 +5286,19 @@ public class DeckScript : MonoBehaviour
 	}
 
 	GameObject creatFront(string loadString,Vector3 v){
-		return (GameObject)Instantiate (
+		var obj= (GameObject)Instantiate (
 			Resources.Load (loadString),
 			v,
 			Quaternion.identity
 			);
+
+        if (loadString != "caed")
+        {
+            var scr = obj.AddComponent<getPlaneScrript>();
+            scr.notGetScr = true;
+        }
+
+        return obj;
 	}
 
 	bool checkSerialNum(string s,string serialNum){
