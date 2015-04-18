@@ -481,8 +481,7 @@ public class DeckManager : MonoBehaviour {
 
 		for(int i=0;i<s.Length;i++){//ここまででファイルの読み込み完了,以下に実際の検索をかく
 				if(s[i]=="#Type"){
-                    int k = -1;
-                    if (searchtypeselect==0||int.Parse (s[i+1]) == searchtypeselect-1) {
+                     if (searchtypeselect==0||int.Parse (s[i+1]) == searchtypeselect-1) {
 						iscorrectcard = true;
 						
 					}
@@ -695,7 +694,6 @@ public class DeckManager : MonoBehaviour {
 
 	void InsertCardIntoDeck(){
 		string cardIdtoInsert="1145141919";
-		int cardNumtoDelete = -810;
 		bool lrigFlag = false;
 		bool lifeburstflag = false;
 

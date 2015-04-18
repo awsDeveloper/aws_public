@@ -201,6 +201,7 @@ public class CardScript : MonoBehaviour
     string parameta = "";
     char kugiri = '#';
 
+    bool brainChecke = false;//brainのスクリプト取得が終わっていることを示す
 
 	// Use this for initialization
 	void Start ()
@@ -221,6 +222,9 @@ public class CardScript : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
 	{
+        if (!checkBrainScr())
+            return;
+
         Power = basePower + changePower;
 
         //効果を失う
@@ -246,7 +250,23 @@ public class CardScript : MonoBehaviour
 
         oldField = field;
         field = (Fields)ms.getFieldInt(ID, player);
-	}
+     }
+
+    bool checkBrainScr()
+    {
+        if (brainChecke || Brain == null)
+            return true;
+
+        var scr = Brain.GetComponent<getPlaneScrript>();
+        if (scr == null)
+        {
+            brainChecke = true;
+            return true;
+        }
+
+        brainChecke = scr.getSet();
+        return brainChecke;
+    }
 
 	public void changeCost(int[] c){
 		if(c.Length != Cost.Length)
@@ -315,6 +335,11 @@ public class CardScript : MonoBehaviour
     {
         if (ID < 0)
             return false;
+
+        if (ID >= 100)
+        {
+            Debug.Log("koko");
+        }
 
         int t = ms.getCardType(ID, player);
         if (t != (int)cardTypeInfo.スペル && t != (int)cardTypeInfo.アーツ)

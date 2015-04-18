@@ -209,9 +209,9 @@ public class DeckMake : MonoBehaviour {
 	
 	//追加
 	Texture loadTexture(string Id){
-		string[] s = Id.Split('-');
         return Singleton<pics>.instance.getTexture(Id);
-//		return (Texture)Resources.Load (s[0] + "/" + Id);
+//      string[] s = Id.Split('-');
+//      return (Texture)Resources.Load (s[0] + "/" + Id);
 	}
 
 

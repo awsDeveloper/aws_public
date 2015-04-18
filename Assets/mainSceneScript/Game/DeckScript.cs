@@ -588,6 +588,7 @@ public class DeckScript : MonoBehaviour
 	List<NewCard> NewCardList = new List<NewCard>();//ミルルンの残骸
 	bool NewCardEffectFlag=false;
 	int NewCardEffecterCount=-1;
+    bool NewCardCreated = false;
 
 	int[] myTime=new int[2]{60,60};
 	const int myStandardtime=60;
@@ -1041,7 +1042,10 @@ public class DeckScript : MonoBehaviour
 	{
 		if (ID < 0)
 			return -1;
-		return card [player, ID].GetComponent<CardScript> ().Type;
+        else if (ID >= 100)
+            return getCardType(NewCardList[ID - 100].TrueID,NewCardList[ID - 100].TruePlayer);
+
+        return card[player, ID].GetComponent<CardScript>().Type;
 	}
 
 	public int getCardLevel (int ID, int player)
@@ -1686,7 +1690,7 @@ public class DeckScript : MonoBehaviour
 		}
 		MouseToWorld ();
 		LabelCount++;
-		
+
 		//１フレーム系の更新
        oneFrameUpdate();
  
@@ -3989,7 +3993,7 @@ public class DeckScript : MonoBehaviour
 
 		if (rotaPhase [player] == 0 && rotaCount [player] == 0)
 		{
-			int ID = rotaID [player];
+//			int ID = rotaID [player];
 
 			setHandAngle(player);
 
@@ -4049,7 +4053,7 @@ public class DeckScript : MonoBehaviour
 		
 		if (rotaPhase [player] == 0 && rotaCount [player] == 0)
 		{
-			int ID = rotaID [player];
+//			int ID = rotaID [player];
 			
 			setHandAngle(player);
 			
@@ -5339,6 +5343,8 @@ public class DeckScript : MonoBehaviour
 		script.Brain = frt;
 		
 		setLoadText(ID,player,script);
+
+        NewCardCreated = true;
 	}
 
 	void loadReplay()
@@ -11239,7 +11245,7 @@ public class DeckScript : MonoBehaviour
 		{
 			messagesBuf.Add ("" + firstAttack);
 
-			thinkingPlayer = thinkingPlayer;	
+			thinkingPlayer = firstAttack;	
 		}
 
 		DeckCreat (0);
