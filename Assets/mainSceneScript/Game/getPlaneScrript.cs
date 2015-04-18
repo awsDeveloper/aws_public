@@ -39,4 +39,9 @@ public class getPlaneScrript : MonoBehaviour
                 gameObject.AddComponent(System.Type.GetType(s[0] + "_" + s[1]));
 		}
 	}
+
+    public bool getSet()
+    {
+        return setFlag;
+    }
 }
