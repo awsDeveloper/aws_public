@@ -660,6 +660,7 @@ public class DeckScript : MonoBehaviour
     public bool[] melhenFlag = new bool[2];
     bool melhenUpFlag = false;
 
+    GameObject beforGame;
 	//最後尾
 
 	//通信
@@ -1605,7 +1606,10 @@ public class DeckScript : MonoBehaviour
 
         for (int i = 0; i < 3; i++)
             underCards.Add(new List<int>());
+
+        beforGame = GameObject.Find("beforeGame");
 	}
+
 		
 	// Update is called once per frame
 	void Update ()
@@ -1671,6 +1675,8 @@ public class DeckScript : MonoBehaviour
 
 		if(NowLoading[0] || NowLoading[1])
 			return;
+
+        checkUgui();
 
 		if (preDeckCreat[0] || preDeckCreat[1])
 			return;
@@ -2234,15 +2240,16 @@ public class DeckScript : MonoBehaviour
 		float y = Screen.height - Input.mousePosition.y;
 		
 		//メインボックスの描画
-		GUI.Box (new Rect (0, 0, Screen.width / 5, Screen.height), "");
+//		GUI.Box (new Rect (0, 0, Screen.width / 5, Screen.height), "");
 		
 		//サレンダーボタン
-		if (GUI.Button (new Rect (w / 5 + w / 50, 10, w / 10, w / 10 * 2 / 3), "サレンダー"))
+/*		if (GUI.Button (new Rect (w / 5 + w / 50, 10, w / 10, w / 10 * 2 / 3), "サレンダー"))
 		{
 			pushSurrenderButton ();
 			
 			return;
 		}
+        */
 		if (preDeckCreat[0] || preDeckCreat[1] )
 		{
 			if( !NowLoading[0] && !NowLoading[1] )
@@ -2416,51 +2423,8 @@ public class DeckScript : MonoBehaviour
 			GUI.DrawTexture (new Rect (10, 10, size, size * 244 / 175), showTexture);
 //		if(clickCursorID.Count>0)GUI.Label(new Rect(10,w/2,170,100),""+LabelCount/60 + " "+clickCursorID[0]);
 
-        string showString = ""; //"<" + showCardName + ">" + "\n" + "[" + ColorToString (showCardColor) + "] " + "[" + TypeToString (showCardType) + "]\n";
-/*		if (showCardLevel != -1)
-			showString += "レベル : " + showCardLevel + "\n";
-        if (showCardLimit != -1)
-        {
-            string lim = "" + showCardLimit;
-            if (showCardLimit == 100)
-                lim = "∞";
-            showString += "リミット : " + lim + "\n";
-        }
-		if (showCardType == 1 || showCardType == 3)
-		{
-			showString += CostToString (showCardCost);
-		}
-		if (showCardGrowCost [0] != -1)
-		{
-			showString += "グロウ" + CostToString (showCardGrowCost);
-		}
-		
-		//lrig type
-		if (showCardLrigType != -1)
-		{
-			showString += "[" + LrigTypeToString (showCardLrigType);
+        string showString = ""; 
 
-			if (showCardLrigType2 >= 1)
-				showString += " / " + LrigTypeToString (showCardLrigType2);
-
-			showString += "]" + "\n";
-		}
-		
-		if (showCardLrigLimit > 0)
-		{
-			showString += LrigTypeToString (showCardLrigLimit);
-
-			if(showCardLrigLimit_2>0)
-				showString += " / "+LrigTypeToString (showCardLrigLimit_2)+" ";
-
-			showString += "限定" + "\n";
-		}
-		if (showCardClass_1 != -1)
-			showString += "[" + ClassToString (showCardClass_1, showCardClass_2) + "]\n";
-		if (showCardPower != -1)
-			showString += "パワー " + showCardPower + "\n";
-		if (showCardText != "")
-			showString += showCardText + "\n";*/
         showString = Singleton<DataToString>.instance.SerialNumToString(showSerialNum);
 
 		Rect tRect=new Rect(w / 5 + w / 50, 10 + w / 10 * 2 / 3 + 10, w / 10, w / 10 * 2 / 3);
@@ -2529,36 +2493,8 @@ public class DeckScript : MonoBehaviour
 			GUI.Label (new Rect (w * 5 / 6, 100 + fs,100, 100),"相手 : " + myTime[1],g);
 		}
 
-		//nextPhase
-		Vector3 buttonPos = Camera.main.WorldToScreenPoint (new Vector3 (0f, 0f, 0.5f));
-		
-		if (!isTrans || getTurnPlayer () == 0)
-		{
-			if (GUI.Button (new Rect (buttonPos.x - w / 20, h - buttonPos.y, w / 10, w / 60), "") && Input.GetMouseButtonUp (0)
-				&& moveID [0] == -1 && moveID [1] == -1 && moveID [2] == -1 && moveID [3] == -1
-				&& (!FlagUpcheck () || (selectCursorFlag && (phase == Phases.EnaPhase || phase == Phases.AttackPhase)))
-				&& !selectSigniZoneFlag && !selectCardFlag && /*(!selectCursorFlag||phase==Phases.EnaPhase) && */!guardSelectflag && !SpellCutInSelectFlag
-				&& !stopFlag && !deckRefleshFlag [0] && !deckRefleshFlag [1] && !receiveFlag && isAttackEnd ()
-				&& phase != Phases.UpPhase && phase != Phases.DrawPhase && phase != Phases.EndPhase && phase != Phases.PrePhase)
-			{
-				if ((phase == Phases.EnaPhase || phase == Phases.AttackPhase) && selectCursorFlag)
-				{
-					selectCursorFlag = false;
-					selectNum = 0;
-					DestoryCursorAll ();
-				}
-
-				//phase = p;
-                goNextPhaseFlag = true;
-
-				if (isTrans)
-				{
-					messagesBuf.Add (nextStr);
-					sendMessageBuf ();
-				}
-			}
-			GUI.Label (new Rect (buttonPos.x - w / 20 + w / 100, h - buttonPos.y, w / 10, w / 60), "NextPhase", NextStyle);
-		}
+        //nextPhase
+//        nextPhaseButton();
 				
 		//_guard _spellCutIn _attackArts
 		if (guardSelectflag || SpellCutInSelectFlag || selectAttackAtrs)
@@ -2820,6 +2756,41 @@ public class DeckScript : MonoBehaviour
 				GUI.Label (new Rect (w / standartTime / 3 * (LabelCount - standartTime * 4), h / 3, 0, 0), phase.ToString (), LabelStyle);
 		}
 	}
+
+    void nextPhaseButton()
+    {
+        //nextPhase
+        Vector3 buttonPos = Camera.main.WorldToScreenPoint(new Vector3(0f, 0f, 0.5f));
+
+        if (!isTrans || getTurnPlayer() == 0)
+        {
+            if (/*GUI.Button(new Rect(buttonPos.x - w / 20, h - buttonPos.y, w / 10, w / 60), "") && Input.GetMouseButtonUp(0)
+                && */moveID[0] == -1 && moveID[1] == -1 && moveID[2] == -1 && moveID[3] == -1
+                && (!FlagUpcheck() || (selectCursorFlag && (phase == Phases.EnaPhase || phase == Phases.AttackPhase)))
+                && !selectSigniZoneFlag && !selectCardFlag && /*(!selectCursorFlag||phase==Phases.EnaPhase) && */!guardSelectflag && !SpellCutInSelectFlag
+                && !stopFlag && !deckRefleshFlag[0] && !deckRefleshFlag[1] && !receiveFlag && isAttackEnd()
+                && phase != Phases.UpPhase && phase != Phases.DrawPhase && phase != Phases.EndPhase && phase != Phases.PrePhase)
+            {
+                if ((phase == Phases.EnaPhase || phase == Phases.AttackPhase) && selectCursorFlag)
+                {
+                    selectCursorFlag = false;
+                    selectNum = 0;
+                    DestoryCursorAll();
+                }
+
+                //phase = p;
+                goNextPhaseFlag = true;
+
+                if (isTrans)
+                {
+                    messagesBuf.Add(nextStr);
+                    sendMessageBuf();
+                }
+            }
+ //           GUI.Label(new Rect(buttonPos.x - w / 20 + w / 100, h - buttonPos.y, w / 10, w / 60), "NextPhase", NextStyle);
+        }
+
+    }
 
     void traIgniUp(int upID)
     {
@@ -5839,8 +5810,10 @@ public class DeckScript : MonoBehaviour
 				}
 				else
 				{
-					GUImoveID = readParseMessage ();
-					motion = Motions.Grow;
+                    Debug.Log("koko");
+                    GUImoveID = readParseMessage();
+                    Debug.Log("soko");
+                    motion = Motions.Grow;
 				}
 			}
 		}
@@ -11567,7 +11540,8 @@ public class DeckScript : MonoBehaviour
 				}*/
 			}
 		}
-		else if (connectButtun)
+        //uGUI化しました
+/*		else if (connectButtun)
 		{
 			bool buf = isTrans;
 
@@ -11585,19 +11559,13 @@ public class DeckScript : MonoBehaviour
 				// Clientになる場合
 				if (GUILayout.Button ("Client"))
 				{
-					Network.Connect (connectionIP, portNumber);
-					connectButtun = false;
-					notDebug();
-
-
+                    pushClient();
 				}
 	 
 				// Serverになる場合
 				if (GUILayout.Button ("Server"))
 				{
-					Network.InitializeServer (1, portNumber, false);
-					connectButtun = false;
-					notDebug();
+                    pushServer();
 				}
 				
 				// Networkに接続する場合
@@ -11605,10 +11573,7 @@ public class DeckScript : MonoBehaviour
 				GUILayout.Label ("Random Matching");
 				if (GUILayout.Button ("connect"))
 				{
-					connectButtun = false;
-					NetScr.connetServer ();
-					DebugFlag = false;
-					AttackPhaseSkip = true;
+                    pushConnect();
 				}
 			}
 			else
@@ -11633,8 +11598,34 @@ public class DeckScript : MonoBehaviour
 			}
 			firstAttackGUI ();
 			scrollGUI ();
-		}
+		}*/
 	}
+
+    void pushClient()
+    {
+        isTrans = true;
+        Network.Connect(connectionIP, portNumber);
+        connectButtun = false;
+        notDebug();
+    }
+
+    void pushServer()
+    {
+        isTrans = true;
+        Network.InitializeServer(1, portNumber, false);
+        connectButtun = false;
+        notDebug();
+    }
+
+    void pushConnect()
+    {
+        isTrans = true;
+        connectButtun = false;
+        NetScr.connetServer();
+        DebugFlag = false;
+        AttackPhaseSkip = true;
+
+    }
 	
 	public void firstAttackGUI ()
 	{
@@ -11659,6 +11650,38 @@ public class DeckScript : MonoBehaviour
 		DebugFlag = false;
 		AttackPhaseSkip = true;
 	}
+
+    void pushRepButton(string s)
+    {
+
+        DebugFlag = false;
+        isTrans = false;
+        replayMode = true;
+
+        replayName = s;
+        receivedIndex = 0;
+        sentIndex = 0;
+
+        loadReplay();
+
+        if (sentList.Count > 0 && receivedList.Count > 0)
+        {
+            if (int.TryParse(sentList[0], out firstAttack))
+                sentIndex++;
+            else if (int.TryParse(receivedList[0], out firstAttack))
+            {
+                firstAttack = 1 - firstAttack;
+                receivedIndex++;
+            }
+            else NetScr.resetManager();
+
+            //p1
+            DeckCreat(0);
+            //p2
+            DeckCreat(1);
+
+        }
+    }
 	
 	public void scrollGUI ()
 	{
@@ -11681,7 +11704,8 @@ public class DeckScript : MonoBehaviour
 			{
 				if (GUI.Button (new Rect (0, y_pos, w / 5 - 10, dy), s))
 				{
-					AttackPhaseSkip = true;
+                    pushRepButton(s);
+/*					AttackPhaseSkip = true;
 					DebugFlag=false;
 
 					replayName=s;
@@ -11707,7 +11731,7 @@ public class DeckScript : MonoBehaviour
 							shuffleBuf.Add(replayRead(0));
 						}
 
-						Shuffle(0);*/
+						Shuffle(0);
 
 						//p2
 						DeckCreat(1);
@@ -11720,8 +11744,8 @@ public class DeckScript : MonoBehaviour
 
 						//ルリグの決定
 						GUImoveID = int.Parse(replayRead(0));
-						selectCardFlag=false;*/
-					}
+						selectCardFlag=false;
+                }*/
 				}
 				y_pos += dy;
 			}
@@ -12104,5 +12128,72 @@ public class DeckScript : MonoBehaviour
 		sendSentList();
 		sendReceivedList();
 	}
-}
 
+    void checkUgui()
+    {
+        if (beforGame == null)
+            return;
+
+        bool flag = true;
+
+        var com = beforGame.GetComponent<beforeGameManeger>();
+
+        if (com.uiString == "start debug"
+            || com.uiString == "server"
+            || com.uiString == "client"
+            || com.uiString == "connect")
+        {
+            DeckString[0] = com.getSelectedDeck(0);
+            DeckString[1] = com.getSelectedDeck(1);
+
+            if (com.getFirstAttack() == "先行")
+                firstAttack = 0;
+            else
+                firstAttack = 1;
+
+        }
+
+        switch (com.uiString)
+        {
+            case "start replay":
+                string s = com.getSelectedReplay();
+                if (s != string.Empty)
+                    pushRepButton(s);
+                break;
+
+            case "start debug":
+                pushDuelStandby();
+                break;
+
+            case "server":
+                pushServer();
+                break;
+
+            case "client":
+                pushClient();
+                break;
+
+            case "connect":
+                pushConnect();
+                break;
+
+            case "サレンダー":
+                pushSurrenderButton();
+                break;
+
+            case "next phase":
+                nextPhaseButton();
+                flag = false;
+                break;
+
+            default:
+                flag = false;
+                break;
+        }
+
+        com.uiString = "";
+
+        if (flag)
+            beforGame.SetActive(false);
+    }
+}
