@@ -7,7 +7,8 @@ public class beforeGameButton : MonoBehaviour {
 
     void Start()
     {
-        panel = GameObject.Find("beforeGame");
+        if(panel==null)
+            panel = GameObject.Find("beforeGame");
 
         var button = this.GetComponent<UnityEngine.UI.Button>();
 
@@ -15,10 +16,12 @@ public class beforeGameButton : MonoBehaviour {
         {
             pushed();
         });
+
     }
 
     public void pushed()
     {
+        Debug.Log(gameObject.name);
         if (panel == null)
             return;
 
@@ -26,6 +29,14 @@ public class beforeGameButton : MonoBehaviour {
 
         var tx=transform.FindChild("Text").GetComponent<Text>();
         bm.uiString=tx.text;
+    }
+
+    public void setPannel(GameObject obj)
+    {
+        if (panel != null)
+            return;
+
+        panel = obj;
     }
 }
 

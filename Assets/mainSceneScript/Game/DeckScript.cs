@@ -661,6 +661,12 @@ public class DeckScript : MonoBehaviour
     bool melhenUpFlag = false;
 
     GameObject beforGame;
+    GameObject canvasObj;
+    GameObject YesNoObj;
+    bool YesNoGUIFlag = false;
+    bool uiYes=false;
+    bool uiNo = false;
+
 	//最後尾
 
 	//通信
@@ -1607,6 +1613,7 @@ public class DeckScript : MonoBehaviour
         for (int i = 0; i < 3; i++)
             underCards.Add(new List<int>());
 
+        canvasObj = GameObject.Find("Canvas");
         beforGame = GameObject.Find("beforeGame");
 	}
 
@@ -1677,6 +1684,7 @@ public class DeckScript : MonoBehaviour
 			return;
 
         checkUgui();
+        YesNoGUI();
 
 		if (preDeckCreat[0] || preDeckCreat[1])
 			return;
@@ -2495,9 +2503,10 @@ public class DeckScript : MonoBehaviour
 
         //nextPhase
 //        nextPhaseButton();
-				
+		
+//      uGUI化		
 		//_guard _spellCutIn _attackArts
-		if (guardSelectflag || SpellCutInSelectFlag || selectAttackAtrs)
+/*		if (guardSelectflag || SpellCutInSelectFlag || selectAttackAtrs)
 		{
 			int sw = Screen.width;
 			int sh = Screen.height;
@@ -2603,7 +2612,7 @@ public class DeckScript : MonoBehaviour
 						selectAttackAtrs = false;
 				}
 			}
-		}
+		}*/
 
 
 		//ダイアログ _dialog
@@ -2788,6 +2797,145 @@ public class DeckScript : MonoBehaviour
                 }
             }
  //           GUI.Label(new Rect(buttonPos.x - w / 20 + w / 100, h - buttonPos.y, w / 10, w / 60), "NextPhase", NextStyle);
+        }
+
+    }
+
+    void YesNoGUI()
+    {
+        bool flag = guardSelectflag || SpellCutInSelectFlag || selectAttackAtrs;
+
+        string str3 = "ガードしますか？";
+        if (SpellCutInSelectFlag)
+            str3 = "スペルカットインしますか？";
+        else if (selectAttackAtrs)
+            str3 = "プレイヤー " + (attackAtrsPlayer + 1) + "\nアーツを使用しますか？";
+
+        if (flag != YesNoGUIFlag)
+        {
+            YesNoGUIFlag = flag;
+
+            if (YesNoGUIFlag)
+            {
+                YesNoObj = Instantiate(Resources.Load("Prefab/YesNoPannel")) as GameObject;
+                YesNoObj.transform.SetParent(canvasObj.transform);
+
+                var com = YesNoObj.GetComponent<RectTransform>();
+                com.localPosition = new Vector3(60f, -30f, 0f);
+
+                YesNoObj.transform.FindChild("Text").GetComponent<UnityEngine.UI.Text>().text = str3;
+                YesNoObj.transform.FindChild("yes").GetComponent<beforeGameButton>().setPannel(beforGame); ;
+                YesNoObj.transform.FindChild("no").GetComponent<beforeGameButton>().setPannel(beforGame); ;
+            }
+            else if (YesNoObj != null)
+                Destroy(YesNoObj);
+        }
+
+        if (!flag)
+            return;
+
+/*        int sw = Screen.width;
+        int sh = Screen.height;
+        int size_x = sw / 6;
+        int size_y = size_x / 2;
+        int buttunSize_x = size_x * 4 / 10;
+        int buttunSize_y = buttunSize_x / 3;
+        Vector3 pos = vec3Addx(SIGNIZONE, SigniWidth);
+        Vector3 v = Camera.main.WorldToScreenPoint(pos);//new Vector3(0f,0f,-0.5f));
+        Rect boxRect = new Rect(v.x - size_x / 2, sh - v.y - size_y / 2, size_x, size_y);
+        Rect buttunRect1 = new Rect(
+            boxRect.x + (size_x - buttunSize_x * 2) / 4,
+            boxRect.y + size_y - buttunSize_y - 5,
+            buttunSize_x,
+            buttunSize_y
+        );
+        Rect buttunRect2 = new Rect(
+            boxRect.x + size_x - (size_x - buttunSize_x * 2) / 4 - buttunSize_x,
+            buttunRect1.y,
+            buttunSize_x,
+            buttunSize_y
+        );*/
+ //       GUI.Box(boxRect, "");
+ //       GUI.Label(boxRect, str3);
+ 
+//        if (GUI.Button(buttunRect1, YesStr))
+        if(uiYes)
+        {
+            uiYes = false;
+            //通信
+            if (isTrans)
+            {
+                messagesBuf.Add(YesStr);
+            }
+
+            //フラグによる分岐
+            if (guardSelectflag)
+            {
+                guardSelectflag = false;
+                if (GuardNum(guardPlayer) == 1)
+                {
+                    clickCursorID.Add(GuardRankID(0, guardPlayer) + 50 * guardPlayer);
+                    if (isTrans)
+                        messagesBuf.Add("" + clickCursorID[0]);
+                }
+                else
+                {
+                    selectCursorFlag = true;
+                    selectNum = 1;
+                    for (int i = 0; i < GuardNum(guardPlayer); i++)
+                    {
+                        setTargetCursorID(GuardRankID(i, guardPlayer), guardPlayer);
+                    }
+                }
+            }
+            else if (SpellCutInSelectFlag)
+            {
+                SpellCutInSelectFlag = false;
+                SpellCutInFlag = true;
+                selectCardFlag = true;
+                selectCardListSpellCutIn(SpellCutInPlayer);
+            }
+            else if (selectAttackAtrs)
+            {
+                selectAttackAtrs = false;
+                selectCardFlag = true;
+                //					selectCardListIn(Fields.LRIGDECK,attackAtrsPlayer);
+                selectCardListAttackArtsIn(attackAtrsPlayer);
+                artsAsk = true;
+            }
+        }
+
+//        if (GUI.Button(buttunRect2, NoStr))
+        if(uiNo)
+        {
+            uiNo = false;
+            //通信
+            if (isTrans)
+            {
+                messagesBuf.Add(NoStr);
+                sendMessageBuf();
+            }
+
+            //フラグによる分岐
+            if (guardSelectflag)
+                guardSelectflag = false;
+            if (SpellCutInSelectFlag)
+                SpellCutInSelectFlag = false;
+            if (selectAttackAtrs)
+            {
+                attackAtrsPlayer = 1 - attackAtrsPlayer;
+                if (isTrans)
+                {
+                    selectAttackAtrs = false;
+                    if (attackAtrsPlayer != getTurnPlayer())
+                        receiveFlag = true;
+                }
+                //					else if(attackAtrsPlayer==getTurnPlayer()){
+                //						attackAtrsPlayer=1-attackAtrsPlayer;
+                //					}
+                else if (attackAtrsPlayer == getTurnPlayer())
+                    selectAttackAtrs = false;
+            }
         }
 
     }
@@ -12183,6 +12331,16 @@ public class DeckScript : MonoBehaviour
 
             case "next phase":
                 nextPhaseButton();
+                flag = false;
+                break;
+
+            case "Yes":
+                uiYes = true;
+                flag = false;
+                break;
+
+            case "No":
+                uiNo = true;
                 flag = false;
                 break;
 
