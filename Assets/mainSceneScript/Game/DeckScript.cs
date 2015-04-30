@@ -313,7 +313,7 @@ public class DeckScript : MonoBehaviour
 	private int[] handMoveCount = new int[2]{0,0};
 	private int[] enaMoveCount = new int[2]{0,0};
 
-	private Texture showTexture;
+//	private Texture showTexture;
 	private int turn = 0;
 	private GameObject SelectedCard = null;
 	private int selectedID = -1;
@@ -338,7 +338,7 @@ public class DeckScript : MonoBehaviour
 
 
     private string showSerialNum = "";
-    private string showCardName = "";
+/*    private string showCardName = "";
 	private string showCardText = "";
 	private int showCardType = -1;
 	private int showCardColor = -1;
@@ -353,7 +353,7 @@ public class DeckScript : MonoBehaviour
 	private int showCardClass_1 = -1;
 	private int showCardClass_2 = -1;
 	private int showCardPower = -1;
-//	private int showCardBurstIcon=-1;
+//	private int showCardBurstIcon=-1;*/
 	private GameObject[] TargetSigniZoneCursor = new GameObject[3];
 	private int selectPlayer = 0;
 	private int selectClickID = -1;
@@ -666,6 +666,10 @@ public class DeckScript : MonoBehaviour
     bool YesNoGUIFlag = false;
     bool uiYes=false;
     bool uiNo = false;
+    int oldAttackArtsP = 0;
+
+    UnityEngine.UI.Text showCardText;
+    UnityEngine.UI.RawImage showCardImage;
 
 	//最後尾
 
@@ -1607,14 +1611,13 @@ public class DeckScript : MonoBehaviour
 		//リプレイの検索
 		searchReplay();
 
-		
-//		selectCardListIn(Fields.LRIGDECK,0);
-
         for (int i = 0; i < 3; i++)
             underCards.Add(new List<int>());
 
         canvasObj = GameObject.Find("Canvas");
         beforGame = GameObject.Find("beforeGame");
+        showCardText = GameObject.Find("showCardText").GetComponent<UnityEngine.UI.Text>();
+        showCardImage = GameObject.Find("showCardImage").GetComponent<UnityEngine.UI.RawImage>();
 	}
 
 		
@@ -2426,16 +2429,16 @@ public class DeckScript : MonoBehaviour
 		}*/
 		
 		//移動しました
-		int size = Screen.width / 6;
-		if (showTexture != null)
-			GUI.DrawTexture (new Rect (10, 10, size, size * 244 / 175), showTexture);
+//		int size = Screen.width / 6;
+//		if (showTexture != null)
+//			GUI.DrawTexture (new Rect (10, 10, size, size * 244 / 175), showTexture);
 //		if(clickCursorID.Count>0)GUI.Label(new Rect(10,w/2,170,100),""+LabelCount/60 + " "+clickCursorID[0]);
 
-        string showString = ""; 
+ //       string showString = ""; 
 
-        showString = Singleton<DataToString>.instance.SerialNumToString(showSerialNum);
+//        showString = Singleton<DataToString>.instance.SerialNumToString(showSerialNum);
 
-		Rect tRect=new Rect(w / 5 + w / 50, 10 + w / 10 * 2 / 3 + 10, w / 10, w / 10 * 2 / 3);
+/*		Rect tRect=new Rect(w / 5 + w / 50, 10 + w / 10 * 2 / 3 + 10, w / 10, w / 10 * 2 / 3);
 		if (DebugFlag)
 			whichShow = GUI.Toggle (tRect, whichShow, "表示切替");
 		else{
@@ -2445,7 +2448,7 @@ public class DeckScript : MonoBehaviour
 
 			whichShow = GUI.Toggle (tRect, whichShow, s);
 		}
-
+        */
 
 		if (whichShow){
 			Rect rect=new Rect (10, h / 3 + 20, 170, 400);
@@ -2475,8 +2478,8 @@ public class DeckScript : MonoBehaviour
 				GUI.EndScrollView();*/
 			}
 		}
-		else
-			GUI.Label (new Rect (10, size * 244 / 175 + 30, w / 5 - 20, h * 3 / 4), showString);
+//		else
+//			GUI.Label (new Rect (10, size * 244 / 175 + 30, w / 5 - 20, h * 3 / 4), showString);
        
 		
 		
@@ -2811,6 +2814,15 @@ public class DeckScript : MonoBehaviour
         else if (selectAttackAtrs)
             str3 = "プレイヤー " + (attackAtrsPlayer + 1) + "\nアーツを使用しますか？";
 
+
+        //attackArtsPlayer変更時の処理
+        if (YesNoObj != null && oldAttackArtsP != attackAtrsPlayer)
+        {
+            var com = YesNoObj.GetComponent<RectTransform>();
+            YesNoObj.transform.FindChild("Text").GetComponent<UnityEngine.UI.Text>().text = str3;
+        }
+        oldAttackArtsP = attackAtrsPlayer;
+
         if (flag != YesNoGUIFlag)
         {
             YesNoGUIFlag = flag;
@@ -2824,8 +2836,8 @@ public class DeckScript : MonoBehaviour
                 com.localPosition = new Vector3(60f, -30f, 0f);
 
                 YesNoObj.transform.FindChild("Text").GetComponent<UnityEngine.UI.Text>().text = str3;
-                YesNoObj.transform.FindChild("yes").GetComponent<beforeGameButton>().setPannel(beforGame); ;
-                YesNoObj.transform.FindChild("no").GetComponent<beforeGameButton>().setPannel(beforGame); ;
+                YesNoObj.transform.FindChild("yes").GetComponent<beforeGameButton>().setPannel(beforGame); 
+                YesNoObj.transform.FindChild("no").GetComponent<beforeGameButton>().setPannel(beforGame);
             }
             else if (YesNoObj != null)
                 Destroy(YesNoObj);
@@ -4598,13 +4610,20 @@ public class DeckScript : MonoBehaviour
 	void showUpDate (int ID, int player)
 	{	
 		string key=SerialNumString[player, ID];
-		Texture tex = Singleton<pics>.instance.getTexture(key);
-		showTexture = tex;
+//		Texture tex = Singleton<pics>.instance.getTexture(key);
+//		showTexture = tex;
 
-		CardScript script = card [player, ID].GetComponent<CardScript> ();
+//		CardScript script = card [player, ID].GetComponent<CardScript> ();
 
         showSerialNum = key;
-		showCardName = script.Name;
+        if (showCardText != null && key != "")
+            showCardText.text = Singleton<DataToString>.instance.SerialNumToString(key);
+
+        if (showCardImage != null && key != "")
+            showCardImage.texture = Singleton<pics>.instance.getTexture(key);
+
+
+/*		showCardName = script.Name;
 		showCardText = script.Text;
 		showCardType = script.Type;
 		showCardColor = script.CardColor;
@@ -4627,7 +4646,7 @@ public class DeckScript : MonoBehaviour
 		showCardClass_1 = script.Class_1;	
 		showCardClass_2 = script.Class_2;	
 		showCardPower = script.OriginalPower;
-//		showCardBurstIcon=script.BurstIcon;
+//		showCardBurstIcon=script.BurstIcon;*/
 	}
 	
 	void SigniZoneUp (int player)
@@ -12353,5 +12372,16 @@ public class DeckScript : MonoBehaviour
 
         if (flag)
             beforGame.SetActive(false);
+    }
+
+    public void resetShowCard()
+    {
+        if (showCardText != null)
+            showCardText.text = "";
+
+        if (showCardImage != null)
+            showCardImage.texture = Resources.Load("transTexture") as Texture;
+
+        beforGame.SetActive(true);
     }
 }

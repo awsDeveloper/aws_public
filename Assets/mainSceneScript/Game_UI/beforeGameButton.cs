@@ -21,7 +21,6 @@ public class beforeGameButton : MonoBehaviour {
 
     public void pushed()
     {
-        Debug.Log(gameObject.name);
         if (panel == null)
             return;
 

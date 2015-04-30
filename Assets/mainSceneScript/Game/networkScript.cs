@@ -176,6 +176,7 @@ public class networkScript : Photon.MonoBehaviour {
 		if(goingMasterRoom)
 			return;
 
+        GameSrc.resetShowCard();
 		Destroy(GameManager);
 		GameSrc=null;
 		
