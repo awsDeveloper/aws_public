@@ -138,6 +138,17 @@ public enum Motions
     MaxPowerBounce,     //100
 }
 
+public enum DialogNumType
+{
+    YesNo,
+    targetNum,
+    toggle,
+    color,
+    TopBottom,
+    UpDown,
+    Level
+}
+
 enum positionInfo
 {
     Top,
@@ -258,6 +269,7 @@ class colorCostArry
 public class DeckScript : MonoBehaviour
 {
 	GameObject SystemCard;
+    CardScript SystemCardScr;
 	private GameObject[,] card = new GameObject[2, 50];
 	private GameObject[,] front = new GameObject[2, 50];
 	private string[,] SerialNumString = new string[2, 50];
@@ -738,6 +750,18 @@ public class DeckScript : MonoBehaviour
         return ShowZoneIDList[index];
     }
 
+    public int getShowZoneID(int index, bool isFromBack)
+    {
+        if (!isFromBack)
+            return getShowZoneID(index);
+
+        int k = ShowZoneIDList.Count - 1 - index;
+        if (k < 0)
+            return -1;
+
+        return getShowZoneID(k);
+    }
+
     public int getTopGoTrashListID(int index, int changerID,int chanerPlayer)
     {
         if (TopGoTrashList.Count <= index)
@@ -866,6 +890,11 @@ public class DeckScript : MonoBehaviour
             return exitID;
 
         return -1;
+    }
+
+    public int getExitID(Fields from, Fields to)
+    {
+        return getExitID((int)from, (int)to);
     }
 
 	void enaColorNumUpdate()
@@ -1141,6 +1170,11 @@ public class DeckScript : MonoBehaviour
     public bool checkType(int x,int target, cardTypeInfo info)
     {
         return getCardType(x,target) == (int)info;
+    }
+
+    public bool checkType(int fusionID, cardTypeInfo info)
+    {
+        return checkType(fusionID%50, fusionID/50,info);
     }
 
     public bool checkContainsName(int x, int target, string key)
@@ -1527,22 +1561,11 @@ public class DeckScript : MonoBehaviour
 
 		if(sc.effectTargetID.Count>0 && EffecterScript.effectTargetID.Count>0)
 		{
-			//targetable
-			EffecterScript.Targetable.Clear();
-
-			for (int i = 0; i < sc.Targetable.Count; i++) {
-				EffecterScript.Targetable.Add(sc.Targetable[i]);
-			}
-
-			//targetID
-			EffecterScript.effectTargetID[0]=sc.effectTargetID[0];
-
-			//targetMotion
-			EffecterScript.effectMotion[0]=sc.effectMotion[0];
+            Replace(EffecterScript, sc.effectTargetID[0], (Motions)sc.effectMotion[0], sc.Targetable);
 
             //powerUpValue
             EffecterScript.powerUpValue = sc.powerUpValue;
-		}
+        }
 
 		//end
 		sc.ReplaceFlag=false;
@@ -1550,6 +1573,28 @@ public class DeckScript : MonoBehaviour
 		sc.effectTargetID.Clear();
 		sc.effectMotion.Clear();
 	}
+
+    //powerUpValueは省略
+    void Replace(CardScript EffecterScript,int changeTargetID, Motions changeMotion, List<int> Targetable)
+    {
+        if (Targetable != null)
+        {
+            //targetable
+            EffecterScript.Targetable.Clear();
+
+
+            for (int i = 0; i < Targetable.Count; i++)
+            {
+                EffecterScript.Targetable.Add(Targetable[i]);
+            }
+        }
+
+        //targetID
+        EffecterScript.effectTargetID[0] = changeTargetID;
+
+        //targetMotion
+        EffecterScript.effectMotion[0] = (int)changeMotion;
+    }
 		
 	// Use this for initialization
 	void Start ()
@@ -1561,6 +1606,7 @@ public class DeckScript : MonoBehaviour
             transform.position,
             Quaternion.identity
             );
+        SystemCardScr = SystemCard.GetComponent<CardScript>();
 
 		//moving 初期化 
 		for (int i=0; i<(int)constance.MovingNum; i++)
@@ -1859,9 +1905,11 @@ public class DeckScript : MonoBehaviour
 					DialogNum = sc.DialogNum;
 
                     //countMax
-                    if (DialogNum == 3)
+                    if (DialogNum == 3)//色
                         DialogCountMax = 5;
-                    else if (DialogNum == 4 || DialogNum == 5)
+                    else if (DialogNum == 6)//レベル
+                        DialogCountMax = 5;
+                    else if (DialogNum == 4 || DialogNum == 5)//上下、アップダウン
                         DialogCountMax = 1;
                     else 
                         DialogCountMax = sc.DialogCountMax;
@@ -1957,6 +2005,14 @@ public class DeckScript : MonoBehaviour
             }
             else
             {
+                //-1入力
+                if (!effectCursorInput(sc, playerNum))
+                    return;
+
+                //-2入力
+                if (!effectGUIInput(sc, playerNum))
+                    return;
+
                 if (!systemCardInitialized)
                 {
                     if (sc.effectTargetID.Count > 0 && sc.effectTargetID[0] / 50 + playerNum < (int)constance.MovingNum)
@@ -3084,28 +3140,37 @@ public class DeckScript : MonoBehaviour
                 }
             }
         }
-        else if (DialogNum == 1 || DialogNum == 3 || DialogNum == 4 || DialogNum == 5)
+        else if (DialogNum == 1 || DialogNum == 3 || DialogNum == 4 || DialogNum == 5 || DialogNum == 6)
         {
             GUI.Box(boxRect, "");
 
-            string dstr = "対象の数";
-            if (DialogNum == 3)
-                dstr = "宣言する色";
-            else if (DialogNum == 4)
-                dstr = "Top or Bottom";
-            else if (DialogNum == 5)
-                dstr = "Up or Down";
+            string dstr = "対象の数 -> " + DialogCount;
+
+            switch (DialogNum)
+            {
+                case 3:
+                    dstr = "宣言する色";
+                    dstr += " -> " + (cardColorInfo)DialogCount;
+                    break;
+
+                case 4:
+                    dstr = "Top or Bottom";
+                    dstr += " -> " + (positionInfo)DialogCount;
+                    break;
+
+                case 5:
+                    dstr = "Up or Down";
+                    dstr += " -> " + (Conditions)(DialogCount + 1);
+                    break;
+
+                case 6:
+                    dstr = "宣言するレベル";
+                    dstr += " -> " + (DialogCount + 1);
+                    break;
+            }
 
             if (sc.DialogStrEnable)
                 dstr = sc.DialogStr;
-            if (DialogNum == 1)
-                dstr += " -> " + DialogCount;
-            else if (DialogNum == 3)
-                dstr += " -> " + (cardColorInfo)DialogCount;
-            else if (DialogNum == 4)
-                dstr += " -> " + (positionInfo)DialogCount;
-            else if (DialogNum == 5)
-                dstr += " -> " + (Conditions)(DialogCount+1);
 
             GUI.Label(boxRect, dstr);
 
@@ -5955,7 +6020,10 @@ public class DeckScript : MonoBehaviour
 		
 		if (motion == Motions.EnaCharge)
 		{
-			EnaCharge (clickCursorID [0] % 50, player);
+            if(checkType(clickCursorID [0] % 50, player, cardTypeInfo.レゾナ))
+                GoLrigDeck(clickCursorID [0] % 50, player);
+            else
+                EnaCharge (clickCursorID [0] % 50, player);
 		}
 		if (motion == Motions.Draw)
 		{
@@ -6199,7 +6267,7 @@ public class DeckScript : MonoBehaviour
             }
             else if (Input.GetMouseButtonDown(1) && selectedID >= 0 && selectPlayer == player && !ACGFlag[player])
             {
-                if (field[player, selectedID] == Fields.SIGNIZONE)
+                if (field[player, selectedID] == Fields.SIGNIZONE && !checkType(selectedID,player, cardTypeInfo.レゾナ))
                 {
                     motion = Motions.GoTrash;
                     movePhase[player] = 0;
@@ -6254,9 +6322,10 @@ public class DeckScript : MonoBehaviour
 		}
 		else if (motion == Motions.ChantArts)
 		{
-			if (GUImoveID >= 0 
-				&& card [player, GUImoveID % 50].GetComponent<CardScript> ().Type == 1
-				&& !card [player, GUImoveID % 50].GetComponent<CardScript> ().notMainArts)
+			if (GUImoveID >= 0 &&
+                ( checkType(GUImoveID%50,GUImoveID/50, cardTypeInfo.レゾナ) || //レゾナまたはメインに使えるアーツ
+				(card [player, GUImoveID % 50].GetComponent<CardScript> ().Type == 1
+				&& !card [player, GUImoveID % 50].GetComponent<CardScript> ().notMainArts)))
 			{
 		
 				//通信用
@@ -7331,12 +7400,33 @@ public class DeckScript : MonoBehaviour
 
 	void SetSystemCard(int targetID,Motions m)
 	{
-		CardScript sc=SystemCard.GetComponent<CardScript>();
-
-		sc.effectFlag=true;
-		sc.effectTargetID.Add(targetID);
-		sc.effectMotion.Add((int)m);
+        SetSystemCard(targetID, m, null);
 	}
+
+    void SetSystemCard(int targetID, Motions m, List<int> targetable)
+    {
+        CardScript sc = SystemCard.GetComponent<CardScript>();
+
+        sc.effectFlag = true;
+        sc.effectTargetID.Add(targetID);
+        sc.effectMotion.Add((int)m);
+
+        if (targetable != null)
+        {
+            for (int i = 0; i < targetable.Count; i++)
+                sc.Targetable.Add(targetable[i]);
+        }
+    }
+
+    public void SetSystemCardFromCard(int targetID, Motions m,int myID,int myPlayer)
+    {
+        SetSystemCard(targetID, m);
+    }
+
+    public void SetSystemCardFromCard(int targetID, Motions m, List<int> targetable, int myID, int myPlayer)
+    {
+        SetSystemCard(targetID, m, targetable);
+    }
 	
 	void ExitFunction (int ID, int player)
 	{
@@ -8236,7 +8326,11 @@ public class DeckScript : MonoBehaviour
 	{
 		if (chainMotion [0] == -1)
 		{
-			if (useLimit (ID, player % 2))
+            if(checkType(ID,player%2, cardTypeInfo.レゾナ)){
+                getCardScr(ID, player % 2).useResona = true;
+                return false;
+            }
+			else if (useLimit (ID, player % 2))
 				return false;
             else if(!toldChantEffFlag && EffecterNowID==-1)
             {
@@ -8799,6 +8893,247 @@ public class DeckScript : MonoBehaviour
             sc.inputReturn = index + 1;
     }
 
+    bool effectCursorInput(CardScript sc, int playerNum)
+    {
+        int selecter = sc.effectSelecter;
+        int cursorIndex = -1;
+
+        for (int i = 0; i < sc.BeforeCutInNum && i < sc.effectTargetID.Count; i++)
+        {
+            if (sc.effectTargetID[i] == -1)
+            {
+                cursorIndex = i;
+                break;
+            }
+        }
+        if (cursorIndex >= 0)
+        {
+            if (waitYou(selecter))
+            {
+                if (canRead())
+                {
+                    effectTargetSet(playerNum, cursorIndex, sc, true);
+
+                    return false;
+                }
+                else
+                    return false;
+            }
+            else if (clickCursorID.Count == 0)
+            {
+                //showZoneGoTop
+                if (sc.effectMotion[cursorIndex] == (int)Motions.ShowZoneGoTop)
+                {
+                    sc.effectMotion.RemoveAt(cursorIndex);
+                    sc.effectTargetID.RemoveAt(cursorIndex);
+                    sc.Targetable.Clear();
+
+                    for (int i = 0; true; i++)
+                    {
+                        int x = getShowZoneID(i);
+                        if (x < 0)
+                            break;
+
+                        sc.Targetable.Add(x);
+                        sc.effectMotion.Insert(cursorIndex, (int)Motions.GoDeck);
+                        sc.effectTargetID.Insert(cursorIndex, -1);
+                    }
+                }
+
+                for (int i = cursorIndex; i < sc.effectTargetID.Count; i++)
+                {
+                    if (sc.effectMotion[cursorIndex] == sc.effectMotion[i] && sc.effectTargetID[i] == -1)
+                        selectNum++;
+                    else
+                        break;
+                }
+
+                if (selectNum > 0)
+                {
+                    selectCursorFlag = true;
+
+                    switch (sc.effectMotion[cursorIndex])
+                    {
+                        case (int)Motions.LifeSetFromHand:
+                            for (int i = 0; i < fieldAllNum(Fields.HAND, selecter); i++)
+                            {
+                                int id = fieldRankID(Fields.HAND, i, selecter);
+                                if (id >= 0)
+                                    sc.Targetable.Add(id + selecter * 50);
+                            }
+                            break;
+                    }
+
+                    //costBanish
+                    if (sc.effectMotion[cursorIndex] == (int)Motions.CostBanish)
+                    {
+                        for (int i = 0; i < 3; i++)
+                        {
+                            int id = fieldRankID(Fields.SIGNIZONE, i, sc.player);
+                            if (id >= 0)
+                                sc.Targetable.Add(id + sc.player * 50);
+                        }
+                    }
+
+
+                    if (sc.cursorCancel)
+                        cursorCancel = true;
+
+                    List<int> list = sc.Targetable;
+                    int length = list.Count;
+                    for (int i = 0; i < length; i++)
+                    {
+                        setTargetCursorID(list[i] % 50, list[i] / 50);
+                    }
+
+                    sc.Targetable.Clear();
+
+                    return false;
+                }
+            }
+            else
+            {
+                cursorCancel = false;
+
+                effectTargetSet(playerNum, cursorIndex, sc, false);
+
+                //通信
+                if (isTrans && selecter == 0)
+                {
+                    sendMessageBuf();
+                }
+
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    bool effectGUIInput(CardScript sc,int playerNum)
+    {
+        int selecter = sc.effectSelecter;
+        int GUIIndex = -1;
+        for (int i = 0; i < sc.effectTargetID.Count; i++)
+        {
+            if (sc.effectTargetID[i] == -2 && sc.effectMotion[i] == sc.effectMotion[0])
+            {
+                GUIIndex = i;
+                break;
+            }
+        }
+
+        if (GUIIndex >= 0)
+        {
+            if (waitYou(selecter))
+            {
+                if (canRead())
+                {
+                    for (int i = GUIIndex; i < sc.effectTargetID.Count && !isMessageError(); i++)
+                    {
+                        if (sc.effectTargetID[i] == -2)
+                        {
+                            if (getNextMessage(selecter) == cancelStr)
+                            {
+                                guiCancelFunc(GUIIndex, sc);
+                                break;
+                            }
+                            else
+                            {
+                                setGUITargetInput(i, sc, true);
+
+                                //animation
+                                int id = sc.effectTargetID[i];
+                                if (sc.effectMotion[i] == (int)Motions.GoHand && field[id / 50, id % 50] == Fields.MAINDECK)
+                                    setAnimation(id);
+                            }
+                        }
+                    }
+                    movePhase[sc.effectTargetID[0] / 50 + playerNum] = 0;
+                    rotaPhase[sc.effectTargetID[0] / 50 + playerNum] = -1;
+                    clickCursorID.Clear();
+                    return false;
+                }
+                else
+                    return false;
+            }
+            else if (GUImoveID != -1 || (sc.Targetable.Count == 1 && !sc.GUIcancelEnable))
+            {
+                if (sc.Targetable.Count == 1 && !sc.GUIcancelEnable)
+                {
+                    GUImoveID = sc.Targetable[0];
+                    messagesBuf.Add("" + sc.Targetable[0]);
+                }
+
+                //通信
+                if (isTrans && selecter == 0)
+                {
+                    sendMessageBuf();
+                }
+
+                GUIcancelEnabel = false;
+
+                if (sc.targetableSameLevelRemove)
+                {
+                    for (int i = 0; i < sc.Targetable.Count; i++)
+                    {
+                        int x = sc.Targetable[i] % 50;
+                        int target = sc.Targetable[i] / 50;
+                        int lev = getCardLevel(x, target);
+
+                        if (getCardLevel(GUImoveID % 50, GUImoveID / 50) == lev)
+                        {
+                            sc.Targetable.RemoveAt(i);
+                            i--;
+                        }
+                    }
+                }
+                else if (!sc.targetableDontRemove)
+                    sc.Targetable.Remove(GUImoveID);
+
+                setGUITargetInput(GUIIndex, sc, false);
+
+                movePhase[sc.effectTargetID[0] / 50 + playerNum] = 0;
+                rotaPhase[sc.effectTargetID[0] / 50 + playerNum] = -1;
+                return false;
+            }
+            else
+            {
+                if (GUIcancel)
+                {
+                    GUIcancel = false;
+                    GUIcancelEnabel = false;
+
+                    if (isTrans)
+                    {
+                        messagesBuf.Add(cancelStr);
+                        sendMessageBuf();
+                    }
+
+                    guiCancelFunc(GUIIndex, sc);
+                    return false;
+                }
+                else
+                {
+                    if (sc.GUIcancelEnable)
+                        GUIcancelEnabel = true;
+
+                    selectCardFlag = true;
+                    List<int> list = sc.Targetable;
+                    int length = list.Count;
+                    for (int i = 0; i < length; i++)
+                    {
+                        selectCardList.Add(list[i]);
+                    }
+                    return false;
+                }
+            }
+
+        }
+
+        return true;
+    }
+
 	void Effect ()
 	{
 		CardScript sc;
@@ -8822,233 +9157,12 @@ public class DeckScript : MonoBehaviour
 		else
 		{
 			//-1入力
-			int cursorIndex = -1;
-			for (int i=0; i<sc.BeforeCutInNum && i<sc.effectTargetID.Count; i++)
-			{
-				if (sc.effectTargetID [i] == -1)
-				{
-                    cursorIndex = i;
-					break;
-				}
-			}
-			if (cursorIndex >= 0)
-			{
-                if (waitYou(selecter))
-				{
-					if (canRead ())
-					{
-                        effectTargetSet(playerNum,cursorIndex, sc, true);
-
-						return;	
-					}
-					else
-						return;
-				}
-				else if (clickCursorID.Count == 0)
-				{
-                    //showZoneGoTop
-                    if (sc.effectMotion[cursorIndex] == (int)Motions.ShowZoneGoTop)
-                    {
-                        sc.effectMotion.RemoveAt(cursorIndex);
-                        sc.effectTargetID.RemoveAt(cursorIndex);
-                        sc.Targetable.Clear();
-
-                        for (int i = 0; true; i++)
-                        {
-                            int x = getShowZoneID(i);
-                            if (x < 0)
-                                break;
-
-                            sc.Targetable.Add(x);
-                            sc.effectMotion.Insert(cursorIndex, (int)Motions.GoDeck);
-                            sc.effectTargetID.Insert(cursorIndex, -1);
-                        }
-                    }
-                    
-                    for (int i = cursorIndex; i < sc.effectTargetID.Count; i++)
-					{
-						if (sc.effectMotion [cursorIndex] == sc.effectMotion [i] && sc.effectTargetID [i] == -1)
-							selectNum++;
-						else
-							break;
-					}
-
-					if (selectNum > 0)
-					{
-						selectCursorFlag = true;
-						
-						switch (sc.effectMotion [cursorIndex])
-						{
-						case (int)Motions.LifeSetFromHand:
-							for (int i=0; i<fieldAllNum(Fields.HAND,selecter); i++)
-							{
-								int id = fieldRankID (Fields.HAND, i, selecter);
-								if (id >= 0)
-									sc.Targetable.Add (id + selecter * 50);
-							}
-							break;
-						}
-						
-						//costBanish
-						if (sc.effectMotion [cursorIndex] == (int)Motions.CostBanish)
-						{
-							for (int i=0; i<3; i++)
-							{
-								int id = fieldRankID (Fields.SIGNIZONE, i, sc.player);
-								if (id >= 0)
-									sc.Targetable.Add (id + sc.player * 50);
-							}
-						}
-
- 
-                        if (sc.cursorCancel)
-                            cursorCancel = true;
-						
-						List<int> list = sc.Targetable;
-						int length = list.Count;
-						for (int i=0; i<length; i++)
-						{
-							setTargetCursorID (list [i] % 50, list [i] / 50);
-						}
-
-                        sc.Targetable.Clear();
-
-						return;
-					}
-				}
-				else
-				{
-                    cursorCancel = false;
-
-                    effectTargetSet(playerNum,cursorIndex, sc, false);
-				
-					//通信
-					if (isTrans && selecter == 0)
-					{
-						sendMessageBuf ();
-					}
-					
-					return;
-				}
-			}
+            if (!effectCursorInput(sc, playerNum))
+                return;
 			
 			//-2入力
-			int GUIIndex = -1;
-			for (int i=0; i<sc.effectTargetID.Count; i++)
-			{
-				if (sc.effectTargetID [i] == -2 && sc.effectMotion[i]==sc.effectMotion[0])
-				{
-					GUIIndex = i;
-					break;
-				}
-			}
-
-			if (GUIIndex >= 0)
-			{
-				if (waitYou( selecter ))
-				{
-					if (canRead ())
-					{
-						for (int i = GUIIndex; i < sc.effectTargetID.Count && !isMessageError(); i++)
-						{
-                            if (sc.effectTargetID[i] == -2)
-                            {
-                                if (getNextMessage(selecter) == cancelStr)
-                                {
-                                    guiCancelFunc(GUIIndex, sc);
-                                    break;
-                                }
-                                else
-                                {
-                                    setGUITargetInput(i, sc, true);
-   
-                                    //animation
-                                    int id = sc.effectTargetID[i];
-                                    if (sc.effectMotion[i] == (int)Motions.GoHand && field[id / 50, id % 50] == Fields.MAINDECK)
-                                        setAnimation(id);
-                                }
-                            }
-						}
-						movePhase [sc.effectTargetID [0] / 50 + playerNum] = 0;
-						rotaPhase [sc.effectTargetID [0] / 50 + playerNum] = -1;
-						clickCursorID.Clear ();
-						return;	
-					}
-					else
-						return;
-				}
-				else if(GUImoveID != -1 || (sc.Targetable.Count==1 && !sc.GUIcancelEnable))
-				{
-                    if (sc.Targetable.Count == 1 && !sc.GUIcancelEnable)
-                    {
-                        GUImoveID = sc.Targetable[0];
-                        messagesBuf.Add("" + sc.Targetable[0]);
-                    }
-
-					//通信
-					if (isTrans && selecter == 0)
-					{
-						sendMessageBuf ();
-					}
-
-                    GUIcancelEnabel = false;
-
-                    if (sc.targetableSameLevelRemove)
-                    {
-                        for (int i = 0; i < sc.Targetable.Count; i++)
-                        {
-                            int x = sc.Targetable[i] % 50;
-                            int target = sc.Targetable[i] / 50;
-                            int lev = getCardLevel(x, target);
-
-                            if (getCardLevel(GUImoveID % 50, GUImoveID / 50) == lev)
-                            {
-                                sc.Targetable.RemoveAt(i);
-                                i--;
-                            }
-                        }
-                    }
-                    else if (!sc.targetableDontRemove)
-                        sc.Targetable.Remove(GUImoveID);
-
-                    setGUITargetInput(GUIIndex, sc, false);
-
-					movePhase [sc.effectTargetID [0] / 50 + playerNum] = 0;
-					rotaPhase [sc.effectTargetID [0] / 50 + playerNum] = -1;
-					return;
-				}
-				else
-				{
-                    if (GUIcancel)
-                    {
-                        GUIcancel = false;
-                        GUIcancelEnabel = false;
-
-                        if (isTrans)
-                        {
-                            messagesBuf.Add(cancelStr);
-                            sendMessageBuf();
-                        }
-
-                        guiCancelFunc(GUIIndex, sc);
-                        return;
-                    }
-                    else
-                    {
-                        if (sc.GUIcancelEnable)
-                            GUIcancelEnabel = true;
-
-                        selectCardFlag = true;
-                        List<int> list = sc.Targetable;
-                        int length = list.Count;
-                        for (int i = 0; i < length; i++)
-                        {
-                            selectCardList.Add(list[i]);
-                        }
-                        return;
-                    }
-				}
-			}
+            if (!effectGUIInput(sc, playerNum))
+                return;
 
             //-3入力
             for (int i = 0; i < sc.effectTargetID.Count; i++)
@@ -9150,6 +9264,10 @@ public class DeckScript : MonoBehaviour
         {
             toldRemoving = true;
             removingID = sc.effectTargetID[0];
+
+            if (checkType(removingID % 50, removingID / 50, cardTypeInfo.レゾナ))
+                Replace(sc, removingID, Motions.GoLrigDeck, null);
+
             return false;
         }
         
@@ -9463,6 +9581,13 @@ public class DeckScript : MonoBehaviour
                     if (id > 0)
                         sc.Targetable.Add(id + effectPlayer % 2 * 50);
                 }
+
+                if (sc.Targetable.Count == 0)
+                {
+                    sc.effectTargetID.RemoveAt(0);
+                    sc.effectMotion.RemoveAt(0);
+                }
+
                 return false;
             }
             else

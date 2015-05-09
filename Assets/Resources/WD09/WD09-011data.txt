@@ -1,0 +1,16 @@
+﻿#Name 羅星　アルタイル
+#Type 2
+#Level 3
+#Power 7000
+#Color 1
+#LrigLimit 14
+#Class 2:4
+#BurstIcon True
+#Text
+出->【白】：あなたのデッキから《羅星　ベガ》を探して公開し手札に加える。その後、デッキをシャッフルする。
+
+☆->：カードを1枚引く。
+
+
+
+

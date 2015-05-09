@@ -1,0 +1,10 @@
+﻿#Name 悠久の使者　サシェ・モティエ
+#Type 0
+#Level 3
+#Limit 8
+#GrowCost 0/2/0/0/0/0/
+#Color 1
+#LrigType 14
+#Text
+
+

@@ -125,6 +125,7 @@ public enum cardTypeInfo
     アーツ,
     シグニ,
     スペル,
+    レゾナ,
 }
 
 public enum LrigTypeInfo 
@@ -143,6 +144,7 @@ public enum LrigTypeInfo
     ミルルン,
     アン,
     タウィル,
+    サシェ,
 }
 
 public enum cardClassInfo
@@ -157,6 +159,7 @@ public enum cardClassInfo
     精羅_宝石 = 21,
     精羅_植物 = 22,
     精羅_原子 = 23,
+    精羅_宇宙 = 24,
 
     精械_電機 = 30,
     精械_古代兵器 = 31,

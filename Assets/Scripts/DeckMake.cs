@@ -226,7 +226,7 @@ public class DeckMake : MonoBehaviour {
             if (s[ii].IndexOf("#BurstIcon") >= 0 && s[ii + 1].IndexOf("True") >= 0) isLifeBurst = true;
             if (s[ii].IndexOf("#Type") >= 0)
             {
-                if (s[ii + 1].IndexOf("0") >= 0 || s[ii + 1].IndexOf("1") >= 0) isLrig = true;
+                if (s[ii + 1].IndexOf("0") >= 0 || s[ii + 1].IndexOf("1") >= 0 || s[ii + 1].IndexOf("4") >= 0) isLrig = true;
                 else isLrig = false;
 
                 try

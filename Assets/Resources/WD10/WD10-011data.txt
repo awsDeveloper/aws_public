@@ -1,0 +1,13 @@
+﻿#Name 轟砲　コック
+#Type 2
+#Level 3
+#Power 8000
+#Color 2
+#LrigLimit 0
+#Class 1:1
+#BurstIcon False
+#Text
+【クロス】《弩砲　ヘッケラ》の左
+クロス出->：対戦相手のパワー8000以下のシグニ１体をバニッシュする。
+
+

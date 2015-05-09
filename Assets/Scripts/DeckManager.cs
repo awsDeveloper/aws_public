@@ -567,9 +567,9 @@ public class DeckManager : MonoBehaviour {
 		StreamWriter sw = fi.AppendText();
 		for(int i=0;i<10;i++)
 		{
-			if(deckmake[i].GetCard()!=null&&deckmake[i].GetCard()!="")
-				sw.Write(deckmake[i].GetCard()+"\n");
-			else sw.Write("\n");
+            if (deckmake[i].GetCard() != null && deckmake[i].GetCard() != "")
+                sw.Write(deckmake[i].GetCard() + "\n");
+            else sw.Write("\n");
 		}
 		for(int i=10;i<50;i++)
 		{
@@ -692,40 +692,44 @@ public class DeckManager : MonoBehaviour {
 
 
 
-	void InsertCardIntoDeck(){
-		string cardIdtoInsert="1145141919";
-		bool lrigFlag = false;
-		bool lifeburstflag = false;
+    void InsertCardIntoDeck()
+    {
+        string cardIdtoInsert = "1145141919";
+        bool lrigFlag = false;
+        bool lifeburstflag = false;
 
-		for(int i=0;i<60;i++)//いまマウスの上にあるカードが何かをチェック
-		{
-			if(deckmake[i].Getismouseover()&&!deckmake[i].IsDeck()){
-				cardIdtoInsert = deckmake[i].GetCard();
-				lrigFlag = deckmake[i].IsLrig ();
-				lifeburstflag = deckmake[i].IsLifeBurst ();
-			}
-			if(deckmake[i].Getismouseover()&&deckmake[i].IsDeck()){
-				deckmake[i].DestroyCard();
-				return;
-			}
-		}
-	
-		if (cardIdtoInsert == "1145141919") {//ない場合ここでボッシュート
-			Debug.Log ("nothing to insert");	
-			return;
-				}
+        for (int i = 0; i < 60; i++)//いまマウスの上にあるカードが何かをチェック
+        {
+            if (deckmake[i].Getismouseover() && !deckmake[i].IsDeck())
+            {
+                cardIdtoInsert = deckmake[i].GetCard();
+                lrigFlag = deckmake[i].IsLrig();
+                lifeburstflag = deckmake[i].IsLifeBurst();
+            }
+            if (deckmake[i].Getismouseover() && deckmake[i].IsDeck())
+            {
+                deckmake[i].DestroyCard();
+                return;
+            }
+        }
 
-		for (int i=0; i<50; i++) {//実際の挿入
-			if ((deckmake [i].GetCard () == null || deckmake [i].GetCard () == "") && deckmake [i].IsLrig () == lrigFlag && deckmake[i].IsLifeBurst () == lifeburstflag){
+        if (cardIdtoInsert == "1145141919")
+        {//ない場合ここでボッシュート
+            Debug.Log("nothing to insert");
+            return;
+        }
 
-								deckmake [i].SetCard (cardIdtoInsert);
-				return;
-				}
-		}
+        for (int i = 0; i < 50; i++)
+        {//実際の挿入
+            if ((deckmake[i].GetCard() == null || deckmake[i].GetCard() == "") && deckmake[i].IsLrig() == lrigFlag && deckmake[i].IsLifeBurst() == lifeburstflag)
+            {
 
+                deckmake[i].SetCard(cardIdtoInsert);
+                return;
+            }
+        }
 
-	
-	}
+    }
 
 
 
@@ -827,30 +831,41 @@ public class DeckManager : MonoBehaviour {
 		int NumOfLifeBurst=0;
 		numsearchsystem NSS = new numsearchsystem();
 		for (int i=1; i<50; i++) {//デッキの走査はdeckmake[i]でやろう
-			if (deckmake [i].GetCard () == null || deckmake [i].GetCard () == ""){
-				
-				if(i>=10){Debug.Log("d");fileSaveMassage = "デッキが完成していません";
-					return -1;}
-				else {Debug.Log("a");continue;}
-			}
-			else{
-				TextAsset textAsset=(TextAsset)Resources.Load(deckmake[i].GetCard().Split ('-')[0]+"/"+deckmake[i].GetCard() + "data");
-				NSS.SearchAndAdd (deckmake[i].GetCard ());
-				
-				string[] s =textAsset.text.Split(' ','\n');
-				for(int ii=0;ii<s.Length;ii++){
-					if(i>=10&&s[ii].IndexOf ("☆")>=0){NumOfLifeBurst++;
-						break;}
-					if(i<10&&s[ii].IndexOf ("#Type")>=0&&s[ii+1].IndexOf ("0")<0&&s[ii+1].IndexOf ("1")<0){
-						fileSaveMassage = "Lrig Deck Error!!!"+s[ii+1];//ルリグデッキにルリグでもアーツでもないやつがある場合
-						return -2;
-					}
-					if(i>=10&&s[ii].IndexOf ("#Type")>=0&&(s[ii+1].IndexOf ("0")>=0||s[ii+1].IndexOf ("1")>=0)){
-						fileSaveMassage = "Lrig Deck Error!!";//ルリグデッキにルリグでもアーツでもないやつがある場合
-						return -3;
-					}
-				}
-			}
+            if (deckmake[i].GetCard() == null || deckmake[i].GetCard() == "")
+            {
+
+                if (i >= 10)
+                {
+                    Debug.Log("d"); fileSaveMassage = "デッキが完成していません";
+                    return -1;
+                }
+                else { Debug.Log("a"); continue; }
+            }
+            else
+            {
+                TextAsset textAsset = (TextAsset)Resources.Load(deckmake[i].GetCard().Split('-')[0] + "/" + deckmake[i].GetCard() + "data");
+                NSS.SearchAndAdd(deckmake[i].GetCard());
+
+                string[] s = textAsset.text.Split(' ', '\n');
+                for (int ii = 0; ii < s.Length; ii++)
+                {
+                    if (i >= 10 && s[ii].IndexOf("☆") >= 0)
+                    {
+                        NumOfLifeBurst++;
+                        break;
+                    }
+                    if (i < 10 && s[ii].IndexOf("#Type") >= 0 && s[ii + 1].IndexOf("0") < 0 && s[ii + 1].IndexOf("1") < 0 && s[ii + 1].IndexOf("4")<0)
+                    {
+                        fileSaveMassage = "Lrig Deck Error!!!" + s[ii + 1];//ルリグデッキにルリグでもアーツでもレゾナでもないやつがある場合
+                        return -2;
+                    }
+                    if (i >= 10 && s[ii].IndexOf("#Type") >= 0 && (s[ii + 1].IndexOf("0") >= 0 || s[ii + 1].IndexOf("1") >= 0 || s[ii + 1].IndexOf("4") >= 0))
+                    {
+                        fileSaveMassage = "Lrig Deck Error!!";//メインデッキにルリグやアーツ、レゾナがある場合
+                        return -3;
+                    }
+                }
+            }
 		}
 		if (NSS.isNumOver()) {//4枚制限が守られていない
 			fileSaveMassage = "Card number error!!!";

@@ -25,7 +25,7 @@ public class TrustAllCertificatePolicy : System.Net.ICertificatePolicy
 
 public class Kirikae : MonoBehaviour {
 	
-	public const string awsversion = "6.0.2";
+	public const string awsversion = "6.1.2";
 	public const string versioninfotxt = "https://www.dropbox.com/s/sg9x2zj77po2eyc/version.txt?dl=1";
 
 

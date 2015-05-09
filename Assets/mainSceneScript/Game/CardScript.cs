@@ -146,6 +146,8 @@ public class CardScript : MonoBehaviour
 
 	public bool useLimit=false;
 
+    public bool useResona=false;
+
     public bool targetableDontRemove = false;
     public bool targetableSameLevelRemove = false;
 
@@ -396,7 +398,7 @@ public class CardScript : MonoBehaviour
 
         int t = ms.getCardType(ID, player);
 
-        if (t == (int)cardTypeInfo.シグニ)
+        if (t == (int)cardTypeInfo.シグニ || t == (int)cardTypeInfo.レゾナ)
             return oldField != field && field == Fields.SIGNIZONE;
         else if (t == (int)cardTypeInfo.ルリグ)
             return ms.getCipID() == ID + 50 * player;
@@ -423,6 +425,21 @@ public class CardScript : MonoBehaviour
         {
             int x = ms.getFieldRankID(f, i, target);
             if (x >= 0 && x + 50 * target != ID + 50 * player && ms.checkClass(x, target, info))
+                return true;
+        }
+
+        return false;
+    }
+
+    public bool isResonaOnBattleField(int target)//自分以外
+    {
+        int f = (int)Fields.SIGNIZONE;
+        int num = ms.getNumForCard(f, target);
+
+        for (int i = 0; i < num; i++)
+        {
+            int x = ms.getFieldRankID(f, i, target);
+            if (x >= 0 && x + 50 * target != ID + 50 * player && ms.checkType(x,target, cardTypeInfo.レゾナ))
                 return true;
         }
 
@@ -629,6 +646,41 @@ public class CardScript : MonoBehaviour
         string s = messages[0];
         messages.RemoveAt(0);
         return s.Contains("Yes");
+    }
+
+    public int getMessageInt()
+    {
+        if (messages.Count == 0)
+            return -1;
+
+        string s = messages[0];
+        messages.RemoveAt(0);
+
+        int count=-1;
+        if (!int.TryParse(s, out count))
+            return -1;
+
+        return count;
+    }
+
+    public void cipDialog(cardColorInfo info,int num)
+    {
+
+        if (!isCiped())
+            return;
+
+        changeColorCost(info, num);
+        if (!myCheckCost())
+            return;
+
+        DialogFlag = true;
+        DialogNum = 0;
+    }
+
+    public void setDialogNum(DialogNumType type)
+    {
+        DialogFlag = true;
+        DialogNum = (int)type;
     }
 }
 

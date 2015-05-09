@@ -1,0 +1,10 @@
+﻿#Name 悠久の使者　サシェ・クロワス
+#Type 0
+#Level 1
+#Limit 2
+#GrowCost 0/0/0/0/0/0/
+#Color 1
+#LrigType 14
+#Text
+
+

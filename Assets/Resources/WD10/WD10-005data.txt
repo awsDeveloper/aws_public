@@ -1,0 +1,10 @@
+﻿#Name タマヨリヒメ之零
+#Type 0
+#Level 0
+#Limit 0
+#GrowCost 0/0/0/0/0/0/
+#Color 2
+#LrigType 1
+#Text
+
+
