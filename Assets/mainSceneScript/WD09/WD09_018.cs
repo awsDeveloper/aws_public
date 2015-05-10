@@ -55,12 +55,12 @@ public class WD09_018 : MonoCard {
             return;
         }
 
+        sc.funcTargetIn(player, Fields.MAINDECK, checkChant);
+        sc.setEffect(-2, 0, Motions.GoHand);
 
         if (!sc.isResonaOnBattleField(player))
             return;
 
-        sc.funcTargetIn(player, Fields.MAINDECK, checkChant);
-        sc.setEffect(-2, 0, Motions.GoHand);
         sc.setEffect(-2, 0, Motions.GoHand);
     }
 

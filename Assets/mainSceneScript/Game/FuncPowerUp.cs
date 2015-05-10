@@ -35,7 +35,7 @@ public class FuncPowerUp : MonoCard{
 
                 //requirement add upList
                 if (x >= 0 && check(x, target) && ID != x && !ms.checkChanListExist(x, target, ID, player))
-                    ms.alwaysChagePower(x, target, puv, ID, player);
+                    ms.alwaysChagePower(x, target, puv, ID, player,check);
             }
         }
         else

@@ -196,6 +196,9 @@ public class cardstatus
     public string cardtext="";
     public string cardname="";
 
+    public string crossRightName = "";
+    public string crossLeftName = "";
+
     public cardstatus(string cardId)
     {
        TextAsset textAsset = (TextAsset)Resources.Load(cardId.Split('-')[0] + "/" + cardId + "data");
@@ -262,6 +265,21 @@ public class cardstatus
         {
             for (int ii = textindex + 1; ii < s.Length; ii++)
             {
+                if (s[ii].Contains("【クロス】"))
+                {
+                    int start = s[ii].IndexOf("《");
+                    int goal = s[ii].IndexOf("》");
+
+                    if (start + 1 >= 0 && goal - start - 1 > 0)
+                    {
+                        string cName = s[ii].Substring(start + 1, goal - start - 1);
+                        if (s[ii].Contains("左"))
+                            crossRightName = cName;
+                        else
+                            crossLeftName = cName;
+                    }
+                }
+
                 cardtext += s[ii].Replace("☆", "【ライフバースト】");
                 cardtext += "\r\n";
             }

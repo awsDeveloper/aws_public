@@ -89,6 +89,20 @@ public class CardScript : MonoBehaviour
     public bool growEffectFlag = false;
     public bool chantEffectFlag = false;
 
+    //クロス関連
+    public bool havingCross{get{return CrossLeftName!="" || CrossRightName!="";}}
+    public string CrossRightName
+    {
+        get { return status.crossRightName; }
+        set { status.crossRightName = value; }
+    }
+    public string CrossLeftName
+    {
+        get { return status.crossLeftName; }
+        set { status.crossLeftName = value; }
+    }
+
+
     //失われる効果
 	//ランサー
     private bool Lancer = false;
@@ -202,6 +216,8 @@ public class CardScript : MonoBehaviour
 
     string parameta = "";
     char kugiri = '#';
+
+
 
     bool brainChecke = false;//brainのスクリプト取得が終わっていることを示す
 
@@ -681,6 +697,75 @@ public class CardScript : MonoBehaviour
     {
         DialogFlag = true;
         DialogNum = (int)type;
+    }
+
+    public int getCrossingID()
+    {
+        if (!havingCross || !isOnBattleField())
+            return -1;
+
+        int rank = ms.getRank(ID, player);
+
+        int checkRank = -1;
+        string checkName = "";
+
+        if (CrossLeftName != "")
+        {
+            checkRank = rank - 1;
+            checkName = CrossLeftName;
+        }
+
+        if (CrossRightName != "")
+        {
+            checkRank = rank + 1;
+            checkName = CrossRightName;
+        }
+
+        int x = ms.getFieldRankID((int)Fields.SIGNIZONE, checkRank, player);
+        if (x >= 0 && ms.checkName(x, player, checkName))
+            return x + player * 50;
+
+        return -1;
+    }
+
+    public bool isCrossTriggered()
+    {
+        int fusion = ID + player * 50;
+        return fusion == ms.CrossedIDs[0] || fusion == ms.CrossedIDs[1];
+    }
+
+    public bool isCrossing()
+    {
+        return getCrossingID() >= 0;
+    }
+
+    public bool isHeaven()
+    {
+        int cID=getCrossingID();
+
+        if(cID <0)
+            return false;
+
+        if (ms.getAttackerID() != ID + player * 50 && ms.getAttackerID() != cID)
+            return false;
+
+        return ms.getIDConditionInt(ID, player) == (int)Conditions.Down && ms.getIDConditionInt(cID % 50, cID / 50) == (int)Conditions.Down;
+    }
+
+    public bool isCrossOnBattleField(int target)
+    {
+        int f = (int)Fields.SIGNIZONE;
+        int num = ms.getNumForCard(f, target);
+
+        for (int i = 0; i < num; i++)
+        {
+            int x = ms.getFieldRankID(f, i, target);
+            if (x >= 0 && x + 50 * target != ID + 50 * player && ms.checkCross(x,target))
+                return true;
+        }
+
+        return false;
+
     }
 }
 

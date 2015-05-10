@@ -209,13 +209,23 @@ struct powerChange
 	public int changedID;
 	public int changerID;
 	public int changeValue;
+    public System.Func<int, int, bool> check;
 
-	public powerChange(int changed, int changer,int value)
-	{
-		changedID = changed;
-		changerID = changer;
-		changeValue = value;
-	}
+    public powerChange(int changed, int changer, int value)
+    {
+        changedID = changed;
+        changerID = changer;
+        changeValue = value;
+        check = null;
+    }
+
+    public powerChange(int changed, int changer, int value, System.Func<int, int, bool> checkFunc)
+    {
+        changedID = changed;
+        changerID = changer;
+        changeValue = value;
+        check = checkFunc;
+    }
 }
 
 class IgniCostDecrease
@@ -511,6 +521,9 @@ public class DeckScript : MonoBehaviour
 	int BanishedID = -1;
 	int BanishingID = -1;
 
+    int[] crossedIDs = new int[] { -1, -1 };
+    public int[] CrossedIDs { get { return crossedIDs; } }
+
     int removingID = -1;
     public int RemovingID { get { return removingID; } }
 
@@ -682,6 +695,8 @@ public class DeckScript : MonoBehaviour
 
     UnityEngine.UI.Text showCardText;
     UnityEngine.UI.RawImage showCardImage;
+
+    System.Func<int, bool> SystemCardInputReturnFunc;
 
 	//最後尾
 
@@ -1104,6 +1119,16 @@ public class DeckScript : MonoBehaviour
 		return new int[2]{sc.Class_1,sc.Class_2};
 	}
 
+    public bool checkCross(int ID, int player)
+    {
+        var com = getCardScr(ID, player);
+
+        if (com == null)
+            return false;
+
+        return com.isCrossing();
+    }
+
 
     public bool checkClass(int fusionID, cardClassInfo info)
     {
@@ -1212,6 +1237,11 @@ public class DeckScript : MonoBehaviour
 	//常時効果用
 	public bool alwaysChagePower (int x, int target, int up, int ID ,int player)
 	{
+        return alwaysChagePower(x, target, up, ID, player, null);
+	}
+
+    public bool alwaysChagePower(int x, int target, int up, int ID, int player,System.Func<int,int,bool> check)
+    {
 
         if (Rian_pow_Flag[1 - player] || checkResistance(x, target, ID, player))
             return false;
@@ -1222,18 +1252,19 @@ public class DeckScript : MonoBehaviour
         if (effecterScr.lostEffect)
             return false;
 
-		//violence
-		for (int i = 0; i < ViolenceCount && up < 0; i++)
-		{
-			up *= 2;
-		}
+        //violence
+        for (int i = 0; i < ViolenceCount && up < 0; i++)
+        {
+            up *= 2;
+        }
 
-		sc.changePower += up;
- 
-		powChanList.Add(new powerChange(x + 50*target, ID + 50*player, up));
+        sc.changePower += up;
 
-		return true;
-	}
+        powChanList.Add(new powerChange(x + 50 * target, ID + 50 * player, up,check));
+
+        return true;
+
+    }
 
     public bool checkChanListExist(int x, int target,int ID,int player)
     {
@@ -1309,6 +1340,16 @@ public class DeckScript : MonoBehaviour
 
 		return false;
 	}
+
+    public bool checkHavingCross(int x, int target)
+    {
+        var com = getCardScr(x, target);
+
+        if (com == null)
+            return false;
+
+        return com.havingCross;
+    }
 
 	public int getTurnPlayer ()
 	{
@@ -1756,6 +1797,20 @@ public class DeckScript : MonoBehaviour
 
 		//１フレーム系の更新
        oneFrameUpdate();
+
+        //alwaysPowerUpのチェック
+       for (int i = 0; i < powChanList.Count; i++)
+       {
+           if (powChanList[i].check != null)
+           {
+               int x = powChanList[i].changedID;
+               if (!powChanList[i].check(x % 50, x / 50))
+               {
+                   powChanListRemove(i);
+                   i--;
+               }
+           }
+       }
  
 
 		
@@ -1908,7 +1963,7 @@ public class DeckScript : MonoBehaviour
                     if (DialogNum == 3)//色
                         DialogCountMax = 5;
                     else if (DialogNum == 6)//レベル
-                        DialogCountMax = 5;
+                        DialogCountMax = 4;
                     else if (DialogNum == 4 || DialogNum == 5)//上下、アップダウン
                         DialogCountMax = 1;
                     else 
@@ -2025,6 +2080,13 @@ public class DeckScript : MonoBehaviour
                     }
                 }
 
+                //systemInputReturn
+                if (sc.inputReturn >= 0)
+                {
+                    DoSystemInputReturn(sc.inputReturn);
+                    sc.inputReturn = -1;
+                }
+
                 effectBody(sc, playerNum);
             }
         }
@@ -2110,6 +2172,9 @@ public class DeckScript : MonoBehaviour
         AttackerID = -1;
         EffectGoTrashID = -1;
         stopAttackedID = -1;
+
+        crossedIDs[0] = -1;
+        crossedIDs[1] = -1;
 
         turnEndFlag = false;
         turnStartFlag = false;
@@ -3512,10 +3577,21 @@ public class DeckScript : MonoBehaviour
 			fieldRank [player % 2, moveID [player]] = selectSigniZone;
 			signiCondition [player % 2, selectSigniZone] = Conditions.Up;
 
+            //クロス
+            int cross = getCardScr(moveID[player], player % 2).getCrossingID();
+            if (cross >= 0)
+            {
+                crossedIDs[0] = moveID[player] + player % 2 * 50;
+                crossedIDs[1] = cross;
+            }
+
+
 			moveID [player] = -1;
 
 			selectSigniZone = -1;
 		}
+
+
 		if (rotaPhase [player] == 0 && rotaID [player] == -1)
 		{
 			rotaID [player] = moveID [player];
@@ -7402,8 +7478,11 @@ public class DeckScript : MonoBehaviour
 	{
         SetSystemCard(targetID, m, null);
 	}
-
     void SetSystemCard(int targetID, Motions m, List<int> targetable)
+    {
+        SetSystemCard(targetID, m, targetable, false, null);
+     }
+    void SetSystemCard(int targetID, Motions m, List<int> targetable, bool cancel, System.Func<int, bool> systemInput)
     {
         CardScript sc = SystemCard.GetComponent<CardScript>();
 
@@ -7411,6 +7490,18 @@ public class DeckScript : MonoBehaviour
         sc.effectTargetID.Add(targetID);
         sc.effectMotion.Add((int)m);
 
+        //cancel
+        if (cancel)
+        {
+            SystemCardInputReturnFunc = systemInput;
+
+            if (targetID == -1)
+                sc.cursorCancel = true;
+            else if (targetID == -2)
+                sc.GUIcancelEnable = true;
+        }
+
+        //targetable
         if (targetable != null)
         {
             for (int i = 0; i < targetable.Count; i++)
@@ -7422,10 +7513,13 @@ public class DeckScript : MonoBehaviour
     {
         SetSystemCard(targetID, m);
     }
-
-    public void SetSystemCardFromCard(int targetID, Motions m, List<int> targetable, int myID, int myPlayer)
+    public void SetSystemCardFromCard(int targetID, Motions m, int myID, int myPlayer, List<int> targetable)
     {
         SetSystemCard(targetID, m, targetable);
+    }
+    public void SetSystemCardFromCard(int targetID, Motions m, int myID, int myPlayer, List<int> targetable, bool cancel, System.Func<int, bool> inputReturn)
+    {
+        SetSystemCard(targetID, m, targetable,cancel,inputReturn);
     }
 	
 	void ExitFunction (int ID, int player)
@@ -12508,5 +12602,14 @@ public class DeckScript : MonoBehaviour
             showCardImage.texture = Resources.Load("transTexture") as Texture;
 
         beforGame.SetActive(true);
+    }
+
+    void DoSystemInputReturn(int count)
+    {
+        if (SystemCardInputReturnFunc == null)
+            return;
+
+        SystemCardInputReturnFunc(count);
+        SystemCardInputReturnFunc = null;
     }
 }
