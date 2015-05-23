@@ -1,0 +1,9 @@
+﻿#Name 絶対の炎武
+#Type 3
+#Cost 0/0/0/0/0/0/
+#Color 2
+#LrigLimit 0
+#BurstIcon False
+#Text
+対戦相手のパワー2000以下のシグニ1体をバニッシュする。
+

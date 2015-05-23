@@ -32,8 +32,8 @@ public class WD09_008 : MonoCard {
             return;
         }
 
-        ms.SetSystemCardFromCard(-1, Motions.GoTrash, ID, player, sc.Targetable);
-        ms.SetSystemCardFromCard(-1, Motions.GoTrash, ID, player);
+        ms.SetSystemCardFromCard(-1, Motions.CostGoTrash, ID, player, sc.Targetable);
+        ms.SetSystemCardFromCard(-1, Motions.CostGoTrash, ID, player);
         sc.Targetable.Clear();
 
         ms.SetSystemCardFromCard(ID + 50 * player, Motions.Summon, ID, player);

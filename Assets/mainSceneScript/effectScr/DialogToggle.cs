@@ -29,6 +29,7 @@ public class DialogToggle : MonoBehaviour {
         Cip,
         Ignition,
         Chant,
+        Burst,
     }
 
     // Use this for initialization
@@ -135,6 +136,9 @@ public class DialogToggle : MonoBehaviour {
             case triggerType.Ignition:
                 trigger = Ignition;
                 break;
+            case triggerType.Burst:
+                trigger = burst;
+                break;
         }
     }
 
@@ -146,6 +150,11 @@ public class DialogToggle : MonoBehaviour {
     bool chant()
     {
         return BodyScript.isChanted();
+    }
+
+    bool burst()
+    {
+        return BodyScript.isBursted();
     }
 
     bool Ignition()

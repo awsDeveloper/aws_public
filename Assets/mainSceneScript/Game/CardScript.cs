@@ -211,6 +211,8 @@ public class CardScript : MonoBehaviour
 
     public bool MelhenGrowFlag = false;
 
+    public string addComEffctString = "";
+
     Fields field = Fields.Non;
     Fields oldField = Fields.Non;
 
@@ -220,6 +222,33 @@ public class CardScript : MonoBehaviour
 
 
     bool brainChecke = false;//brainのスクリプト取得が終わっていることを示す
+
+
+    public class FuncGroup
+    {
+        public int x;
+        public Motions m;
+        public int target;
+        public Fields targetField;
+        public System.Func<int, int, bool> func;
+        public bool useFunc = false;
+
+        public FuncGroup(int effectID, Motions motion, int targetPlayer, Fields f, Func<int, int, bool> check)
+        {
+            x = effectID;
+            m = motion;
+            target = targetPlayer;
+            targetField = f;
+            func = check;
+
+            useFunc = true;
+        }
+        public FuncGroup(int effectID,int effectPlayer, Motions motion)
+        {
+            x = effectID+50*effectPlayer;
+            m = motion;
+        }
+    }
 
 	// Use this for initialization
 	void Start ()
@@ -263,11 +292,13 @@ public class CardScript : MonoBehaviour
             resiBanish = false;
         }
 
+ 
         if (Manager == null)
             return;
 
         oldField = field;
         field = (Fields)ms.getFieldInt(ID, player);
+
      }
 
     bool checkBrainScr()
@@ -766,6 +797,23 @@ public class CardScript : MonoBehaviour
 
         return false;
 
+    }
+
+    public void setSystemCardFromCard(int targetID, Motions m,int count ,List<int> targetableList, bool cancel, Func<int, bool> systemInput)
+    {
+        for (int i = 0; i < count; i++)
+        {
+            if (i == 0)
+                ms.SetSystemCardFromCard(targetID, m, ID, player, targetableList, cancel, systemInput);
+            else
+                ms.SetSystemCardFromCard(targetID, m, ID, player);
+        }
+    }
+
+    public void setFuncEffect(int x, Motions m, int target, Fields field, System.Func<int, int, bool> func)
+    {
+        funcTargetIn(target, field, func);
+        setEffect(x, 0, m);
     }
 }
 

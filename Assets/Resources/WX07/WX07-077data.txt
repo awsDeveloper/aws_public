@@ -1,0 +1,9 @@
+﻿#Name デス・ライク・デス
+#Type 3
+#Cost 0/0/0/0/0/1/
+#Color 5
+#LrigLimit 0
+#BurstIcon False
+#Text
+あなたの手札を１枚捨てる。そうした場合、対戦相手のシグニ１体をバニッシュする。
+

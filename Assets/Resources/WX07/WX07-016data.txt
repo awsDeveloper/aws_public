@@ -1,0 +1,10 @@
+﻿#Name 三型応援娘　緑姫
+#Type 0
+#Level 3
+#Limit 7
+#GrowCost 0/0/0/0/2/0/
+#Color 4
+#LrigType 4
+#Text
+常->：あなたの【クロス】を持つすべてのシグニのパワーを＋1000する。
+

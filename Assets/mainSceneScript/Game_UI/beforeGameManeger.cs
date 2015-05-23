@@ -9,6 +9,14 @@ public class beforeGameManeger : MonoBehaviour
 
     public GameObject[] deckObjs = new GameObject[2];
 
+    void Start()
+    {
+        var item = firstObj.GetComponent<Kender.uGUI.ComboBox>();
+
+        if (item != null && PlayerPrefs.HasKey("firstAttack"))
+            item.SelectedIndex = PlayerPrefs.GetInt("firstAttack")+1;
+    }
+
     public string getSelectedReplay()
     {
         return getComboString(replayObj);

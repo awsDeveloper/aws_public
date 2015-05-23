@@ -1,0 +1,10 @@
+﻿#Name 十字炎　タマヨリヒメ之参
+#Type 0
+#Level 3
+#Limit 7
+#GrowCost 0/0/2/0/0/0/
+#Color 2
+#LrigType 1
+#Text
+常->：あなたの【クロス】を持つすべてのシグニのパワーを＋1000する。
+

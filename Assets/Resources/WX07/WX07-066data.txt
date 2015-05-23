@@ -1,0 +1,9 @@
+﻿#Name CROSS RUSH
+#Type 3
+#Cost 0/0/0/1/0/0/
+#Color 3
+#LrigLimit 0
+#BurstIcon False
+#Text
+対戦相手は手札を１枚捨てる。あなたの場にクロス状態のシグニがある場合、あなたはカードを１枚引く。
+

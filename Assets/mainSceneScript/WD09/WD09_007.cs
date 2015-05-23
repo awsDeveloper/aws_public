@@ -30,7 +30,7 @@ public class WD09_007 : MonoCard {
         }
 
         for (int i = 0; i < sc.Targetable.Count; i++)
-            ms.SetSystemCardFromCard(sc.Targetable[i], Motions.GoTrash, ID, player);
+            ms.SetSystemCardFromCard(sc.Targetable[i], Motions.CostGoTrash, ID, player);
         sc.Targetable.Clear();
 
         ms.SetSystemCardFromCard(ID + 50 * player, Motions.Summon, ID, player);

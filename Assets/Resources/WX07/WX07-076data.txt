@@ -1,0 +1,11 @@
+﻿#Name 落第の呼称　アジダハ
+#Type 2
+#Level 1
+#Power 2000
+#Color 5
+#LrigLimit 0
+#Class 4:1
+#BurstIcon False
+#Text
+常->：あなたの場に＜悪魔＞のシグニが3体あるかぎり、このシグニのパワーは6000になる。
+

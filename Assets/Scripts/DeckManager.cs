@@ -849,7 +849,8 @@ public class DeckManager : MonoBehaviour {
                 string[] s = textAsset.text.Split(' ', '\n');
                 for (int ii = 0; ii < s.Length; ii++)
                 {
-                    if (i >= 10 && s[ii].IndexOf("☆") >= 0)
+                    if (i >= 10 && deckmake[i].IsLifeBurst())
+ //                       && (s[ii].IndexOf("☆") >= 0 || ( s[ii].IndexOf("#BurstIcon") >= 0 && s[ii+1].IndexOf("True")>=0)) )
                     {
                         NumOfLifeBurst++;
                         break;

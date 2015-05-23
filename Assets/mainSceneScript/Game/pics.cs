@@ -8,21 +8,19 @@ public class pics{
 
 	MonoBehaviour mono;
 	GameObject monoObj=null;
+    Texture unknown = null;
 
     const int TEXTURES_MAX = 200;
 
 	class draw
 	{
 		public Texture tex = null;
-		public int count=0;
-
 
 		public draw(){}
 
 		public void setMaterial(Texture t)
 		{
 			tex = t;
-			count=0;
 		}
 	}
 
@@ -38,7 +36,6 @@ public class pics{
 		if(textures.ContainsKey(key))
 		{
 			Texture tex = textures[key].tex;
-
 			return tex;
 		}
 		else 
@@ -75,8 +72,14 @@ public class pics{
 
         if (loader.error == null)
             textures[s].setMaterial(loader.texture);
-        else
-            textures.Remove(s);
+        else if(s.Contains("-"))
+        {
+            if (unknown == null)
+                unknown = Resources.Load("others/unknown") as Texture;
+
+            textures[s].setMaterial(unknown);
+        }
+
 	}
 
 	void sippai(string s)

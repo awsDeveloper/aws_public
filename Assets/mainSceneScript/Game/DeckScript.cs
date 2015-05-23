@@ -136,6 +136,7 @@ public enum Motions
     JerashiGeizu,       //98
     AllHandDeath,       //99
     MaxPowerBounce,     //100
+    AddComponent,       //101
 }
 
 public enum DialogNumType
@@ -301,8 +302,18 @@ public class DeckScript : MonoBehaviour
 	private const float LifeClothWidth = 0.76f;
 	private const float EnaWidth = 0.75f;
 	private const float SigniWidth = 3.42f;
-	private const int standartTime = 5;
-	private int[] deckNum = new int[2]{0,0};
+
+    int _standartTime = 5;
+    private int standartTime
+    {
+        get { return _standartTime; }
+        set { 
+            _standartTime = value;
+            Debug.Log("standartTimeが更新されました");
+        }
+    }
+
+    private int[] deckNum = new int[2] { 0, 0 };
 	private int[] lrig_deckNum = new int[2]{0,0};
 	private int[] enaNum = new int[2]{0,0};
 	private int[] trashNum = new int[2]{0,0};
@@ -360,22 +371,6 @@ public class DeckScript : MonoBehaviour
 
 
     private string showSerialNum = "";
-/*    private string showCardName = "";
-	private string showCardText = "";
-	private int showCardType = -1;
-	private int showCardColor = -1;
-	private int showCardLevel = -1;
-	private int[] showCardCost = new int[6]{-1,0,0,0,0,0};
-	private int[] showCardGrowCost = new int[6]{-1,0,0,0,0,0};
-	private int showCardLimit = -1;
-	private int showCardLrigType = -1;
-	private int showCardLrigType2 = -1;
-	private int showCardLrigLimit = -1;
-	private int showCardLrigLimit_2 = 0;
-	private int showCardClass_1 = -1;
-	private int showCardClass_2 = -1;
-	private int showCardPower = -1;
-//	private int showCardBurstIcon=-1;*/
 	private GameObject[] TargetSigniZoneCursor = new GameObject[3];
 	private int selectPlayer = 0;
 	private int selectClickID = -1;
@@ -687,6 +682,7 @@ public class DeckScript : MonoBehaviour
 
     GameObject beforGame;
     GameObject canvasObj;
+    GameObject panelObj;
     GameObject YesNoObj;
     bool YesNoGUIFlag = false;
     bool uiYes=false;
@@ -1202,6 +1198,16 @@ public class DeckScript : MonoBehaviour
         return checkType(fusionID%50, fusionID/50,info);
     }
 
+    public bool checkFreeze(int x, int target)
+    {
+        var com = getCardScr(x, target);
+
+        if (com == null)
+            return false;
+
+        return com.Freeze;
+    }
+
     public bool checkContainsName(int x, int target, string key)
     {
         CardScript sc = getCardScr(x, target);
@@ -1702,6 +1708,7 @@ public class DeckScript : MonoBehaviour
             underCards.Add(new List<int>());
 
         canvasObj = GameObject.Find("Canvas");
+        panelObj = GameObject.Find("Panel");
         beforGame = GameObject.Find("beforeGame");
         showCardText = GameObject.Find("showCardText").GetComponent<UnityEngine.UI.Text>();
         showCardImage = GameObject.Find("showCardImage").GetComponent<UnityEngine.UI.RawImage>();
@@ -9392,14 +9399,27 @@ public class DeckScript : MonoBehaviour
                 sc.effectMotion.RemoveAt(0);
             }
         }
+        else if (m == Motions.AddComponent)
+        {
+            while(true){
+                var obj = getCardObj(sc.effectTargetID[0] % 50, sc.effectTargetID[0] / 50);
+                obj.AddComponent(System.Type.GetType(sc.addComEffctString));
+
+                if (sc.effectMotion.Count==1 || sc.effectMotion[1] != (int)Motions.AddComponent)
+                    break;
+
+                sc.effectTargetID.RemoveAt(0);
+                sc.effectMotion.RemoveAt(0);
+            }
+        }
         else if (m == Motions.MaxPowerBounce)
         {
             int max = sc.getMaxPower(effectPlayer % 2);
 
-            for (int i = 0; i<3; i++)
+            for (int i = 0; i < 3; i++)
             {
                 int x = fieldRankID(Fields.SIGNIZONE, i, effectPlayer % 2);
-                if(x>=0 && getCardPower(x,effectPlayer%2)==max)
+                if (x >= 0 && getCardPower(x, effectPlayer % 2) == max)
                     sc.setEffect(x, effectPlayer % 2, Motions.GoHand);
             }
         }
@@ -9611,6 +9631,12 @@ public class DeckScript : MonoBehaviour
             if (ACGFlag[effectPlayer % 2] && field[effectPlayer % 2, effectID] == Fields.SIGNIZONE)
             {
                 effectShortageID = EffecterNowID;
+
+                if (EffecterNowID == -1)
+                {
+                    SystemCardScr.effectTargetID.Clear();
+                    SystemCardScr.effectMotion.Clear();
+                }
                 return false;
             }
 
@@ -12440,6 +12466,8 @@ public class DeckScript : MonoBehaviour
 
 	void savePlayerPrefs()
 	{
+        if(DebugFlag)
+            PlayerPrefs.SetInt("firstAttack", firstAttack);
 
 		PlayerPrefs.SetString(connectionKey, connectionIP);
 
@@ -12519,6 +12547,14 @@ public class DeckScript : MonoBehaviour
     {
         if (beforGame == null)
             return;
+
+        if (panelObj != null)
+        {
+            if (Singleton<config>.instance.configNow)
+                panelObj.SetActive(false);
+            else if(!panelObj.activeSelf)
+                panelObj.SetActive(true);
+        }
 
         bool flag = true;
 

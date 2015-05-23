@@ -1,0 +1,11 @@
+﻿#Name 羅星　アルフェカ
+#Type 2
+#Level 3
+#Power 8000
+#Color 1
+#LrigLimit 0
+#Class 2:宇宙
+#BurstIcon False
+#Text
+出->【白】【白】：対戦相手のレベル３以下のシグニ１体を手札に戻す。
+

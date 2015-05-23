@@ -1203,9 +1203,9 @@ MonoBehaviour:
   m_Color: {r: .196078435, g: .196078435, b: .196078435, a: 1}
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 18
+    m_FontSize: 14
     m_FontStyle: 0
-    m_BestFit: 0
+    m_BestFit: 1
     m_MinSize: 10
     m_MaxSize: 40
     m_Alignment: 0
@@ -1213,7 +1213,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "        \u30EA\u30D7\u30EC\u30A4\u3092\u4FDD\u5B58\u3059\u308B"
+  m_Text: "\u30EA\u30D7\u30EC\u30A4\u3092\u4FDD\u5B58\u3059\u308B"
 --- !u!222 &1862272976
 CanvasRenderer:
   m_ObjectHideFlags: 0
