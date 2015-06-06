@@ -1,12 +1,10 @@
 ﻿#Name 幻獣　カメ
 #Type 2
+#Class 5:1
+#Color 4
 #Level 3
 #Power 8000
-#Color 4
-#LrigLimit 0
-#Class 5:1
-#BurstIcon False
 #Text
+
 【クロス】《幻獣　ウサ》の右
 クロス出->：あなたのデッキの一番上のカードをエナゾーンに置く。
-

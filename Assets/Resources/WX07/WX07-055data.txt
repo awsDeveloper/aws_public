@@ -1,9 +1,7 @@
 ﻿#Name ゲット・アウト
 #Type 3
-#Cost 2/2/0/0/0/0/
 #Color 1
-#LrigLimit 0
-#BurstIcon False
+#Cost 2/2/0/0/0/0/
 #Text
-対戦相手のシグニを２体まで手札に戻す。
 
+対戦相手のシグニを２体まで手札に戻す。

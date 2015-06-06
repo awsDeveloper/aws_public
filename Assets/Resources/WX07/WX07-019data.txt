@@ -1,10 +1,10 @@
 ﻿#Name 煉獄の閻魔　ウリス
 #Type 0
-#Level 3
-#Limit 7
-#GrowCost 0/0/0/0/0/2/
-#Color 5
 #LrigType 5
+#Color 5
+#Level 3
+#GrowCost 0/0/0/0/0/2/
+#Limit 7
 #Text
-常->：あなたの【クロス】を持つすべてのシグニのパワーを＋1000する。
 
+常->：あなたの【クロス】を持つすべてのシグニのパワーを＋1000する。

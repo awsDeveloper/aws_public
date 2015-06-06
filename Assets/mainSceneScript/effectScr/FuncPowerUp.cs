@@ -8,6 +8,8 @@ public class FuncPowerUp : MonoCard{
     Func<int,int,bool> check;
     Func<bool> trigger;
 
+    bool isSelfUp = false;
+
 	// Use this for initialization
 	void Start ()
 	{
@@ -34,7 +36,7 @@ public class FuncPowerUp : MonoCard{
                 int x = ms.getFieldRankID(f, i, target);
 
                 //requirement add upList
-                if (x >= 0 && check(x, target) && ID != x && !ms.checkChanListExist(x, target, ID, player))
+                if (x >= 0 && check(x, target) && (ID != x || isSelfUp) && !ms.checkChanListExist(x, target, ID, player))
                     ms.alwaysChagePower(x, target, puv, ID, player,check);
             }
         }
@@ -68,6 +70,11 @@ public class FuncPowerUp : MonoCard{
     bool nonCheck()
     {
         return true;
+    }
+
+    public void setIsSelfUp()
+    {
+        isSelfUp = true;
     }
 
 }

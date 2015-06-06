@@ -28,13 +28,10 @@ public class classBase : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
-        if (ManagerScript.getFieldInt(ID, player) == 3 && myClass.isClassSigniOnBattleField(player,BodyScript))
+        if (ManagerScript.getFieldInt(ID, player) == 3 && myClass.isClassSigniOnBattleField(player, BodyScript))
         {
-            if (!upFlag)
-            {
-                ManagerScript.changeBasePower(ID, player, baseValue);
-                upFlag = true;
-            }
+            ManagerScript.changeBasePower(ID, player, baseValue);
+            upFlag = true;
         }
         else if (upFlag)
         {

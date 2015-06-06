@@ -43,7 +43,12 @@ public class DeckManager : MonoBehaviour {
 	//オブジェクトが破棄されたときの処理
 	void OnDestroy(){
 		//deckNameを保存する
-		Singleton<saveData>.instance.setData("DeckKey1",DeckName);
+        string oldDeck=Singleton<saveData>.instance.getData("DeckKey1", "Deck");
+        if (oldDeck != DeckName)
+        {
+            Singleton<saveData>.instance.setData("DeckKey2", oldDeck);
+            Singleton<saveData>.instance.setData("DeckKey1", DeckName);
+        }
 	}
 
 	private int checkdeckcount = -1;

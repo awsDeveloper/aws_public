@@ -3,6 +3,31 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 
+public enum ability
+{
+    Lancer,             //ランサー
+    DoubleCrash,        //ダブルクラッシュ
+    assassin,           //アサシン
+    resiBanish,         //バニッシュ耐性
+    resiYourEffBanish,  //相手のスペルのバニッシュ耐性
+    DontSelfGoTrash,    //効果以外で墓地に送れない
+    DontAttack,         //攻撃できない
+    resiArts,            //アーツ耐性
+    FreezeThrough,      //正面凍結時アサシン
+}
+
+
+public enum parametaKey
+{
+    CostDownColor,
+    CostDownNum,
+    SpellOrArts,
+    EnAbilityType,
+    powerSumBanishValue,
+    ClassNumBanishTarget,
+    changeBaseValue,
+}
+
 public class CardScript : MonoBehaviour
 {
     cardstatus status;
@@ -105,47 +130,47 @@ public class CardScript : MonoBehaviour
 
     //失われる効果
 	//ランサー
-    private bool Lancer = false;
+//    private bool Lancer = false;
     public bool lancer
     {
-        get { return Lancer && !lostEffect; }
-        set { Lancer = value; }
+        get { return checkAbility(ability.Lancer); }//Lancer && !lostEffect; }
+        set { setAbilitySelf(ability.Lancer, value); }//Lancer = value; }
     }
 
     //ダブルクラッシュ
-    private bool doubleCrash = false;
+//    private bool doubleCrash = false;
     public bool DoubleCrash {
-        get { return doubleCrash && !lostEffect; }
-        set { doubleCrash = value; }
+        get { return checkAbility(ability.DoubleCrash); }// doubleCrash && !lostEffect; }
+        set { setAbilitySelf(ability.DoubleCrash, value); }//doubleCrash = value; }
     }
 
     //攻撃できない
-    private bool attackable = true;
+//    private bool attackable = true;
     public bool Attackable {
-        get { return attackable || lostEffect; }
-        set{attackable=value;}
+        get { return !checkAbility(ability.DontAttack); }//attackable || lostEffect; }
+        set { setAbilitySelf(ability.DontAttack, !value); }//attackable=value;}
     }
 
     //アサシン
-    private bool assassin = false;
+//    private bool assassin = false;
     public bool Assassin
     {
-        get { return assassin && !lostEffect; }
-        set { assassin = value; }
+        get { return checkAbility(ability.assassin); }//assassin && !lostEffect; }
+        set { setAbilitySelf(ability.assassin, value); }//assassin = value; }
     }
 
     //バニッシュ耐性
-    private bool resiBanish = false;
+//    private bool resiBanish = false;
     public bool ResiBanish {
-        get { return resiBanish && !lostEffect; }
-        set { resiBanish = value; }
+        get { return checkAbility(ability.resiBanish); }//resiBanish && !lostEffect; }
+        set { setAbilitySelf(ability.resiBanish, value); }//resiBanish = value; }
     }
 
-    private bool resiYourEffBanish = false;
+//    private bool resiYourEffBanish = false;
     public bool ResiYourEffBanish
     {
-        get { return resiYourEffBanish && !lostEffect; }
-        set { resiYourEffBanish = value; }
+        get { return checkAbility(ability.resiYourEffBanish); }//resiYourEffBanish && !lostEffect; }
+        set { setAbilitySelf(ability.resiYourEffBanish, value); }//resiYourEffBanish = value; }
     }
 
     //スペルカットイン
@@ -164,6 +189,7 @@ public class CardScript : MonoBehaviour
 
     public bool targetableDontRemove = false;
     public bool targetableSameLevelRemove = false;
+    public bool targetablePayCostRemove = false;//payCostで捨てられたやつを対象から除く
 
 	public bool ReplaceFlag=false;
 
@@ -211,45 +237,32 @@ public class CardScript : MonoBehaviour
 
     public bool MelhenGrowFlag = false;
 
-    public string addComEffctString = "";
+    Func<bool> checkCanUse;
+    bool checkCanUseSugukesu = true;
+
+    Dictionary<ability,FlagSet> abilityFlags = new Dictionary<ability, FlagSet>();
+
+    List<int>[] a = new List<int>[3];
 
     Fields field = Fields.Non;
     Fields oldField = Fields.Non;
 
-    string parameta = "";
-    char kugiri = '#';
+    Dictionary<parametaKey, int> parametaDictionary = new Dictionary<parametaKey, int>();
 
 
 
     bool brainChecke = false;//brainのスクリプト取得が終わっていることを示す
 
+    class FlagSet{
+       public bool self = false;
+       public bool other = false;
 
-    public class FuncGroup
-    {
-        public int x;
-        public Motions m;
-        public int target;
-        public Fields targetField;
-        public System.Func<int, int, bool> func;
-        public bool useFunc = false;
-
-        public FuncGroup(int effectID, Motions motion, int targetPlayer, Fields f, Func<int, int, bool> check)
-        {
-            x = effectID;
-            m = motion;
-            target = targetPlayer;
-            targetField = f;
-            func = check;
-
-            useFunc = true;
-        }
-        public FuncGroup(int effectID,int effectPlayer, Motions motion)
-        {
-            x = effectID+50*effectPlayer;
-            m = motion;
-        }
+       public FlagSet()
+       {
+       }
     }
 
+ 
 	// Use this for initialization
 	void Start ()
 	{
@@ -264,6 +277,9 @@ public class CardScript : MonoBehaviour
         CardColor = OrigColor;
         basePower = OriginalPower;
         BurstIcon = origiBurstIcon;
+
+        foreach (var item in System.Enum.GetValues(typeof(ability)))
+            abilityFlags.Add((ability)item, new FlagSet());
 	}
 	
 	// Update is called once per frame
@@ -285,11 +301,6 @@ public class CardScript : MonoBehaviour
             //dialog
             DialogFlag = false;
 
-            Lancer = false;
-            doubleCrash = false;
-            attackable = true;
-            assassin = false;
-            resiBanish = false;
         }
 
  
@@ -300,6 +311,12 @@ public class CardScript : MonoBehaviour
         field = (Fields)ms.getFieldInt(ID, player);
 
      }
+
+    public void AbilityClear()
+    {
+        foreach (var item in abilityFlags.Keys)
+            setAbility(item, false);
+    }
 
     bool checkBrainScr()
     {
@@ -317,15 +334,23 @@ public class CardScript : MonoBehaviour
         return brainChecke;
     }
 
-	public void changeCost(int[] c){
-		if(c.Length != Cost.Length)
-			return;
+    public void changeCost(int[] c)
+    {
+        if (c.Length != Cost.Length)
+            return;
 
-		for (int i = 0; i < Cost.Length; i++)
-		{
-			Cost[i]=c[i];
-		}
-	}
+        for (int i = 0; i < Cost.Length; i++)
+        {
+            Cost[i] = c[i];
+        }
+    }
+    public void changeCost(colorCostArry c)
+    {
+        for (int i = 0; i < Cost.Length; i++)
+        {
+            Cost[i] = c.getCost(i);
+        }
+    }
 
 	public void changeColorCost(int color,int CostValue){
 		for (int i = 0; i < Cost.Length; i++)
@@ -371,7 +396,7 @@ public class CardScript : MonoBehaviour
         if (ID < 0)
             return false;
 
-        if ((cardTypeInfo)Type == cardTypeInfo.シグニ)
+        if (ms.checkType(ID, player, cardTypeInfo.シグニ) || ms.checkType(ID, player, cardTypeInfo.レゾナ))
             return ms.getFieldInt(ID, player) == (int)Fields.SIGNIZONE;
 
         if ((cardTypeInfo)Type == cardTypeInfo.ルリグ)
@@ -380,15 +405,19 @@ public class CardScript : MonoBehaviour
         return false;
     }
 
+    public bool isTrashOrEna()
+    {
+        int fff = ms.getFieldInt(ID, player);
+        return fff == (int)Fields.TRASH || fff == (int)Fields.ENAZONE;
+    }
+
+
+
     public bool isChanted()
     {
         if (ID < 0)
             return false;
 
-        if (ID >= 100)
-        {
-            Debug.Log("koko");
-        }
 
         int t = ms.getCardType(ID, player);
         if (t != (int)cardTypeInfo.スペル && t != (int)cardTypeInfo.アーツ)
@@ -399,24 +428,21 @@ public class CardScript : MonoBehaviour
 
     public void addParameta(parametaKey pk, int n)
     {
-        parameta += pk.ToString() + kugiri+ n.ToString() + kugiri;
+        if (parametaDictionary.ContainsKey(pk))
+        {
+            parametaDictionary[pk] = n;
+            return;
+        }
+
+        parametaDictionary.Add(pk, n);
     }
 
     public int getParameta(parametaKey pk)
     {
-        int n = -1;
-        string[] s = parameta.Split(kugiri);
+        if (!parametaDictionary.ContainsKey(pk))
+            return -1;
 
-        for (int i = 0; i < s.Length; i++)
-        {
-            if (s[i] == pk.ToString())
-            {
-                n = int.Parse(s[i + 1]);
-                parameta.Replace(s[i] + kugiri + s[i + 1] + kugiri, "");
-                break;
-            }
-        }
-        return n;
+        return parametaDictionary[pk];
     }
 
     public bool isYourEffRemoved()
@@ -566,7 +592,19 @@ public class CardScript : MonoBehaviour
         return ms.getAttackerID() == ID + 50 * player;
     }
 
-    public void funcTargetIn(int target, Fields field,System.Func<int,int,bool> func)
+    public void funcTargetIn(int target, Fields field, System.Func<int, int, bool> func, DeckScript ds)
+    {
+        if (ms != null)
+            return;
+
+        ms = ds;//今だけmsを登録
+        if (func != null)
+            funcTargetIn(target, field, func);
+        else
+            funcTargetIn(target, field);
+        ms = null;
+    }
+    public void funcTargetIn(int target, Fields field, System.Func<int, int, bool> func)
     {
         int f = (int)field;
         int num = ms.getNumForCard(f, target);
@@ -574,10 +612,24 @@ public class CardScript : MonoBehaviour
         for (int i = 0; i < num; i++)
         {
             int x = ms.getFieldRankID(f, i, target);
-            if (x>=0 && func(x,target))
+            if (x >= 0 && func(x, target))
                 Targetable.Add(x + 50 * target);
         }
     }
+    public void ClassTargetIn(int target, Fields field, cardClassInfo info)
+    {
+        int f = (int)field;
+        int num = ms.getNumForCard(f, target);
+
+        for (int i = 0; i < num; i++)
+        {
+            int x = ms.getFieldRankID(f, i, target);
+            if (x >= 0 && ms.checkClass(x, target,info))
+                Targetable.Add(x + 50 * target);
+        }
+    }
+
+
 
     public void funcTargetIn(int target, Fields field)
     {
@@ -586,6 +638,95 @@ public class CardScript : MonoBehaviour
     public bool isUp()
     {
         return isOnBattleField() && ms.getIDConditionInt(ID, player) == (int)Conditions.Up;
+    }
+
+    public void maxPowerBanish(int maxPower)
+    {
+        maxPowerTargetIn(maxPower);
+        setEffect(-1, 0, Motions.EnaCharge);
+    }
+
+    public void maxPowerTargetIn(int maxPower)
+    {
+        int target = 1 - player;
+        int f = (int)Fields.SIGNIZONE;
+        int num = ms.getNumForCard(f, target);
+
+        for (int i = 0; i < num; i++)
+        {
+            int x = ms.getFieldRankID(f, i, target);
+            if (x >= 0 && ms.getCardPower(x, target) <= maxPower)
+                Targetable.Add(x + 50 * target);
+        }
+    }
+
+    public void minPowerBanish(int minPower)
+    {
+        minPowerTargetIn(minPower);
+        setEffect(-1, 0, Motions.EnaCharge);
+    }
+
+    public void minPowerTargetIn(int minPower)
+    {
+        int target = 1 - player;
+        int f = (int)Fields.SIGNIZONE;
+        int num = ms.getNumForCard(f, target);
+
+        for (int i = 0; i < num; i++)
+        {
+            int x = ms.getFieldRankID(f, i, target);
+            if (x >= 0 && ms.getCardPower(x, target) >= minPower)
+                Targetable.Add(x + 50 * target);
+        }
+    }
+
+    public bool IgnitionDown()
+    {
+        if (!Ignition)
+            return false;
+
+        Ignition = false;
+
+        if (!isUp())
+            return false;
+
+        setEffect(ID, player, Motions.Down);
+        return true;
+
+    }
+
+    public bool IgnitionPayCost(cardColorInfo info, int num)
+    {
+        if (!Ignition)
+            return false;
+
+        Ignition = false;
+
+        changeColorCost(info, num);
+        if (!myCheckCost())
+            return false;
+
+        setEffect(ID, player, Motions.PayCost);
+        return true;
+    }
+
+    public bool IgnitionDownPayCost(cardColorInfo info, int num)
+    {
+        if (!Ignition)
+            return false;
+
+        Ignition = false;
+
+        changeColorCost(info, num);
+        if (!myCheckCost())
+            return false;
+
+        Ignition = true;//チェック後Ignitoin復活
+        if (!IgnitionDown())
+            return false;
+
+        setEffect(ID, player, Motions.PayCost);
+        return true;
     }
 
     public bool myCheckCost()
@@ -729,6 +870,15 @@ public class CardScript : MonoBehaviour
         DialogFlag = true;
         DialogNum = (int)type;
     }
+    public void setDialogNum(DialogNumType type, cardColorInfo info, int num)
+    {
+        changeColorCost(info, num);
+        if (!myCheckCost())
+            return;
+
+        DialogFlag = true;
+        DialogNum = (int)type;
+    }
 
     public int getCrossingID()
     {
@@ -767,7 +917,7 @@ public class CardScript : MonoBehaviour
 
     public bool isCrossing()
     {
-        return getCrossingID() >= 0;
+        return getCrossingID() >= 0 && !lostEffect;
     }
 
     public bool isHeaven()
@@ -799,7 +949,7 @@ public class CardScript : MonoBehaviour
 
     }
 
-    public void setSystemCardFromCard(int targetID, Motions m,int count ,List<int> targetableList, bool cancel, Func<int, bool> systemInput)
+   public void setSystemCardFromCard(int targetID, Motions m,int count ,List<int> targetableList, bool cancel, Func<int, bool> systemInput)
     {
         for (int i = 0; i < count; i++)
         {
@@ -815,11 +965,178 @@ public class CardScript : MonoBehaviour
         funcTargetIn(target, field, func);
         setEffect(x, 0, m);
     }
-}
 
-public enum parametaKey
-{
-    CostDownColor,
-    CostDownNum,
-    SpellOrArts,
+    public bool checkAbility(ability key)
+    {
+        if (!abilityFlags.ContainsKey(key))
+            return false;
+
+        //FreezeThroughによるアサシンの付与
+        if (key == ability.assassin && checkFreezeThrough())
+            return true;
+
+        return abilityFlags[key].other || (abilityFlags[key].self && !lostEffect);
+    }
+
+    public void setAbility(ability key, bool _value)
+    {
+        if (abilityFlags.ContainsKey(key))
+            abilityFlags[key].other = _value;
+    }
+    public void setAbilitySelf(ability key, bool _value)
+    {
+        if (abilityFlags.ContainsKey(key))
+            abilityFlags[key].self = _value;
+    }
+
+    public bool CrossingCip()
+    {
+        return isCiped() && isCrossing();
+    }
+    public bool CrossNotCip()
+    {
+        if (!isOnBattleField())
+            return true;
+
+        int cID = ms.getCipSigniID();
+        if (cID < 0 || cID / 50 != player)
+            return true;
+
+        return !ms.checkHavingCross(cID % 50, cID / 50);
+    }
+
+    public bool mySigniNotHeaven()
+    {
+        if (!isOnBattleField())
+            return true;
+
+        int aID = ms.getAttackerID();
+        if (aID == -1)
+            return true;
+
+        return aID/50 == 1-player || !ms.getCardScr(aID % 50, aID / 50).isHeaven();
+    }
+
+    public bool notResonaAndUtyu(int x, int target)
+    {
+        return !ms.checkType(x, target, cardTypeInfo.レゾナ) && ms.checkClass(x, target, cardClassInfo.精羅_宇宙);
+    }
+
+    public void setFieldAllEffect(int target,Fields F, Motions m)
+    {
+        int num = ms.getNumForCard((int)F, target);
+
+        for (int i = 0; i < num; i++)
+        {
+            int x = ms.getFieldRankID((int)F, i, target);
+            if (x >= 0)
+                setEffect(x,target,m);
+        }
+    }
+
+    public void setCanUseFunc(Func<bool> check, bool sugukesu=true)
+    {
+        checkCanUse = check;
+        checkCanUseSugukesu = sugukesu;
+    }
+
+    public bool getCanUseFunc()
+    {
+        //初期値では常にTrue
+        if (checkCanUse == null)
+            return true;
+
+       var f=checkCanUse;
+       if (checkCanUseSugukesu)
+           checkCanUse = null;
+        return f();
+    }
+
+    bool classDownDownCostInputReturn(int count)
+    {
+        for (int i = 0; i < count; i++)
+            ms.setSpellCostDown(getParameta(parametaKey.CostDownColor), getParameta(parametaKey.CostDownNum), player, getParameta(parametaKey.SpellOrArts));
+
+        return true;
+    }
+
+    public void beforeChantClassDownDownCost(cardClassInfo cls, cardColorInfo clr, int downValue)
+    {
+        if (!chantEffectFlag)
+            return;
+
+        chantEffectFlag = false;
+
+        int spellOrArs = boolParse(ms.checkType(ID, player, cardTypeInfo.アーツ));
+        addParameta(parametaKey.CostDownColor, (int)clr);
+        addParameta(parametaKey.CostDownNum, downValue);
+        addParameta(parametaKey.SpellOrArts, spellOrArs);
+
+
+
+        int target = player;
+        int f = (int)Fields.SIGNIZONE;
+        int num = ms.getNumForCard(f, target);
+
+        for (int i = 0; i < num; i++)
+        {
+            int x = ms.getFieldRankID(f, i, target);
+            if (x >= 0 && ms.checkClass(x, target, cls) && ms.getCardScr(x,target).isUp())
+                Targetable.Add(x + 50 * target);
+        }
+
+        if (Targetable.Count == 0)
+            return;
+
+        setSystemCardFromCard(-1, Motions.Down, Targetable.Count, Targetable, true, classDownDownCostInputReturn);
+
+/*        cursorCancel = true;
+
+        for (int i = 0; i < Targetable.Count; i++)
+            setEffect(-1, 0, Motions.DownAndCostDown);*/
+    }
+
+    int boolParse(bool flag)
+    {
+        if (!flag)
+            return 0;
+
+        return 1;
+    }
+
+    public void setPayCost()
+    {
+        setEffect(ID, player, Motions.PayCost);
+    }
+
+    bool checkFreezeThrough()
+    {
+        if(!checkAbility(ability.FreezeThrough))
+            return false;
+
+        int rank = ms.getRank(ID, player);
+        rank = 1 - (rank - 1);//正面のランクを得る
+
+        int x = ms.getFieldRankID(3, rank, 1 - player);
+
+        return x >= 0 && ms.checkFreeze(x, 1 - player);
+    }
+
+    public void resonaSummon(Func<int, int, bool> check, int num)
+    {
+        if (!useResona)
+            return;
+        useResona = false;
+
+        funcTargetIn(player, Fields.SIGNIZONE, check);
+        if (Targetable.Count < num)
+        {
+            Targetable.Clear();
+            return;
+        }
+
+        setSystemCardFromCard(-1, Motions.CostGoTrash, num, Targetable, false, null);
+        ms.SetSystemCardFromCard(ID + 50 * player, Motions.Summon, ID, player);
+    }
+
 }

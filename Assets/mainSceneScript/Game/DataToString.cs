@@ -173,6 +173,8 @@ public enum cardClassInfo
     精生_地獣 = 51,
     精生_空獣 = 52,
     精生_龍獣 = 53,
+
+    地獣または空獣 = 5152,
 }
 
 public class cardstatus
@@ -273,10 +275,11 @@ public class cardstatus
                     if (start + 1 >= 0 && goal - start - 1 > 0)
                     {
                         string cName = s[ii].Substring(start + 1, goal - start - 1);
-                        if (s[ii].Contains("左"))
+                        if (s[ii].Replace(cName,"").Contains("左"))
                             crossRightName = cName;
                         else
                             crossLeftName = cName;
+
                     }
                 }
 

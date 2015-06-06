@@ -1,13 +1,13 @@
 ﻿#Name 堕落の左罪　ファウスト
 #Type 2
+#Class 4:1
+#Color 5
 #Level 2
 #Power 5000
-#Color 5
-#LrigLimit 0
-#Class 4:1
-#BurstIcon False
+#BurstIcon True
 #Text
+
 【クロス】《堕落の右罪　フェレス》の左
 クロス常->：このシグニのパワーは8000になる。
 クロス常->：このシグニが【ヘブン】したとき、カードを1枚引く。
-
+☆->：カードを1枚引く。

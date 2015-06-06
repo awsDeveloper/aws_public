@@ -1,12 +1,10 @@
 ﻿#Name 堕落の右罪　フェレス
 #Type 2
+#Class 4:1
+#Color 5
 #Level 1
 #Power 2000
-#Color 5
-#LrigLimit 0
-#Class 4:1
-#BurstIcon False
 #Text
+
 【クロス】《堕落の左罪　ファウスト》の右
 クロス常->：このシグニのパワーは5000になる。
-

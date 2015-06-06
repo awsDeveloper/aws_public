@@ -1,13 +1,13 @@
 ﻿#Name 羅原　Ｎ
 #Type 2
+#Class 2:3
+#Color 3
 #Level 2
 #Power 5000
-#Color 3
-#LrigLimit 0
-#Class 2:3
-#BurstIcon False
+#BurstIcon True
 #Text
+
 【クロス】《羅原　C》の右
 クロス常->：このシグニのパワーは8000になる。
 クロス常->：このシグニが【ヘブン】したとき、カードを1枚引く。
-
+☆->：カードを1枚引く。

@@ -12,15 +12,29 @@ public class DialogToggle : MonoBehaviour {
     Func<bool> trigger;
     int max = 1;
 
-    struct checkAndEffect
+    class checkAndEffect
     {
         public Func<bool> check;
         public Func<bool> effect;
+
+        public Action action;
 
         public checkAndEffect(Func<bool> c, Func<bool> e)
         {
             check = c;
             effect = e;
+            action = excuteEffect;
+        }
+
+        public checkAndEffect(Func<bool> c, Action a)
+        {
+            check = c;
+            action = a;
+        }
+
+        void excuteEffect()
+        {
+            effect();
         }
     }
 
@@ -78,7 +92,7 @@ public class DialogToggle : MonoBehaviour {
             BodyScript.DialogCountMax = max;
         }
         else if(count==1 && lastNum>=0)
-            funcList[lastNum].effect();
+            funcList[lastNum].action();
 
     }
 
@@ -92,7 +106,7 @@ public class DialogToggle : MonoBehaviour {
         {
             for (int i = 0; i < BodyScript.checkBox.Count; i++)
                 if (BodyScript.checkBox[i])
-                    funcList[i].effect();
+                    funcList[i].action();
         }
 
         BodyScript.messages.Clear();
@@ -100,24 +114,38 @@ public class DialogToggle : MonoBehaviour {
 
     public void set(string str, Func<bool> check, Func<bool> effect)
     {
-        Start();
-
-        BodyScript.checkStr.Add(str);
-        BodyScript.checkBox.Add(false);
-        funcList.Add(new checkAndEffect(check,effect));
+        setting(str,new checkAndEffect(check,effect)); 
     }
-
     public void set(string str, Func<bool> effect)
     {
         set(str, trueReturn, effect);
     }
+    public void setAction(string str, Action action,Func<bool> check)
+    {
+        setting(str, new checkAndEffect(check, action));
+    }
+    public void setAction(string str, Action act)
+    {
+        setAction(str, act, trueReturn);
+    }
+
+    void setting(string str ,checkAndEffect eff)
+    {
+        Start();
+
+        BodyScript.checkStr.Add(str);
+        BodyScript.checkBox.Add(false);
+        funcList.Add(eff);
+    }
+
+
 
     bool trueReturn()
     {
         return true;
     }
 
-    public void setTrigger(Func<bool> func, int dialogMax)
+    public void setTrigger(Func<bool> func, int dialogMax=1)
     {
         trigger = func;
         max = dialogMax;

@@ -1,10 +1,10 @@
 ﻿#Name 博愛の使者　サシェ・モティエ
 #Type 0
-#Level 3
-#Limit 7
-#GrowCost 0/2/0/0/0/0/
+#LrigType 14
 #Color 1
-#LrigType サシェ
+#Level 3
+#GrowCost 0/2/0/0/0/0/
+#Limit 7
 #Text
-常->：あなたのすべてのレゾナのパワーを＋2000する。
 
+常->：あなたのすべてのレゾナのパワーを＋2000する。

@@ -1,11 +1,9 @@
 ﻿#Name 崩落の裕女　ドゥルジ
 #Type 2
+#Class 4:1
+#Color 5
 #Level 3
 #Power 8000
-#Color 5
-#LrigLimit 0
-#Class 4:1
-#BurstIcon False
 #Text
-常->：あなたの場に＜悪魔＞のシグニが3体あるかぎり、このシグニのパワーは14000になる。
 
+常->：あなたの場に＜悪魔＞のシグニが3体あるかぎり、このシグニのパワーは14000になる。

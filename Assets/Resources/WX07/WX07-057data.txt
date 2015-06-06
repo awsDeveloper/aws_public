@@ -1,11 +1,9 @@
 ﻿#Name 爆砲　ウージ
 #Type 2
+#Class 1:1
+#Color 2
 #Level 2
 #Power 5000
-#Color 2
-#LrigLimit 0
-#Class 1:1
-#BurstIcon False
 #Text
-常->：あなたの場に＜ウェポン＞のシグニが3体あるかぎり、このシグニのパワーは9000になる。
 
+常->：あなたの場に＜ウェポン＞のシグニが3体あるかぎり、このシグニのパワーは9000になる。

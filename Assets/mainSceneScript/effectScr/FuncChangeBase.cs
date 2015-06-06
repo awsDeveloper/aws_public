@@ -33,11 +33,8 @@ public class FuncChangeBase : MonoBehaviour {
 
         if (ManagerScript.getFieldInt(ID, player) == 3 && func())
         {
-            if (!upFlag)
-            {
-                ManagerScript.changeBasePower(ID, player, baseValue);
-                upFlag = true;
-            }
+            ManagerScript.changeBasePower(ID, player, baseValue);
+            upFlag = true;
         }
         else if (upFlag)
         {

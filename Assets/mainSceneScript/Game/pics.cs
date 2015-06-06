@@ -33,7 +33,7 @@ public class pics{
 
 	public Texture getTexture(string key)
 	{
-		if(textures.ContainsKey(key))
+ 		if(textures.ContainsKey(key))
 		{
 			Texture tex = textures[key].tex;
 			return tex;

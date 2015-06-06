@@ -5,7 +5,6 @@ public class WX07_065 : MonoCard{
 
 	// Use this for initialization
 	void Start () {
-        beforeStart();
 	
 	}
 	
@@ -22,12 +21,8 @@ public class WX07_065 : MonoCard{
         if (!sc.isChanted())
             return;
 
-        sc.addComEffctString = "WX07_065add";
-        for (int i = 0; i < 50; i++)
-        {
-            if (ms.checkType(i, player, cardTypeInfo.シグニ))
-                sc.setEffect(i, player, Motions.AddComponent);
-        }
+        sc.setFieldAllEffect(player, Fields.SIGNIZONE, Motions.EnAbility);
+        sc.addParameta(parametaKey.EnAbilityType, (int)ability.FreezeThrough);
     }
 }
 

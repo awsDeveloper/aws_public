@@ -78,7 +78,7 @@ public class WX07_028 : MonoCard {
         return ms.checkClass(x, target, cardClassInfo.精羅_原子);
     }
 
-    void beforeChant()
+    void beforeChant()//専用の関数あり
     {
         if(!sc.chantEffectFlag)
             return;

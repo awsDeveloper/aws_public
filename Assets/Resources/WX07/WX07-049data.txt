@@ -1,11 +1,9 @@
 ﻿#Name 羅星　レグルス
 #Type 2
+#Class 2:4
+#Color 1
 #Level 3
 #Power 8000
-#Color 1
-#LrigLimit 0
-#Class 2:宇宙
-#BurstIcon False
 #Text
-常->：あなたの場に＜宇宙＞のシグニが3体あるかぎり、このシグニのパワーは14000になる。
 
+常->：あなたの場に＜宇宙＞のシグニが3体あるかぎり、このシグニのパワーは14000になる。

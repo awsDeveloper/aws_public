@@ -62,7 +62,7 @@ public class WX07_024 : MonoCard {
     }
 
 
-    void beforeChant()
+    void beforeChant()//専用の関数あり
     {
         if (!sc.chantEffectFlag)
             return;

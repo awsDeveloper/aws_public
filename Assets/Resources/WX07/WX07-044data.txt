@@ -1,13 +1,13 @@
 ﻿#Name 幻獣　チータ
 #Type 2
+#Class 5:1
+#Color 4
 #Level 2
 #Power 5000
-#Color 4
-#LrigLimit 0
-#Class 5:1
-#BurstIcon False
+#BurstIcon True
 #Text
+
 【クロス】《幻獣　ヒョウ》の右
 クロス常->：このシグニのパワーは8000になる。
 クロス常->：このシグニが【ヘブン】したとき、カードを1枚引く。
-
+☆->：カードを1枚引く。

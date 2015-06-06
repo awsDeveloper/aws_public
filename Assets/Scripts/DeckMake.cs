@@ -55,7 +55,7 @@ public class DeckMake : MonoBehaviour {
 			changeObject = null;
 		}
 
-        if (cardTexture == null)
+        if (cardTexture == null && CardId!= null)
             cardTexture = Singleton<pics>.instance.getTexture(CardId);
 
 	}
@@ -179,7 +179,6 @@ public class DeckMake : MonoBehaviour {
 	}
 	
 	public void SetCard(string cardId){//カードのIDを入れるとそのIDとカードを保持
-		
 		if (cardId == ""||cardId == "death"||cardId == "Destroy") {
 			DestroyCard();
 			CardId = "";

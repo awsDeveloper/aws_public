@@ -1,11 +1,6 @@
 ﻿#Name 羅星　アルマク
 #Type 2
+#Class 2:4
+#Color 1
 #Level 4
 #Power 15000
-#Color 1
-#LrigLimit 0
-#Class 2:宇宙
-#BurstIcon False
-#Text
-
-

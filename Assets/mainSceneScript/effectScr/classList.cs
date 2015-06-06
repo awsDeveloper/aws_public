@@ -18,6 +18,17 @@ public class classList{
         return false;
     }
 
+    public bool checkClassThree(int target, DeckScript ds)
+    {
+        for (int i = 0; i < myClassList.Count; i++)
+        {
+            if (ds.getClassNum(target, Fields.SIGNIZONE, myClassList[i]) >= 3)
+                return true;
+        }
+
+        return false;
+    }
+
     public void setClass(cardClassInfo info)
     {
         myClassList.Add(info);

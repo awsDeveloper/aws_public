@@ -6,6 +6,7 @@ public class beforeGameManeger : MonoBehaviour
     public string uiString = "";
     public GameObject replayObj;
     public GameObject firstObj;
+    public GameObject ipAddres;
 
     public GameObject[] deckObjs = new GameObject[2];
 
@@ -14,7 +15,20 @@ public class beforeGameManeger : MonoBehaviour
         var item = firstObj.GetComponent<Kender.uGUI.ComboBox>();
 
         if (item != null && PlayerPrefs.HasKey("firstAttack"))
-            item.SelectedIndex = PlayerPrefs.GetInt("firstAttack")+1;
+            item.SelectedIndex = PlayerPrefs.GetInt("firstAttack");
+
+        var ip = ipAddres.GetComponent<UnityEngine.UI.InputField>();
+        if (ip != null && PlayerPrefs.HasKey("connectIP"))
+            ip.text = PlayerPrefs.GetString("connectIP");
+    }
+
+
+    void OnDestroy()
+    {
+        var item = firstObj.GetComponent<Kender.uGUI.ComboBox>();
+
+        if (item != null)
+            PlayerPrefs.SetInt("firstAttack", item.SelectedIndex);
     }
 
     public string getSelectedReplay()
