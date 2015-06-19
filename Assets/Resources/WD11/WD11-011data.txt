@@ -1,0 +1,11 @@
+﻿#Name 幻蟲　キアハ
+#Color 5
+#Type 2
+#Class 5:4
+#Level 3
+#Power 7000
+#LrigLimit 15
+#BurstIcon True
+#Text
+【出】[黒]：あなたのトラッシュから《幻蟲キアハ》以外の黒のシグニを１枚手札に加える。
+【ライフバースト】：カードを１枚引く。

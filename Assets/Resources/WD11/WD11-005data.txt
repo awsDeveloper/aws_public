@@ -1,0 +1,9 @@
+﻿#Name ミュウ＝ハッチ
+#Color 5
+#Type 0
+#LrigType 15
+#Level 0
+#Limit 0
+#GrowCost 0/0/0/0/0/0/
+#Text
+

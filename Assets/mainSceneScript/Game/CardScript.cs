@@ -197,7 +197,8 @@ public class CardScript : MonoBehaviour
 	public string DialogStr = string.Empty;
 	public bool DialogStrEnable = false;
 	public int DialogNum = 0;
-	public int DialogCountMax = 0;
+    public int DialogCountMax = 0;
+    public bool DialogMaxSelect = false;
     public List<string> checkStr = new List<string>();
     public List<bool> checkBox = new List<bool>();
     public List<string> messages = new List<string>();
@@ -218,6 +219,9 @@ public class CardScript : MonoBehaviour
 	public bool PayedCostEnable=false;
 	public List<int> PayedCostList = new List<int> ();
 
+    public bool PayedCostFlag = false;//払ったときに立つ
+
+
     public bool resiEffect = false;
     public bool resiLrigEffect = false;
 /*	public bool resiSigniEffect=false;
@@ -237,6 +241,8 @@ public class CardScript : MonoBehaviour
 
     public bool MelhenGrowFlag = false;
 
+    public bool costGoTrashIDenable = false;
+
     Func<bool> checkCanUse;
     bool checkCanUseSugukesu = true;
 
@@ -248,7 +254,6 @@ public class CardScript : MonoBehaviour
     Fields oldField = Fields.Non;
 
     Dictionary<parametaKey, int> parametaDictionary = new Dictionary<parametaKey, int>();
-
 
 
     bool brainChecke = false;//brainのスクリプト取得が終わっていることを示す
@@ -367,6 +372,17 @@ public class CardScript : MonoBehaviour
         changeColorCost(color, CostValue);
     }
 
+    public void setEffect_sukinakazu(int x, int target, Motions m)
+    {
+        for (int i = 0; i < Targetable.Count; i++)
+            setEffect(x, target, m);
+
+        if (x == -1)
+            cursorCancel = true;
+        else if (x == -2)
+            GUIcancelEnable = true;
+    }
+
     public void setEffect(int x, int target, Motions m)
     {
         if (x < 0 && Targetable.Count == 0 && m != Motions.CostBanish && m != Motions.ShowZoneGoTop)//入力ナンバーでターゲットなしは何もしない
@@ -449,7 +465,11 @@ public class CardScript : MonoBehaviour
     {
         if (ms.getEffecterNowID() < 0)
             return false;
-        return ms.getEffecterNowID() / 50 == 1 - player && ms.getExitID((int)Fields.SIGNIZONE, -1) == ID + 50 * player;
+        return ms.getEffecterNowID() / 50 == 1 - player && isRemovedThisSigni();//ms.getExitID((int)Fields.SIGNIZONE, -1) == ID + 50 * player;
+    }
+    public bool isRemovedThisSigni()
+    {
+        return ms.getExitID((int)Fields.SIGNIZONE, -1) == ID + 50 * player;
     }
 
     public bool isBursted()
@@ -479,6 +499,16 @@ public class CardScript : MonoBehaviour
         return false;
     }
 
+    public bool isMyResonaCiped()
+    {
+        if (ID < 0 || !isOnBattleField())
+            return false;
+
+        int sID = ms.getCipSigniID();
+
+        return sID >= 0 && sID / 50 == player && ms.checkType(sID, cardTypeInfo.レゾナ);
+    }
+
     public bool isCenter()
     {
         return ms.getFieldInt(ID, player) == (int)Fields.SIGNIZONE && ms.getRank(ID, player) == 1;
@@ -504,6 +534,10 @@ public class CardScript : MonoBehaviour
         return false;
     }
 
+    public bool isResonaOnBattleField()//自分以外
+    {
+        return isResonaOnBattleField(player);
+    }
     public bool isResonaOnBattleField(int target)//自分以外
     {
         int f = (int)Fields.SIGNIZONE;
@@ -616,6 +650,7 @@ public class CardScript : MonoBehaviour
                 Targetable.Add(x + 50 * target);
         }
     }
+
     public void ClassTargetIn(int target, Fields field, cardClassInfo info)
     {
         int f = (int)field;
@@ -625,6 +660,18 @@ public class CardScript : MonoBehaviour
         {
             int x = ms.getFieldRankID(f, i, target);
             if (x >= 0 && ms.checkClass(x, target,info))
+                Targetable.Add(x + 50 * target);
+        }
+    }
+    public void LevelMaxTargetIn(int target, Fields field, int levelMax)
+    {
+        int f = (int)field;
+        int num = ms.getNumForCard(f, target);
+
+        for (int i = 0; i < num; i++)
+        {
+            int x = ms.getFieldRankID(f, i, target);
+            if (x >= 0 && ms.getCardLevel(x,target)<=levelMax)
                 Targetable.Add(x + 50 * target);
         }
     }
@@ -1021,6 +1068,10 @@ public class CardScript : MonoBehaviour
     {
         return !ms.checkType(x, target, cardTypeInfo.レゾナ) && ms.checkClass(x, target, cardClassInfo.精羅_宇宙);
     }
+    public bool notResonaAndKyotyu(int x, int target)
+    {
+        return !ms.checkType(x, target, cardTypeInfo.レゾナ) && ms.checkClass(x, target, cardClassInfo.精生_凶蟲);
+    }
 
     public void setFieldAllEffect(int target,Fields F, Motions m)
     {
@@ -1122,7 +1173,7 @@ public class CardScript : MonoBehaviour
         return x >= 0 && ms.checkFreeze(x, 1 - player);
     }
 
-    public void resonaSummon(Func<int, int, bool> check, int num)
+    public void resonaSummon(Func<int, int, bool> check, int num, bool isCostUse=false)
     {
         if (!useResona)
             return;
@@ -1137,6 +1188,32 @@ public class CardScript : MonoBehaviour
 
         setSystemCardFromCard(-1, Motions.CostGoTrash, num, Targetable, false, null);
         ms.SetSystemCardFromCard(ID + 50 * player, Motions.Summon, ID, player);
+
+        if (isCostUse)
+            costGoTrashIDenable = true;
     }
 
+    public int getExecutedLevelSum(Motions m)
+    {
+        int sum=0;
+        int eID = -1;
+
+        while((eID = ms.getEffectExecutedID(ID,player,m))!=-1)
+            sum += ms.getCardLevel(eID);
+
+        return sum;
+    }
+
+    public bool checkExistTargetable()
+    {
+        int x = Targetable.Count;
+        Targetable.Clear();
+        return x > 0;
+    }
+
+    public void effectInsertOne(int targetID, Motions m)
+    {
+        effectTargetID.Insert(1, targetID);
+        effectMotion.Insert(1, (int)m);
+    }
 }

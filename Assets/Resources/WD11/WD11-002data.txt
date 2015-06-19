@@ -1,0 +1,9 @@
+﻿#Name ミュウ＝イマジ
+#Color 5
+#Type 0
+#LrigType 15
+#Level 3
+#Limit 8
+#GrowCost 0/0/0/0/0/2/
+#Text
+

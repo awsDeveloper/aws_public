@@ -1,0 +1,8 @@
+﻿#Name 幻蟲　Ｗ・アント
+#Color 5
+#Type 2
+#Class 5:4
+#Level 2
+#Power 7000
+#Text
+

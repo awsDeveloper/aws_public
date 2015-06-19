@@ -60,7 +60,7 @@ public class WX07_001 : MonoCard {
     void trigger()
     {
         int sID=ms.getCipSigniID();
-        if (!sc.isOnBattleField() 
+        if (!sc.isOnBattleField() //isMyResonaCiped使ってもいいよ
             || sID < 0 
             || !ms.checkType(sID, cardTypeInfo.レゾナ)
             || sID/50!=player

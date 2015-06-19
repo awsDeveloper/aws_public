@@ -293,6 +293,7 @@ public class DeckManager : MonoBehaviour {
 		if ( GUI.Button( new Rect(380, 70, 100, 20), "レベルで整列",customButton ) )//buttonがぶっとbんだｗｗｗｗｗｗｗｗｗ
 		{
 			sortCardByLevel ();
+            sortCardByType();
 		}
 
 		if ( GUI.Button( new Rect(380, 100, 100, 20), "色で整列",customButton ) )//buttonがぶっとbんだｗｗｗｗｗｗｗｗｗ
@@ -657,6 +658,53 @@ public class DeckManager : MonoBehaviour {
 		}
 		
 	}
+
+    void sortCardByType()
+    {
+        int i, j;
+        string temp;
+
+        for (i = 0; i < 10 - 1; i++)
+        {
+            for (j = 10 - 1; j > i; j--)
+            {
+                if (deckmake[j - 1].GetType() > deckmake[j].GetType())
+                {
+                    temp = deckmake[j].GetCard();        /* 交換する */
+                    deckmake[j].SetCard(deckmake[j - 1].GetCard());
+                    deckmake[j - 1].SetCard(temp);
+                }
+            }
+        }
+
+        for (i = 0; i < 20 - 1; i++)
+        {
+            for (j = 20 - 1; j > i; j--)
+            {
+                if (deckmake[j + 10 - 1].GetType() > deckmake[j + 10].GetType())
+                {
+                    temp = deckmake[j + 10].GetCard();        /* 交換する */
+                    deckmake[j + 10].SetCard(deckmake[j + 10 - 1].GetCard());
+                    deckmake[j + 10 - 1].SetCard(temp);
+                }
+            }
+        }
+
+        for (i = 0; i < 20 - 1; i++)
+        {
+            for (j = 20 - 1; j > i; j--)
+            {
+                if (deckmake[j + 30 - 1].GetType() > deckmake[j + 30].GetType())
+                {
+                    temp = deckmake[j + 30].GetCard();        /* 交換する */
+                    deckmake[j + 30].SetCard(deckmake[j + 30 - 1].GetCard());
+                    deckmake[j + 30 - 1].SetCard(temp);
+                }
+            }
+        }
+
+    }
+
 	void sortCardByColor(){
 		int i, j;
 		string temp;

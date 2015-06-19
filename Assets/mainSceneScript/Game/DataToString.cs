@@ -145,6 +145,7 @@ public enum LrigTypeInfo
     アン,
     タウィル,
     サシェ,
+    ミュウ
 }
 
 public enum cardClassInfo
@@ -173,6 +174,7 @@ public enum cardClassInfo
     精生_地獣 = 51,
     精生_空獣 = 52,
     精生_龍獣 = 53,
+    精生_凶蟲 = 54,
 
     地獣または空獣 = 5152,
 }

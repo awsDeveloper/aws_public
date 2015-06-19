@@ -1,0 +1,8 @@
+﻿#Name 幻蟲　Ｓ・アント
+#Color 5
+#Type 2
+#Class 5:4
+#Level 3
+#Power 10000
+#Text
+
