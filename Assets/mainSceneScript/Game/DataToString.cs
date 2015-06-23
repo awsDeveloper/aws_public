@@ -205,7 +205,7 @@ public class cardstatus
 
     public cardstatus(string cardId)
     {
-       TextAsset textAsset = (TextAsset)Resources.Load(cardId.Split('-')[0] + "/" + cardId + "data");
+       TextAsset textAsset = (TextAsset)Resources.Load("CardData/"+cardId.Split('-')[0] + "/" + cardId + "data");
 
        if (textAsset == null)
            return;

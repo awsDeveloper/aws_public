@@ -5826,7 +5826,7 @@ public class DeckScript : MonoBehaviour
 		
 		if (checkSerialNum (s[0], SerialNumString [player, ID]))//例外
 		{
-			loadString=s[0] + "/" + SerialNumString [player, ID] + "p";
+			loadString="CardData/"+s[0] + "/" + SerialNumString [player, ID] + "p";
 		}
 		else {
 			loadString="card";
