@@ -896,7 +896,8 @@ public class DeckManager : MonoBehaviour {
             }
             else
             {
-                TextAsset textAsset = (TextAsset)Resources.Load(deckmake[i].GetCard().Split('-')[0] + "/" + deckmake[i].GetCard() + "data");
+                TextAsset textAsset = Singleton<DataToString>.instance.getResourceData(deckmake[i].GetCard());
+                    //(TextAsset)Resources.Load(deckmake[i].GetCard().Split('-')[0] + "/" + deckmake[i].GetCard() + "data");
                 NSS.SearchAndAdd(deckmake[i].GetCard());
 
                 string[] s = textAsset.text.Split(' ', '\n');

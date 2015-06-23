@@ -107,6 +107,11 @@ public class DataToString{
 
         return reString;
     }
+
+    public TextAsset getResourceData(string serialNum)
+    {
+        return (TextAsset)Resources.Load("CardData/" + serialNum.Split('-')[0] + "/" + serialNum + "data");
+    }
 }
 
 public enum cardColorInfo 
@@ -205,7 +210,7 @@ public class cardstatus
 
     public cardstatus(string cardId)
     {
-       TextAsset textAsset = (TextAsset)Resources.Load("CardData/"+cardId.Split('-')[0] + "/" + cardId + "data");
+        TextAsset textAsset = Singleton<DataToString>.instance.getResourceData(cardId);
 
        if (textAsset == null)
            return;

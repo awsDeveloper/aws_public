@@ -9,7 +9,7 @@ public class DeckMake : MonoBehaviour {
 	private bool changeflag,destroyflag,exchangeflag;
 	private GameObject changeObject;
 	private DeckMake deckmake;
-	private TextAsset infomations;
+//	private TextAsset infomations;
 	private string CardInformationForShow;
 	private bool isLifeBurst;
 	private int cardtype = -1;
@@ -62,20 +62,22 @@ public class DeckMake : MonoBehaviour {
 	private bool ismouseover;
 
 	void OnGUI(){
-		if (ismouseover && infomations != null) {
-			GUI.Label (new Rect (0, Screen.height/2, 250, 1000), CardInformationForShow);
-//			Destroy (showcard);
-//			showcard = (GameObject)Instantiate (Resources.Load ("Prefab/"+CardId), new Vector3(-8f,3f,-7f), transform.rotation);
-			
-			if(cardTexture != null){
-				Vector3 v = Camera.main.WorldToScreenPoint( new Vector3(-8f,3f,-7f) );
-				float cardHeight= Screen.height * 0.35f;
-				float cardWidth=cardHeight*175/244;
-				
-				Rect rect = new Rect (v.x - cardWidth / 2, Screen.height - v.y - cardHeight / 2, cardWidth, cardHeight);
-				GUI.DrawTexture( rect, cardTexture); 
-			}
-		}
+        if (ismouseover && /*これは代わり*/CardInformationForShow != ""/* && infomations != null*/)
+        {
+            GUI.Label(new Rect(0, Screen.height / 2, 250, 1000), CardInformationForShow);
+            //			Destroy (showcard);
+            //			showcard = (GameObject)Instantiate (Resources.Load ("Prefab/"+CardId), new Vector3(-8f,3f,-7f), transform.rotation);
+
+            if (cardTexture != null)
+            {
+                Vector3 v = Camera.main.WorldToScreenPoint(new Vector3(-8f, 3f, -7f));
+                float cardHeight = Screen.height * 0.35f;
+                float cardWidth = cardHeight * 175 / 244;
+
+                Rect rect = new Rect(v.x - cardWidth / 2, Screen.height - v.y - cardHeight / 2, cardWidth, cardHeight);
+                GUI.DrawTexture(rect, cardTexture);
+            }
+        }
 //		else Destroy (showcard);
 		
 		
@@ -96,13 +98,13 @@ public class DeckMake : MonoBehaviour {
 	
 	void OnMouseEnter() {
 		SetInformation ();
-		infomations=(TextAsset)Resources.Load(CardId.Split ('-')[0] + "/" +CardId + "data");
+//		infomations=(TextAsset)Resources.Load(CardId.Split ('-')[0] + "/" +CardId + "data");
 		ismouseover = true;
 	}
 	
 	
 	void OnMouseExit() {
-		infomations = null;
+//		infomations = null;
 		CardInformationForShow = "";
 		ismouseover = false;
 		Debug.Log ("false ni narimasita");
@@ -174,7 +176,7 @@ public class DeckMake : MonoBehaviour {
 //		Destroy(card);
 		cardtype = -1;
 		cardTexture = null;
-		infomations = null;
+//		infomations = null;
 		CardId = "";
 	}
 	
@@ -188,7 +190,6 @@ public class DeckMake : MonoBehaviour {
 		isLifeBurst = false;
 		Destroy(card);
 		CardId = cardId;
-		
 		//comment out
 /*		if (Resources.Load ("Prefab/" + cardId) == null) {
 			card = (GameObject)Instantiate (Resources.Load ("Prefab/UnKnown"), transform.position, transform.rotation);
@@ -216,13 +217,17 @@ public class DeckMake : MonoBehaviour {
 
     void SetSomeCardData(string cardId)
     {
-        TextAsset textAsset = (TextAsset)Resources.Load(cardId.Split('-')[0] + "/" + cardId + "data");
+        TextAsset textAsset = Singleton<DataToString>.instance.getResourceData(cardId);//(TextAsset)Resources.Load(cardId.Split('-')[0] + "/" + cardId + "data");
         if (textAsset == null)
             return;
+ 
         string[] s = textAsset.text.Split(' ', '\n');
+
         for (int ii = 0; ii < s.Length; ii++)
         {
-            if (s[ii].IndexOf("#BurstIcon") >= 0 && s[ii + 1].IndexOf("True") >= 0) isLifeBurst = true;
+            if (s[ii].IndexOf("#BurstIcon") >= 0 && s[ii + 1].IndexOf("True") >= 0)
+                isLifeBurst = true;
+
             if (s[ii].IndexOf("#Type") >= 0)
             {
                 if (s[ii + 1].IndexOf("0") >= 0 || s[ii + 1].IndexOf("1") >= 0 || s[ii + 1].IndexOf("4") >= 0) isLrig = true;
