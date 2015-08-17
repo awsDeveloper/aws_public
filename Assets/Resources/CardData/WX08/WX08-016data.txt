@@ -1,0 +1,10 @@
+﻿#Name 収斂する修練　アン＝サード
+#Type 0
+#LrigType 12
+#Color 4
+#Level 3
+#GrowCost 0/1/0/0/1/0/
+#Limit 7
+#Text
+
+常->：あなたの【クロス】を持つすべてのシグニのパワーを＋1000する。

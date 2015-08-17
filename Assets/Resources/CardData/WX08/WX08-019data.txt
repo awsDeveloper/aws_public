@@ -1,0 +1,10 @@
+﻿#Name ミュウ＝イサリス
+#Type 0
+#LrigType 15
+#Color 5
+#Level 3
+#GrowCost 0/0/0/0/0/2/
+#Limit 7
+#Text
+
+常->：あなたのすべてのレゾナのパワーを＋2000する。

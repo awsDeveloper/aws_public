@@ -1,0 +1,6 @@
+﻿#Name 幻蟲　Ｑ・アント
+#Type 2
+#Class 5:4
+#Color 5
+#Level 4
+#Power 15000
