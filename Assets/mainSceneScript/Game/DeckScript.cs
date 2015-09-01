@@ -158,6 +158,7 @@ public enum Motions
     NextMinusLimit,
     NotCipSummon,
     NotCipTempResona,
+    DontGrow,
 }
 
 public enum DialogNumType
@@ -170,6 +171,7 @@ public enum DialogNumType
     UpDown,
     Level
 }
+
 
 enum positionInfo
 {
@@ -232,7 +234,6 @@ struct powerChange
 	public int changerID;
 	public int changeValue;
     public System.Func<int, int, bool> check;
-
     public powerChange(int changed, int changer, int value)
     {
         changedID = changed;
@@ -265,43 +266,6 @@ class IgniCostDecrease
         isEndFinishFlag = isEndFinish;
         downCost = cost;
         igniField = applyField;
-    }
-}
-
-public class colorCostArry
-{
-    int[] cost = new int[6];
-
-    public colorCostArry(bool isAllMax) 
-    {
-        if (isAllMax)
-        {
-            for (int i = 0; i < cost.Length; i++)
-                cost[i] = 100;
-        }
-    }
-
-    public colorCostArry(int[] a)
-    {
-        for (int i = 0; i < cost.Length; i++)
-            cost[i] = a[i];
-    }
-
-    public colorCostArry(cardColorInfo info, int num) {
-        for (int i = 0; i < cost.Length; i++)
-            cost[i] = 0;
-
-        cost[(int)info] = num;
-    }
-
-    public int getCost(int color)
-    {
-        return cost[color];
-    }
-
-    public void addCost(int color, int num)
-    {
-        cost[color] += num;
     }
 }
 
@@ -623,6 +587,8 @@ public class DeckScript : MonoBehaviour
     int[] BattleFinishID = new int[2] { -1, -1 };
     int[] tellBattleFinishID = new int[2] { -1, -1 };
 
+    bool isCrossExited = false;
+
     //まで
 
 	int[,,] spellCostDown = new int[2, 6, 2]; // [player, color, spell or arts]
@@ -708,7 +674,10 @@ public class DeckScript : MonoBehaviour
     int ExtraTurnCount = 0;
     int NextExtraTurnCount = 0;
 
-    int[] HandSummonMaxLim = new int[2]{-1,-1};
+    bool[] DontGrowFlag = new bool[2];
+    bool[] NextDontGrowFlag = new bool[2];
+
+    int[] HandSummonMaxLim = new int[2] { -1, -1 };
     bool[] JerashiGeizuFlag = new bool[2];
 
     bool GoNextTrunFlag = false;
@@ -729,11 +698,6 @@ public class DeckScript : MonoBehaviour
 
     bool SigniAttackSkipFlag = false;
     bool LrigAttackSkipFlag = false;
-
-    public bool[] nickelFlag = new bool[2];
-
-    public bool[] melhenFlag = new bool[2];
-    bool melhenUpFlag = false;
 
     GameObject beforGame;
     GameObject canvasObj;
@@ -765,6 +729,10 @@ public class DeckScript : MonoBehaviour
     int[] MinusLimitCount = new int[] { 0, 0 };
 
     List<powerChange> effectExecuteList = new List<powerChange>();
+
+    int oneHandDeathSelecter = -1;
+
+    List<string> usedList = new List<string>();
 	//最後尾
 
 	//通信
@@ -810,6 +778,10 @@ public class DeckScript : MonoBehaviour
     public bool[] Rian_eff_Flag = new bool[2];
     public bool[] kyomuFlag = new bool[2];
     public bool[] mirutychoFlag = new bool[2];//スペル発動不可
+    public bool[] nickelFlag = new bool[2];
+
+    public bool[] melhenFlag = new bool[2];
+    bool melhenUpFlag = false;
 
 	public bool requipFlag=false;
 	public bool requipUpFlag=false;//次フレームでrequipを立てるフラグ
@@ -817,9 +789,40 @@ public class DeckScript : MonoBehaviour
     public int[] signiSumLimit = new int[2] { 3, 3 };
     int[] signiSumLimitChangedID = new int[2] { -1, -1 };
 
+
+    //funcs
     public int getStartedPhase()
     {
         return startedPhase;
+    }
+
+    public bool checkIsCrossExited()
+    {
+        return isCrossExited;
+    }
+
+    public bool isUsedThis(int ID, int player)
+    {
+        for (int i = 0; i < usedList.Count; i++)
+        {
+            if (checkName(ID, player, usedList[i]))
+                return true;
+        }
+
+        return false;
+    }
+
+    public void upAlwaysFlag(alwysEffs eff, int target, int ID, int player)
+    {
+        CardScript sc = getCardScr(ID,player);
+        if (sc != null && sc.isOnBattleField() && !sc.lostEffect)
+        {
+            AlwysEffFlags.flagUp(eff, target, ID + 50 * player);
+            return;
+        }
+
+        if(AlwysEffFlags.getUpperID(eff, target) == getFusionID(ID,player))
+            AlwysEffFlags.flagDown(eff, target);
     }
 
     public bool isTargetIDCountZero(int ID, int player)
@@ -1257,6 +1260,11 @@ public class DeckScript : MonoBehaviour
 		CardScript sc = getCardScr (ID, player);
 		return new int[2]{sc.Class_1,sc.Class_2};
 	}
+
+    public bool checkController(int fID, int controller)
+    {
+        return fID / 50 == controller;
+    }
 
     
     public bool checkCross(int ID, int player)
@@ -2442,6 +2450,8 @@ public class DeckScript : MonoBehaviour
             else
                 notCipID = -1;
         }
+
+        isCrossExited = false;
     }
 	
 	private Vector3 vec3Add (Vector3 vec1, Vector3 vec2)
@@ -3789,10 +3799,11 @@ public class DeckScript : MonoBehaviour
 	public bool summonLim(int ID,int player)
 	{
 		CardScript sc = getCardScr (ID, player % 2);
-		if (checkLrigLim (ID, player))
-			return true;
 		
-		if (sc.Level > LrigLevel [player % 2] || sc.Level + SigniLevelSum (player) > getLrigLevelLimit (player % 2))
+		if (checkLrigLim (ID, player) 
+            || sc.useLimit
+            || sc.Level > LrigLevel [player % 2]
+            || sc.Level + SigniLevelSum (player) > getLrigLevelLimit (player % 2))
 			return true;
 
 		return false;
@@ -7165,12 +7176,21 @@ public class DeckScript : MonoBehaviour
         phase = Phases.UpPhase;
         turnEndFlag = true;
 
+        //extra turn
         if (NextExtraTurnCount > 0)
         {
             NextExtraTurnCount--;
             ExtraTurnCount++;
         }
 
+        //dont grow
+        for (int i = 0; i < 2; i++)
+        {
+            DontGrowFlag[i] = NextDontGrowFlag[i];
+            NextDontGrowFlag[i] = false;
+        }
+
+        //goNextTurn
         if (GoNextTrunFlag)
         {
             chainMotion[0] = -1; 
@@ -7888,7 +7908,7 @@ public class DeckScript : MonoBehaviour
 
         //exitID
         exitID = ID + player % 2 * 50;
-        exitField = field[player % 2, ID];
+        exitField = field[player % 2, ID];     
 
         if (/*EffecterNowID >= 0 &&*/dualEffectTriggerd)
             exitedList.Add(exitID);
@@ -7978,6 +7998,9 @@ public class DeckScript : MonoBehaviour
                 SetSystemCard(id, Motions.GoTrash);
                 underCards[fieldRank[player % 2, ID]].RemoveAt(0);
             }
+
+            if (checkCross(ID, player % 2))
+                isCrossExited = true;
 
 		}
 		else if (field [player % 2, ID] == Fields.MAINDECK)
@@ -8534,6 +8557,10 @@ public class DeckScript : MonoBehaviour
 	
 	void Grow (int id, int player)
 	{
+        //dont grow
+        if (DontGrowFlag[player % 2])
+            return;
+
 		if (chainMotion [0] == -1 && movePhase [player] == 0 && rotaPhase [player] == -1)
 			chainMotion [0] = 0;
 
@@ -9312,6 +9339,9 @@ public class DeckScript : MonoBehaviour
 
     void endEffect(CardScript sc, int playerNum)
     {
+        if(!usedList.Contains(sc.Name))
+            usedList.Add(sc.Name);
+
         IgniEffID = -1;
 
         if (trueIgniSeted)
@@ -9421,6 +9451,7 @@ public class DeckScript : MonoBehaviour
         int selecter = sc.effectSelecter;
         int cursorIndex = -1;
         
+
         for (int i = 0; i < sc.BeforeCutInNum && i < sc.effectTargetID.Count; i++)
         {
             if (sc.effectTargetID[i] == -1)
@@ -9432,6 +9463,11 @@ public class DeckScript : MonoBehaviour
 
         if (cursorIndex >= 0)
         {
+            //oneHandDeathではselecterはターゲットの所有者
+            if (sc.effectMotion[cursorIndex] == (int)Motions.oneHandDeath)
+                selecter = oneHandDeathSelecter;
+
+            //通信時
             if (waitYou(selecter))
             {
                 if (canRead())
@@ -9844,6 +9880,10 @@ public class DeckScript : MonoBehaviour
                 sc.effectTargetID.RemoveAt(0);
                 sc.effectMotion.RemoveAt(0);
             }
+        }
+        else if (m == Motions.DontGrow)
+        {
+            NextDontGrowFlag[effectPlayer % 2] = true;
         }
         else if (m == Motions.NextMinusLimit)
         {
@@ -10259,6 +10299,8 @@ public class DeckScript : MonoBehaviour
         {
             if (effectID == 0 || effectID == 50)
             {
+                oneHandDeathSelecter = effectID / 50;
+
                 sc.effectTargetID[0] = -1;
                 sc.Targetable.Clear();
                 for (int i = 0; i < handNum[effectPlayer % 2]; i++)
@@ -10272,7 +10314,7 @@ public class DeckScript : MonoBehaviour
                 {
                     sc.effectTargetID.RemoveAt(0);
                     sc.effectMotion.RemoveAt(0);
-                }
+                }           
 
                 return false;
             }
@@ -10854,12 +10896,10 @@ public class DeckScript : MonoBehaviour
             ( !CheckEffectResist(sc.effectTargetID[0] % 50, sc.effectTargetID[0] / 50, EffecterNowID % 50, EffecterNowID / 50)
             && !GoNextTrunFlag);
 
-        bool executed = notResist && sc.getCanUseFunc();
+        bool executed = notResist && sc.getCanUseFunc() && (!exitedList.Contains(sc.effectTargetID[0]) || !notMoving(effectPlayer));
 
         if (executed)
         {
-
-
             tellEffectID = sc.effectTargetID[0];
 
             bool flag = ChoiceEffectBody(sc, playerNum);
@@ -12478,6 +12518,9 @@ public class DeckScript : MonoBehaviour
 
     void UpIgnitionOther(int ID, int player)
     {
+        if (AlwysEffFlags.checkFlagUp(alwysEffs.Arachne, player) && havingCharm(ID, player))
+            return;
+
         card[player, ID].GetComponent<CardScript>().Ignition = true;
         IgnitionUpID = ID + 50 * player;
     }

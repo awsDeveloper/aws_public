@@ -28,6 +28,13 @@ public enum parametaKey
     changeBaseValue,
 }
 
+public enum dialogUpConditions//dialogが立った時の状況
+{
+    non,            //登録なし
+    cip,
+    banished,
+}
+
 public class CardScript : MonoBehaviour
 {
     cardstatus status;
@@ -193,12 +200,14 @@ public class CardScript : MonoBehaviour
 
 	public bool ReplaceFlag=false;
 
+
 	public bool DialogFlag = false;
 	public string DialogStr = string.Empty;
 	public bool DialogStrEnable = false;
 	public int DialogNum = 0;
     public int DialogCountMax = 0;
     public bool DialogMaxSelect = false;
+    public dialogUpConditions DialogUpCondition = dialogUpConditions.non;
     public List<string> checkStr = new List<string>();
     public List<bool> checkBox = new List<bool>();
     public List<string> messages = new List<string>();
@@ -713,9 +722,12 @@ public class CardScript : MonoBehaviour
         setEffect(-1, 0, Motions.EnaCharge);
     }
 
-    public void minPowerTargetIn(int minPower)
+    public void minPowerTargetIn(int minPower,bool forMe=false)//デフォルトは相手
     {
         int target = 1 - player;
+        if (forMe)
+            target = player;
+
         int f = (int)Fields.SIGNIZONE;
         int num = ms.getNumForCard(f, target);
 
@@ -873,9 +885,17 @@ public class CardScript : MonoBehaviour
         return count;
     }
 
-    public bool isMessageYes()
+    public bool isMessageYes(dialogUpConditions c)
     {
-        if (messages.Count == 0)
+        if (DialogUpCondition != c)
+            return false;
+
+        return isMessageYes();
+    }
+
+    public bool isMessageYes()//yes no 専用
+    {
+        if (messages.Count == 0 || DialogNum != (int)DialogNumType.YesNo)
             return false;
 
         string s = messages[0];
@@ -898,6 +918,19 @@ public class CardScript : MonoBehaviour
         return count;
     }
 
+    public void banishedDialog(cardColorInfo info, int num)
+    {
+        if (ms.getBanishedID() != ID + 50 * player)
+            return;
+
+        changeColorCost(info, num);
+        if (!myCheckCost())
+            return;
+
+        setDialogNum(DialogNumType.YesNo);
+        DialogUpCondition = dialogUpConditions.banished;
+    }
+
     public void cipDialog(cardColorInfo info,int num)
     {
 
@@ -908,8 +941,8 @@ public class CardScript : MonoBehaviour
         if (!myCheckCost())
             return;
 
-        DialogFlag = true;
-        DialogNum = 0;
+        setDialogNum(DialogNumType.YesNo);
+        DialogUpCondition = dialogUpConditions.cip;
     }
 
     public void setDialogNum(DialogNumType type)
@@ -1061,7 +1094,19 @@ public class CardScript : MonoBehaviour
         if (aID == -1)
             return true;
 
-        return aID/50 == 1-player || !ms.getCardScr(aID % 50, aID / 50).isHeaven();
+        return aID / 50 == 1 - player || !ms.getCardScr(aID % 50, aID / 50).isHeaven();
+    }
+
+    public bool myColorSigniHeaven(cardColorInfo info)
+    {
+        if (!isOnBattleField())
+            return false;
+
+        int aID = ms.getAttackerID();
+        if (aID == -1)
+            return false;
+
+        return aID / 50 == player && ms.checkColor(aID%50, aID/50, info) && ms.getCardScr(aID % 50, aID / 50).isHeaven();
     }
 
     public bool notResonaAndUtyu(int x, int target)
@@ -1215,5 +1260,14 @@ public class CardScript : MonoBehaviour
     {
         effectTargetID.Insert(1, targetID);
         effectMotion.Insert(1, (int)m);
+    }
+
+    public int getCipYourSigniID()
+    {
+        int sID = ms.getCipSigniID();
+        if (sID == -1 || sID / 50 == player)
+            return -1;
+
+        return sID;
     }
 }

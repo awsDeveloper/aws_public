@@ -10,7 +10,13 @@ public class WX08_008 : MonoCard {
 	
 	// Update is called once per frame
 	void Update () {
-	
+        sc.resonaSummon(sc.notResonaAndUtyu, 2);
+
+        if (sc.isCiped())
+        {
+            sc.funcTargetIn(player, Fields.MAINDECK);
+            sc.setEffect(-2, 0, Motions.Summon);
+        }
 	}
 }
 

@@ -5,6 +5,7 @@ public class WX08_012 : MonoCard {
 
 	// Use this for initialization
 	void Start () {
+        gameObject.AddComponent<WX07_010>();
 	
 	}
 	

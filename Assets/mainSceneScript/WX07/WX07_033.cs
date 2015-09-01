@@ -19,6 +19,12 @@ public class WX07_033 : MonoCard {
         banished();
         receive();
 
+        if (!sc.DialogFlag)
+        {
+            bFlag = false;
+            bID = -1;
+            rCip = false;
+        }
 	}
 
     void banished()
@@ -31,7 +37,7 @@ public class WX07_033 : MonoCard {
 
         bID = ms.getBanishedID();
 
-        if (bID == -1 || ms.checkName(bID, "羅星　アルファード"))
+        if (bID == -1 || !ms.checkController(bID, player) || ms.checkName(bID, "羅星　アルファード"))
         {
             bID = -1;
             return;

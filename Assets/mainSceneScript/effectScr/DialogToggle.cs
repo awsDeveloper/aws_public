@@ -133,7 +133,7 @@ public class DialogToggle : MonoBehaviour {
     void receive()
     {
         //receive
-        if (BodyScript.messages.Count == 0)
+        if (BodyScript.messages.Count == 0 || BodyScript.DialogNum != (int)DialogNumType.toggle)
             return;
 
         if (BodyScript.messages[0].Contains("Yes"))
