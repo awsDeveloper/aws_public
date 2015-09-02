@@ -16,8 +16,9 @@ public class colorCostArry
 
     public colorCostArry(int[] a)
     {
-        for (int i = 0; i < cost.Length; i++)
-            cost[i] = a[i];
+        if (a.Length == cost.Length)
+            for (int i = 0; i < cost.Length; i++)
+                cost[i] = a[i];
     }
 
     public colorCostArry(cardColorInfo info, int num)
@@ -36,5 +37,15 @@ public class colorCostArry
     public void addCost(int color, int num)
     {
         cost[color] += num;
+    }
+
+    public void addCost(cardColorInfo info, int num)
+    {
+        cost[(int)info] += num;
+    }
+
+    public void setCost(cardColorInfo info, int num)
+    {
+        cost[(int)info] = num;
     }
 }

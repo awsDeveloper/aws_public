@@ -18,6 +18,7 @@ public class DialogToggle : MonoBehaviour {
     bool isGotYes = false;
 
     Action FinalAciton = null;
+    bool isUpper = false;
 
     class checkAndEffect
     {
@@ -120,6 +121,7 @@ public class DialogToggle : MonoBehaviour {
 
         if (count >= 2)
         {
+            isUpper = true;
             BodyScript.DialogFlag = true;
             BodyScript.DialogNum = 2;
             BodyScript.DialogCountMax = max;
@@ -133,8 +135,10 @@ public class DialogToggle : MonoBehaviour {
     void receive()
     {
         //receive
-        if (BodyScript.messages.Count == 0 || BodyScript.DialogNum != (int)DialogNumType.toggle)
+        if (!isUpper || BodyScript.messages.Count == 0 || BodyScript.DialogNum != (int)DialogNumType.toggle)
             return;
+
+        isUpper = false;
 
         if (BodyScript.messages[0].Contains("Yes"))
         {

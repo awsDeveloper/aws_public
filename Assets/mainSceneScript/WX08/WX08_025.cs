@@ -33,7 +33,7 @@ public class WX08_025 : MonoCard {
             for (int i = 0; i < sc.Targetable.Count; i++)
                 sc.setEffect(sc.Targetable[i], 0, Motions.GoHand);
             sc.Targetable.Clear();
-            sc.setEffect(0, player, Motions.ShowZoneGoTop);
+            sc.setEffect(-1, 0, Motions.ShowZoneGoTop);
         }
 	}
 }

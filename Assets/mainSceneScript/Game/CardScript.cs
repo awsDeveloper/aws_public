@@ -264,6 +264,7 @@ public class CardScript : MonoBehaviour
 
     Dictionary<parametaKey, int> parametaDictionary = new Dictionary<parametaKey, int>();
 
+    colorCostArry costDownValue = new colorCostArry(cardColorInfo.無色, 0);
 
     bool brainChecke = false;//brainのスクリプト取得が終わっていることを示す
 
@@ -1269,5 +1270,10 @@ public class CardScript : MonoBehaviour
             return -1;
 
         return sID;
+    }
+
+    public void setCostDownValue(cardColorInfo info, int num)
+    {
+        costDownValue.setCost(info, num);
     }
 }

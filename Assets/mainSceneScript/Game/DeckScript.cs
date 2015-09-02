@@ -829,10 +829,11 @@ public class DeckScript : MonoBehaviour
     {
         if (SystemEffectFlag)
             return SystemCardScr.effectTargetID.Count == 0;
-        else if (EffecterNowID == -1)
-            return true;
-        
-        return getCardScr(EffecterNowID).effectTargetID.Count == 0;
+//        else if (EffecterNowID == -1)
+//            return true;
+
+//        return getCardScr(EffecterNowID).effectTargetID.Count == 0;
+        return getCardScr(ID,player).effectTargetID.Count == 0;
     }
 
     public int getDeckTopID(int player)
@@ -9492,7 +9493,11 @@ public class DeckScript : MonoBehaviour
                     {
                         int x = getShowZoneID(i);
                         if (x < 0)
+                        {
+                            if (i == 0)
+                                return false;
                             break;
+                        }
 
                         sc.Targetable.Add(x);
                         sc.effectMotion.Insert(cursorIndex, (int)Motions.GoDeck);
