@@ -4,9 +4,11 @@ using System.Collections;
 public class colorCostArry
 {
     int[] cost = new int[6];
+    int[] downValue;
 
     public colorCostArry(bool isAllMax)
     {
+        ResetDownValue();
         if (isAllMax)
         {
             for (int i = 0; i < cost.Length; i++)
@@ -16,6 +18,7 @@ public class colorCostArry
 
     public colorCostArry(int[] a)
     {
+        ResetDownValue();
         if (a.Length == cost.Length)
             for (int i = 0; i < cost.Length; i++)
                 cost[i] = a[i];
@@ -23,15 +26,23 @@ public class colorCostArry
 
     public colorCostArry(cardColorInfo info, int num)
     {
+        ResetDownValue();
         for (int i = 0; i < cost.Length; i++)
             cost[i] = 0;
 
         cost[(int)info] = num;
     }
 
+    void ResetDownValue()
+    {
+        downValue = new int[cost.Length];
+        for (int i = 0; i < downValue.Length; i++)
+            downValue[i] = 0;
+    }
+
     public int getCost(int color)
     {
-        return cost[color];
+        return cost[color]-downValue[color];
     }
 
     public void addCost(int color, int num)
@@ -44,8 +55,24 @@ public class colorCostArry
         cost[(int)info] += num;
     }
 
-    public void setCost(cardColorInfo info, int num)
+    public void setDownValue(cardColorInfo info, int num)
     {
-        cost[(int)info] = num;
+        downValue[(int)info] = num;
+    }
+
+    public int this[int index]
+    {
+        get { return getCost(index); }
+        set { cost[index] = value; }
+    }
+
+    public int Length()
+    {
+        return cost.Length;
+    }
+
+    public int getOriCost(cardColorInfo info)
+    {
+        return cost[(int)info];
     }
 }

@@ -124,6 +124,12 @@ public class EffectTemplete : MonoCard {
         custom
     }
 
+    public enum option
+    {
+        cost             = 1,
+        attackPhaseUsing = 2,
+    }
+
     public void addEffect(List<checkAndEffect> _funcList, int _max, bool _maxSelect, bool _isCost)
     {
         effectList.Add(new effectPack(_funcList, _max, _maxSelect, _isCost));
@@ -213,7 +219,7 @@ public class EffectTemplete : MonoCard {
 
         effectIndex = 0;
 
-        if (useYesNo)
+        if (useYesNo && checkCost())
         {
             sc.setDialogNum(DialogNumType.YesNo);
             isUpper = true;
@@ -222,21 +228,45 @@ public class EffectTemplete : MonoCard {
             afterGettingYes();
     }
 
-    bool funcCheck(int index)
+    bool checkCost()
     {
-        switch (effectList[effectIndex].funcList[index].myCheckType)
+        for (int i = 0; i < effectList.Count; i++)
+        {
+            if (!effectList[i].isCost)
+                continue;
+
+            bool flag = false;
+            for (int j = 0; j < effectList[i].funcList.Count; j++)
+            {
+                if (funcCheck(i, j))
+                {
+                    flag = true;
+                    break;
+                }
+            }
+
+            if (!flag)
+                return false;
+        }
+
+        return true;
+    }
+
+    bool funcCheck(int eIndex,int fIndex)
+    {
+        switch (effectList[eIndex].funcList[fIndex].myCheckType)
         {
             case checkType.True:
                 return true;
 
             case checkType.custom:
-                return effectList[effectIndex].funcList[index].check();
+                return effectList[eIndex].funcList[fIndex].check();
 
             case checkType.Default:
                 bool flagBuf = sc.effectFlag;
                 sc.effectFlag = false;
 
-                effectList[effectIndex].funcList[index].action();
+                effectList[eIndex].funcList[fIndex].action();
                 bool flag = sc.effectFlag;
 
                 sc.effectFlag = flagBuf;
@@ -261,7 +291,7 @@ public class EffectTemplete : MonoCard {
 
         for (int i = 0; i < effectList[effectIndex].funcList.Count; i++)
         {
-            if (funcCheck(i))
+            if (funcCheck(effectIndex,i))
             {
                 lastNum = i;
                 count++;

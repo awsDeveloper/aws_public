@@ -52,8 +52,8 @@ public class CardScript : MonoBehaviour
         get { return status.level; }
         set { status.level = value; }
     }
-    public int[] Cost { get { return status.Cost; } }
-    public int[] GrowCost { get { return status.growCost; } }
+    public colorCostArry Cost { get { return status.Cost; } }
+    public colorCostArry GrowCost { get { return status.growCost; } }
     public int Limit { get { return status.Limit; } }
 
     public int LrigType { get { return status.lrigType; } }
@@ -264,8 +264,6 @@ public class CardScript : MonoBehaviour
 
     Dictionary<parametaKey, int> parametaDictionary = new Dictionary<parametaKey, int>();
 
-    colorCostArry costDownValue = new colorCostArry(cardColorInfo.無色, 0);
-
     bool brainChecke = false;//brainのスクリプト取得が終わっていることを示す
 
     class FlagSet{
@@ -351,24 +349,24 @@ public class CardScript : MonoBehaviour
 
     public void changeCost(int[] c)
     {
-        if (c.Length != Cost.Length)
+        if (c.Length != Cost.Length())
             return;
 
-        for (int i = 0; i < Cost.Length; i++)
+        for (int i = 0; i < Cost.Length(); i++)
         {
             Cost[i] = c[i];
         }
     }
     public void changeCost(colorCostArry c)
     {
-        for (int i = 0; i < Cost.Length; i++)
+        for (int i = 0; i < Cost.Length(); i++)
         {
             Cost[i] = c.getCost(i);
         }
     }
 
 	public void changeColorCost(int color,int CostValue){
-		for (int i = 0; i < Cost.Length; i++)
+		for (int i = 0; i < Cost.Length(); i++)
 		{
 			Cost[i]=0;
 		}
@@ -619,7 +617,7 @@ public class CardScript : MonoBehaviour
     {
         int f = (int)Fields.SIGNIZONE;
         int num = ms.getNumForCard(f, target);
-        int min = 0;
+        int min = getMaxPower(target);
 
         for (int i = 0; i < num; i++)
         {
@@ -1274,6 +1272,14 @@ public class CardScript : MonoBehaviour
 
     public void setCostDownValue(cardColorInfo info, int num)
     {
-        costDownValue.setCost(info, num);
+        Cost.setDownValue(info, num);
+    }
+
+    public EffectTemplete AddEffectTemplete(EffectTemplete.triggerType t, Action a, bool isCost=false)
+    {        
+        var com = ms.getFront(ID,player).AddComponent<EffectTemplete>();
+        com.setTrigger(t);
+        com.addEffect(a, isCost);
+        return com;
     }
 }

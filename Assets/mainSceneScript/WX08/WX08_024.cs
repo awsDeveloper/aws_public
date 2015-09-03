@@ -36,7 +36,7 @@ public class WX08_024 : MonoCard {
         }
 
         if (sc.isBursted())
-            sc.minPowerBanish(sc.getMinPower(1 - player));
+            sc.maxPowerBanish(sc.getMinPower(1 - player));
 	}
 
     bool check(int x, int target)

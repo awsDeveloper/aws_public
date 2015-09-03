@@ -35,14 +35,14 @@ public class DataToString{
             CardInformationForShow += (gtjk + "限定\r\n");
         }
 
-        if (cds.growCost[0] >= 0)
+        if (cds.type == (int)cardTypeInfo.ルリグ)
         {
             CardInformationForShow += "グロウコスト" + CostToString(cds.growCost) + "\r\n";
 //            CardInformationForShow += ("グロウコスト：（無）" + cds.growCost[0] + "（白）" + cds.growCost[1] + "（赤）" + cds.growCost[2] + "\r\n");
 //            CardInformationForShow += ("      　　　      （青）" + cds.growCost[3] + "（緑）" + cds.growCost[4] + "（黒）" + cds.growCost[5] + "\r\n");
         }
 
-        if (cds.Cost[0] >= 0)
+        if (cds.type == (int)cardTypeInfo.アーツ || cds.type == (int)cardTypeInfo.スペル)
         {
             CardInformationForShow += "コスト" + CostToString(cds.Cost) + "\r\n";
 //            CardInformationForShow += ("コスト：（無）" + cds.Cost[0] + "（白）" + cds.Cost[1] + "（赤）" + cds.Cost[2] + "\r\n");
@@ -86,12 +86,12 @@ public class DataToString{
         return cls.ToString().Replace('_', kugiri);
     }
 
-    string CostToString(int[] x)
+    string CostToString(colorCostArry x)
     {
         int num = 0;
         string reString = "【";//コスト: "
 
-        for (int i = 0; i < x.Length; i++)
+        for (int i = 0; i < x.Length(); i++)
         {
             if (x[i] > 0)
             {
@@ -182,19 +182,20 @@ public enum cardClassInfo
     精生_凶蟲 = 54,
 
     地獣または空獣 = 5152,
+    鉱石または宝石 = 2021,
 }
 
 public class cardstatus
 {//カードｉｄとともにインスタンス化するとそのカードの性質が一通りどうにかなる
     public int type = -1;//ルリグ・スペル・シグニ・アーツの見分け
     public int level=-1;
-    public int[] growCost = new int[6] { -1, -1, -1, -1, -1, -1 };
+    public colorCostArry growCost = new colorCostArry(cardColorInfo.無色, 0);
     public int cardColor=-1;
 
     public int lrigType = -1;
     public int lrigType_2 = -1;
 
-    public int[] Cost = new int[6] { -1, -1, -1, -1, -1, -1 };
+    public colorCostArry Cost = new colorCostArry(cardColorInfo.無色, 0);
     public int Limit = -1;
     public int lrigLimit = -1;
     public int lrigLimit_2 = 0;
@@ -231,7 +232,7 @@ public class cardstatus
             {
                 string[] gcs = s[ii + 1].Split('/');
 //                Debug.Log(gcs.Length.ToString() + "    " + growCost.Length.ToString());
-                for (int iii = 0; iii < growCost.Length && iii < gcs.Length; iii++)
+                for (int iii = 0; iii < growCost.Length() && iii < gcs.Length; iii++)
                 {
                     growCost[iii] = int.Parse(gcs[iii]);
 //                    Debug.Log(iii.ToString() + "      " + gcs[iii]);
@@ -241,7 +242,7 @@ public class cardstatus
             else if (s[ii].IndexOf("Cost") >= 0)
             {
                 string[] gcs = s[ii + 1].Split(' ', '/');
-                for (int iii = 0; iii < growCost.Length && iii < gcs.Length; iii++)
+                for (int iii = 0; iii < growCost.Length() && iii < gcs.Length; iii++)
                 {
                     Cost[iii] = int.Parse(gcs[iii]);
                 }
@@ -253,7 +254,7 @@ public class cardstatus
             else if (s[ii].IndexOf("secondClass") >= 0)
             {
                 string[] gcs = s[ii + 1].Split(' ', '/', ':');
-                for (int iii = 0; iii < growCost.Length && iii < gcs.Length; iii++)
+                for (int iii = 0; iii < secondClass.Length && iii < gcs.Length; iii++)
                 {
                     secondClass[iii] = int.Parse(gcs[iii]);
                 }
@@ -262,7 +263,7 @@ public class cardstatus
             else if (s[ii].IndexOf("Class") >= 0)
             {
                 string[] gcs = s[ii + 1].Split(' ', '/', ':');
-                for (int iii = 0; iii < growCost.Length && iii < gcs.Length; iii++)
+                for (int iii = 0; iii < cardClass.Length && iii < gcs.Length; iii++)
                 {
                     cardClass[iii] = int.Parse(gcs[iii]);
                 }

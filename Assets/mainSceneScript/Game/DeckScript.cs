@@ -1190,7 +1190,7 @@ public class DeckScript : MonoBehaviour
 		int num = 0;
 		CardScript sc = getCardScr (ID, player);
 
-		for (int i=0; i<sc.Cost.Length; i++)
+		for (int i=0; i<sc.Cost.Length(); i++)
 		{
 			num += sc.Cost [i];
 		}
@@ -1338,6 +1338,26 @@ public class DeckScript : MonoBehaviour
         {
             int x = fieldRankID(f, i, target);
             if (checkClass(x, target, info))
+                count++;
+        }
+
+        return count;
+    }
+
+    public int getFreezeNum(int target)
+    {
+        return getFuncNum(target, Fields.SIGNIZONE, checkFreeze);
+    }
+
+    public int getFuncNum(int target, Fields f, System.Func<int, int, bool> check)
+    {
+        int count = 0;
+        int num = fieldAllNum(f, target);
+
+        for (int i = 0; i < num; i++)
+        {
+            int x = fieldRankID(f, i, target);
+            if (check(x,target))
                 count++;
         }
 
@@ -1601,7 +1621,7 @@ public class DeckScript : MonoBehaviour
 
     public bool checkModeCost(int ID, int player,bool isGrow)
     {
-        if (ID < 0)
+         if (ID < 0)
             return false;
         CardScript sc = getCardScr(ID, player);
         int multi = MultiEnaNum(player);
@@ -1615,9 +1635,9 @@ public class DeckScript : MonoBehaviour
         colorCostArry costArry;
 
         if (isGrow)
-            costArry = new colorCostArry(sc.GrowCost);
+            costArry =copyCostArray( sc.GrowCost);
         else
-            costArry = new colorCostArry(sc.Cost);
+            costArry =copyCostArray( sc.Cost);
 
         for (int i = 0; i < enaColorNum.GetLength(1); i++)
         {
@@ -8281,9 +8301,19 @@ public class DeckScript : MonoBehaviour
         return sum;
     }
 
+    colorCostArry copyCostArray(colorCostArry ori)
+    {
+        colorCostArry array = new colorCostArry(cardColorInfo.無色, 0);
+
+        for (int i = 0; i < array.Length(); i++)
+            array[i] = ori[i];
+
+        return array;
+    }
+
 	void PayModeCost (int ID, int player, bool isGrow)
 	{
-		if (waitYou(player % 2) && clickCursorID.Count == 0)
+        if (waitYou(player % 2) && clickCursorID.Count == 0)
 		{
 			moveID [player] = -2;
 			if (canRead ())
@@ -8309,7 +8339,7 @@ public class DeckScript : MonoBehaviour
 		}
 		else if (movePhase [player] == 0 && moveID [player] == -1)
 		{
-			if (clickCursorID.Count == 0)
+            if (clickCursorID.Count == 0)
 			{
 				//toldPayedCost　の初期化
 				toldPayedCost=false;
@@ -8329,13 +8359,13 @@ public class DeckScript : MonoBehaviour
                     return;
                 }
 
-				int[] cost = new int[6];
+                colorCostArry cost;
                 if (isGrow)
                 {
-                    cost = card[player % 2, ID].GetComponent<CardScript>().GrowCost;
+                    cost = copyCostArray( card[player % 2, ID].GetComponent<CardScript>().GrowCost);
                 }
                 else
-                    cost = card[player % 2, ID].GetComponent<CardScript>().Cost;
+                    cost = copyCostArray(card[player % 2, ID].GetComponent<CardScript>().Cost);
 
 				for (int i=0; i>=0; i--)
 				{
@@ -13084,20 +13114,18 @@ public class DeckScript : MonoBehaviour
 			return;
 		
 		CardScript sc = getCardScr (id, player);
-		for (int i=0; i<sc.Cost.Length; i++)
-		{
-			sc.Cost [i] -= spellCostDown [player, i, SpellOrArts];
-		}
+		for (int i=0; i<sc.Cost.Length(); i++)
+			sc.Cost.addCost(i, - spellCostDown [player, i, SpellOrArts]);
+
 		spellCostDownFlag[SpellOrArts] = true;
 	}
 	
 	void restrateSpellCostDown (int id, int player, int SpellOrArts)
 	{
 		CardScript sc = getCardScr (id, player);
-		for (int i=0; i<sc.Cost.Length; i++)
-		{
-			sc.Cost [i] += spellCostDown [player, i, SpellOrArts];
-		}
+		for (int i=0; i<sc.Cost.Length(); i++)
+			sc.Cost.addCost(i,spellCostDown [player, i, SpellOrArts]);
+
 		spellCostDownFlag[SpellOrArts] = false;
 	}
 	
