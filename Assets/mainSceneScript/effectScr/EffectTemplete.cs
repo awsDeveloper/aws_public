@@ -15,40 +15,47 @@ public class EffectTemplete : MonoCard {
 
     int effectIndex = -1;
 
-    Action FinalAciton = null;
-
-
+    bool manualMode = false;
+  
     class effectPack
     {
         public List<checkAndEffect> funcList = new List<checkAndEffect>();
         public int max = 1;
         public bool maxSelect = false;
-        public bool isCost = false;
+        public bool isCost { get { return hasOption(myOption, option.cost); } }
+        public option myOption = option.non;
 
         public effectPack(List<checkAndEffect> _funcList, int _max, bool _maxSelect, bool _isCost)
         {
             funcList = _funcList;
             max = _max;
             maxSelect = _maxSelect;
-            isCost = _isCost;
+            if (_isCost)
+                myOption = option.cost;
         }
-    }
+
+        public effectPack(List<checkAndEffect> _funcList, int _max, bool _maxSelect,option _option)
+        {
+            funcList = _funcList;
+            max = _max;
+            maxSelect = _maxSelect;
+            myOption = _option;
+        }
+     }
 
 
     public class checkAndEffect
     {
         public Func<bool> check;
-        public Func<bool> effect;
 
+        public Func<bool> effect;//actionを知らなかった
         public Action action;
 
         public string str = "";
-
         public int boxIndex = -1;//checkBoxのindexとの紐つけ
-
         public checkType myCheckType = checkType.Default;
 
-        public checkAndEffect(Func<bool> c, Func<bool> e,string checkStr)
+         public checkAndEffect(Func<bool> c, Func<bool> e,string checkStr)
         {
             check = c;
             effect = e;
@@ -62,7 +69,6 @@ public class EffectTemplete : MonoCard {
             action = a;
             str = checkStr;
         }
-
         void excuteEffect()
         {
             effect();
@@ -107,6 +113,29 @@ public class EffectTemplete : MonoCard {
         return sc.isHeaven();
     }
 
+    bool useAttackArts()
+    {
+        if (!sc.UseAttackArts)
+            return false;
+
+        sc.UseAttackArts = false;
+        return true;
+    }
+
+    bool attack()
+    {
+        return sc.isAttacking();
+    }
+
+    bool mySigniHeavened()
+    {
+        return !sc.mySigniNotHeaven();
+    }
+
+    bool crossCip()
+    {
+        return sc.isCrossing() && Cip();
+    }
     public enum triggerType
     {
         Cip,
@@ -115,6 +144,10 @@ public class EffectTemplete : MonoCard {
         Burst,
         useResona,
         isHeavened,
+        useAttackArts,
+        attack,
+        mySigniHeavened,
+        crossCip,
     }
 
     public enum checkType
@@ -126,35 +159,67 @@ public class EffectTemplete : MonoCard {
 
     public enum option
     {
-        cost             = 1,
-        attackPhaseUsing = 2,
+        non                 = 0,
+        cost                = 1,
+        ifThen              = 2,
     }
 
-    public void addEffect(List<checkAndEffect> _funcList, int _max, bool _maxSelect, bool _isCost)
+    public static bool hasOption(option target, option checker)
     {
-        effectList.Add(new effectPack(_funcList, _max, _maxSelect, _isCost));
+        return (target & checker) == checker;
     }
 
-    public void addEffect(Action _action, bool _isCost, Func<bool> _check)
+    option isCostToOption(bool _isCost)
+    {
+        if (_isCost)
+            return option.cost;
+
+        return option.non;
+    }
+
+    public void setManualMode()
+    {
+        manualMode = true;
+    }
+
+    public void addEffect(List<checkAndEffect> _funcList, int _max, bool _maxSelect, option _option)
+    {
+        effectList.Add(new effectPack(_funcList, _max, _maxSelect, _option));
+    }
+    public void addEffect(Action _action, option _option, Func<bool> _check)
     {
         List<checkAndEffect> list = new List<checkAndEffect>();
         list.Add(new checkAndEffect(_check, _action, ""));
-        addEffect(list, 1, true, _isCost);
+        addEffect(list, 1, true, _option);
     }
-
-    public void addEffect(Action _action, bool _isCost, checkType _type = checkType.Default)
+ 
+    public void addEffect(Action _action, option _option, checkType _type = checkType.Default)
     {
         switch (_type)
         {
             case checkType.True:
-                addEffect(_action, _isCost, trueReturn);
+                addEffect(_action, _option, trueReturn);
                 break;
 
             case checkType.Default:
-                addEffect(_action, _isCost, null);
+                addEffect(_action, _option, null);
                 break;
         }
     }
+
+    public void addEffect(List<checkAndEffect> _funcList, int _max, bool _maxSelect, bool _isCost)
+    {
+        addEffect(_funcList, _max, _maxSelect, isCostToOption(_isCost));
+    }
+    public void addEffect(Action _action, bool _isCost, Func<bool> _check)
+    {
+        addEffect(_action, isCostToOption(_isCost), _check);
+    }
+    public void addEffect(Action _action, bool _isCost=false, checkType _type = checkType.Default)
+    {
+        addEffect(_action, isCostToOption(_isCost), _type);
+    }
+
 
     bool trueReturn()
     {
@@ -172,6 +237,8 @@ public class EffectTemplete : MonoCard {
         MethodInfo mInfo = typeof(EffectTemplete).GetMethod(T.ToString(), BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
         Func<bool> tri = (Func<bool>)Delegate.CreateDelegate(typeof(Func<bool>), this, mInfo);
         setTrigger(tri, _useYesNo);
+        if (T == triggerType.useAttackArts)
+            sc.attackArts = true;
         //        Debug.Log(trigger);
         /*
                 switch (T)
@@ -212,12 +279,20 @@ public class EffectTemplete : MonoCard {
         effect();
     }
 
+    public bool isTriggered()
+    {
+        if (trigger == null)
+            return false;
+
+        return trigger();
+    }
+
     void triggerCheck()
     {
-        if (!trigger())
+        if (manualMode || !trigger())//manual modeではトリガーチェックで実行されない
             return;
 
-        effectIndex = 0;
+        triggerInit();
 
         if (useYesNo && checkCost())
         {
@@ -226,6 +301,11 @@ public class EffectTemplete : MonoCard {
         }
         else
             afterGettingYes();
+    }
+
+    void triggerInit()
+    {
+        effectIndex = 0;
     }
 
     bool checkCost()
@@ -269,6 +349,26 @@ public class EffectTemplete : MonoCard {
                 effectList[eIndex].funcList[fIndex].action();
                 bool flag = sc.effectFlag;
 
+                for (int i = 0; i < sc.effectMotion.Count; i++)
+                {
+                    Motions m=(Motions)sc.effectMotion[i];
+                    int x = sc.effectTargetID[i]%50;
+                    int target = sc.effectTargetID[i]/50;
+                    switch (m)
+                    {
+                        case Motions.PayCost:
+                            if (!ms.checkCost(x, target))
+                                flag = false;
+                            break;
+
+                        case Motions.Down:
+                            if (ms.getIDConditionInt(x, target) != (int)Conditions.Up)
+                                flag = false;
+                            break;
+
+                    }
+                }
+
                 sc.effectFlag = flagBuf;
                 sc.effectTargetID.Clear();
                 sc.effectMotion.Clear();
@@ -278,6 +378,12 @@ public class EffectTemplete : MonoCard {
         }
 
         return true;
+    }
+
+    public void doAfterGettingYes()//manager用
+    {
+        triggerInit();
+        afterGettingYes();
     }
 
     void afterGettingYes()
@@ -319,7 +425,7 @@ public class EffectTemplete : MonoCard {
             isGotYes = true;
             effect();
         }
-        else if(!effectList[effectIndex].isCost)
+        else if (!effectList[effectIndex].isCost && !hasOption(effectList[effectIndex].myOption, option.ifThen))
             EndEffect();
     }
 
@@ -354,8 +460,8 @@ public class EffectTemplete : MonoCard {
             int index = effectList[effectIndex].funcList[i].boxIndex;
             if (index >= 0 && sc.checkBox[index])
             {
-                sc.checkBox[index] = false;
                 effectList[effectIndex].funcList[i].action();
+                sc.checkBox[index] = false;
                 return;
             }
         }
@@ -373,6 +479,4 @@ public class EffectTemplete : MonoCard {
         else
             effectIndex = -1;
     }
-
-
 }

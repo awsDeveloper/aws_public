@@ -542,6 +542,27 @@ public class CardScript : MonoBehaviour
         return false;
     }
 
+    public int getFuncNum(Func<int, int, bool> func, int target, Fields _field = Fields.SIGNIZONE)//自分以外
+    {
+        int f = (int)_field;
+        int num = ms.getNumForCard(f, target);
+        int count = 0;
+
+        for (int i = 0; i < num; i++)
+        {
+            int x = ms.getFieldRankID(f, i, target);
+            if (x >= 0 && x + 50 * target != ID + 50 * player && func(x, target))
+                count++;
+        }
+
+        return count;
+    }
+
+    public bool isFuncOnBatteField(Func<int,int,bool> func, int target)//自分以外
+    {
+        return getFuncNum(func, target) > 0;
+    }
+
     public bool isResonaOnBattleField()//自分以外
     {
         return isResonaOnBattleField(player);
@@ -1117,14 +1138,17 @@ public class CardScript : MonoBehaviour
         return !ms.checkType(x, target, cardTypeInfo.レゾナ) && ms.checkClass(x, target, cardClassInfo.精生_凶蟲);
     }
 
-    public void setFieldAllEffect(int target,Fields F, Motions m)
+    public void setFieldAllEffect(int target,Fields F, Motions m, Func<int,int,bool> che=null)
     {
+        if (che == null)
+            che = reTrue;
+
         int num = ms.getNumForCard((int)F, target);
 
         for (int i = 0; i < num; i++)
         {
             int x = ms.getFieldRankID((int)F, i, target);
-            if (x >= 0)
+            if (x >= 0 && che(x,target))
                 setEffect(x,target,m);
         }
     }
@@ -1204,6 +1228,18 @@ public class CardScript : MonoBehaviour
         setEffect(ID, player, Motions.PayCost);
     }
 
+    public void setPayCost(cardColorInfo info, int num)
+    {
+        changeColorCost(info, num);
+        setPayCost();
+    }
+
+    public void setEnAbilityForMe(ability a)
+    {
+        setEffect(ID, player, Motions.EnAbility);
+        addParameta(parametaKey.EnAbilityType, (int)a);
+    }
+
     bool checkFreezeThrough()
     {
         if(!checkAbility(ability.FreezeThrough))
@@ -1275,11 +1311,48 @@ public class CardScript : MonoBehaviour
         Cost.setDownValue(info, num);
     }
 
-    public EffectTemplete AddEffectTemplete(EffectTemplete.triggerType t, Action a, bool isCost=false)
+    public EffectTemplete AddEffectTemplete(Func<bool> tri)
+    {
+        var com = ms.getFront(ID, player).AddComponent<EffectTemplete>();
+        com.setTrigger(tri);
+        return com;
+    }
+
+    public EffectTemplete AddEffectTemplete(EffectTemplete.triggerType t)
+    {
+        var com = ms.getFront(ID, player).AddComponent<EffectTemplete>();
+        com.setTrigger(t);
+        return com;
+    }
+
+    public EffectTemplete AddEffectTemplete(EffectTemplete.triggerType t, Action a, bool isCost=false, bool isUseYesNo=false)
     {        
         var com = ms.getFront(ID,player).AddComponent<EffectTemplete>();
-        com.setTrigger(t);
+        com.setTrigger(t,isUseYesNo);
         com.addEffect(a, isCost);
+        return com;
+    }
+
+    public void targetInputEffect()
+    {
+        setEffect(-1, 0, Motions.AntiCheck);
+        TargetIDEnable = true;
+    }
+
+    void targetInputEffect_end()
+    {
+        setEffect(ID, player, Motions.AntiCheck);
+        TargetIDEnable = false;
+        TargetID.Clear();
+    }
+
+    public EffectTemplete AddEffectTemp_useTargetInput(EffectTemplete.triggerType t, Action a, Action targetableInAction, bool isCost = false, bool isUseYesNo = false)
+    {
+        var com = ms.getFront(ID, player).AddComponent<EffectTemplete>();
+        com.setTrigger(t, isUseYesNo);
+        com.addEffect(targetableInAction  , isCost);
+        com.addEffect(a, isCost);
+        com.addEffect(targetInputEffect_end);
         return com;
     }
 }

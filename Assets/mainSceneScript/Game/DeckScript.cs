@@ -159,6 +159,8 @@ public enum Motions
     NotCipSummon,
     NotCipTempResona,
     DontGrow,
+    NotDamageThisTurn,
+    WarmHole,
 }
 
 public enum DialogNumType
@@ -479,7 +481,9 @@ public class DeckScript : MonoBehaviour
 	bool artsAsk = false;
 	int HandDeathID = -1;
 
-	int[,] SigniPowerUpValue = new int[2, 3];
+    int[,] SigniNotSummonCount = new int[2, 3];
+
+    int[,] SigniPowerUpValue = new int[2, 3];
 	int[,] SigniPowerUpValueBuf = new int[2, 3];
 	List<int> RebornList = new List<int> ();
 
@@ -733,6 +737,8 @@ public class DeckScript : MonoBehaviour
     int oneHandDeathSelecter = -1;
 
     List<string> usedList = new List<string>();
+
+    bool[] notDamagingFlag = new bool[2];
 	//最後尾
 
 	//通信
@@ -1332,7 +1338,7 @@ public class DeckScript : MonoBehaviour
     public int getClassNum(int target, Fields f, cardClassInfo info)
     {
         int count = 0;
-        int num = fieldAllNum(f,target);
+        int num =getNumForCard((int)f,target);
 
         for (int i = 0; i < num; i++)
         {
@@ -5099,7 +5105,9 @@ public class DeckScript : MonoBehaviour
 		
 		for (int i=0; i<TargetSigniZoneCursor.Length; i++)
 		{
-			if (signiCondition [player, i] == Conditions.no && (!flag || (flag && signiRockFlag [player, i])))
+			if (signiCondition [player, i] == Conditions.no 
+                && SigniNotSummonCount[player, i] == 0
+                && (!flag || (flag && signiRockFlag [player, i])))
 			{
 				if (player == 0)
 					TargetSigniZoneCursor [i].transform.position = vec3Add (SIGNIZONE, new Vector3 (SigniWidth * i, 0f, 0f));
@@ -7000,6 +7008,7 @@ public class DeckScript : MonoBehaviour
 			MirrorMirageFlag[i]=false;
             GridCount[i] = 0;
             HandSummonMaxLim[i] = -1;
+            notDamagingFlag[i] = false;
  		}
 
 		
@@ -7020,32 +7029,6 @@ public class DeckScript : MonoBehaviour
             changeBasePower(x, target, c.OriginalPower);
         }
 		
-/*		if (dontAttackList.Count > 0)
-		{
-			while (dontAttackList.Count>0)
-			{
-				card [dontAttackList [0] / 50, dontAttackList [0] % 50].GetComponent<CardScript> ().Attackable = true;
-				dontAttackList.RemoveAt (0);
-			}
-		}
-
-		while (EnDoubleCrashID.Count>0)
-		{
-			card [ EnDoubleCrashID [0] / 50, EnDoubleCrashID [0] % 50].GetComponent<CardScript> ().DoubleCrash = false;
-			EnDoubleCrashID.RemoveAt (0);
-		}
-
-		while (EnLancerID.Count>0)
-		{
-			card [ EnLancerID [0] / 50, EnLancerID [0] % 50].GetComponent<CardScript> ().lancer = false;
-			EnLancerID.RemoveAt (0);
-		}
-
-		while (EnResiBanishID.Count>0)
-		{
-			card [ EnResiBanishID [0] / 50, EnResiBanishID [0] % 50].GetComponent<CardScript> ().ResiBanish = false;
-			EnResiBanishID.RemoveAt (0);
-		}*/
         //こっちにまとめた
         while (enAbilityList.Count > 0)
             enAbilityListRemoveAt(0);
@@ -7224,6 +7207,12 @@ public class DeckScript : MonoBehaviour
             HandSummonMaxLim[1 - getTurnPlayer()] = 12000;
         }
 
+        //ワームホールのカウント更新
+        for (int i = 0; i < SigniNotSummonCount.Length; i++)
+        {
+            if(SigniNotSummonCount[i / 3, i % 3]>0)
+                SigniNotSummonCount[i / 3, i % 3]--;            
+        }
     }
 /*	void EndPhaseMove_p1(){
 		if(moveID[0]==-1 && rotaID[0]==-1){
@@ -7392,6 +7381,11 @@ public class DeckScript : MonoBehaviour
 						chainMotion [1] = -1;
 					}
 				}
+                else if(notDamagingFlag[attacked])
+                {
+                    chainMotion[1] = -1; 
+                    return;
+                }
 				else if (LifeClothNum [attacked] > 0)
 				{
                     crasherID = BufID[player] + 50 * player;
@@ -7503,6 +7497,11 @@ public class DeckScript : MonoBehaviour
                     chainMotion[1] = -1;
 
                     stopAttackedID = BufID[player] + player % 2 * 50;
+                }
+                else if (notDamagingFlag[attacked])
+                {
+                    chainMotion[1] = -1;
+                    return;
                 }
                 else if (LifeClothNum[attacked] > 0)
 				{
@@ -8223,6 +8222,13 @@ public class DeckScript : MonoBehaviour
 		
 		if(getCardScr(lID,player).attackArts)
 			selectCardList.Add(lID+50*player);
+
+        for (int i = 0; i < 3; i++)
+        {
+            int x = fieldRankID(Fields.SIGNIZONE, i, player);
+            if(x >= 0 && getCardScr(x,player).attackArts)
+                selectCardList.Add(x + 50 * player);
+        }
 
 		for (int i=0; i<fieldAllNum(Fields.LRIGDECK,player); i++)
 		{
@@ -9841,7 +9847,7 @@ public class DeckScript : MonoBehaviour
 
 	bool isEffectBanishing(Motions m)
 	{
-		return m == Motions.EnaCharge || m == Motions.CostBanish || m== Motions.PowerSumBanish;
+		return m == Motions.EnaCharge || m == Motions.CostBanish || m== Motions.PowerSumBanish || m == Motions.WarmHole;
 	}
 
     bool isEffectRemoving(Motions m)
@@ -9915,6 +9921,10 @@ public class DeckScript : MonoBehaviour
                 sc.effectTargetID.RemoveAt(0);
                 sc.effectMotion.RemoveAt(0);
             }
+        }
+        else if (m == Motions.NotDamageThisTurn)
+        {
+            notDamagingFlag[effectPlayer % 2] = true;
         }
         else if (m == Motions.DontGrow)
         {
@@ -10021,8 +10031,9 @@ public class DeckScript : MonoBehaviour
                 return false;
             }
 
-            //場にいたころのパワーを取得
+            //場にいたころのパワー、ランクを取得
             int power = getCardPower(effectID, effectPlayer % 2);
+            int rank= getRank(effectID, effectPlayer % 2);
 
             //バニッシュ
             EnaCharge(effectID, effectPlayer);
@@ -10034,24 +10045,29 @@ public class DeckScript : MonoBehaviour
                 toldBanishing = false;
 
                 //パワーサムの代入
-                if (m == Motions.PowerSumBanish)
-                {
-                    powerSum += power;
-                    int maxVal = sc.getParameta(parametaKey.powerSumBanishValue);
+                switch(m){
+                    case Motions.PowerSumBanish:
+                        powerSum += power;
+                        int maxVal = sc.getParameta(parametaKey.powerSumBanishValue);
+                        
+                        sc.Targetable.Clear();
+                        sc.maxPowerTargetIn(maxVal - powerSum);
+                            
+                        if (sc.Targetable.Count > 0)
+                        {
+                            sc.effectTargetID.Insert(1, -1);
+                            sc.effectMotion.Insert(1, (int)m);
+                        }
+                        else
+                        {
+                            sc.getParameta(parametaKey.powerSumBanishValue);
+                            powerSum = 0;
+                        }
+                        break;
 
-                    sc.Targetable.Clear();
-                    sc.maxPowerTargetIn(maxVal - powerSum);
-
-                    if (sc.Targetable.Count > 0)
-                    {
-                        sc.effectTargetID.Insert(1, -1);
-                        sc.effectMotion.Insert(1, (int)m);
-                    }
-                    else
-                    {
-                        sc.getParameta(parametaKey.powerSumBanishValue);
-                        powerSum = 0;
-                    }
+                    case Motions.WarmHole:
+                        SigniNotSummonCount[effectPlayer%2, rank]=2;
+                        break;
                 }
             }
         }
@@ -10234,7 +10250,7 @@ public class DeckScript : MonoBehaviour
             GoTrash(effectID, effectPlayer);
 
             if (getExitID((int)Fields.ENAZONE, -1) != -1)
-                sc.effectInsertOne(getExitID((int)Fields.ENAZONE, -1) / 50,Motions.EnaSort);
+                sc.effectInsertOne(getExitID((int)Fields.ENAZONE, -1) / 50, Motions.EnaSort);
         }
         else if (m == Motions.CostGoTrash || m == Motions.LevelSumCostGoTrash)
         {
@@ -10275,11 +10291,11 @@ public class DeckScript : MonoBehaviour
                         client = SystemCardClientID;
 
                     CardScript clientScr = getCardScr(client);
-                    if(clientScr!=null && clientScr.costGoTrashIDenable)
+                    if (clientScr != null && clientScr.costGoTrashIDenable)
                         costGoTrashIDList.Add(new powerChange(sc.effectTargetID[0], client, 0));
                 }
-                else  if (m == Motions.LevelSumCostGoTrash)
-                    {
+                else if (m == Motions.LevelSumCostGoTrash)
+                {
                     targetLevelSum -= lev;
                     if (targetLevelSum > 0)
                     {
@@ -10349,7 +10365,7 @@ public class DeckScript : MonoBehaviour
                 {
                     sc.effectTargetID.RemoveAt(0);
                     sc.effectMotion.RemoveAt(0);
-                }           
+                }
 
                 return false;
             }
@@ -10501,6 +10517,9 @@ public class DeckScript : MonoBehaviour
         }
         else if (m == Motions.Damaging)
         {
+            if (notDamagingFlag[effectPlayer % 2])
+                return true;
+
             if (fieldAllNum(Fields.LIFECLOTH, effectPlayer % 2) > 0)
             {
                 int id = fieldRankID(Fields.LIFECLOTH, LifeClothNum[effectPlayer % 2] - 1, effectPlayer % 2);

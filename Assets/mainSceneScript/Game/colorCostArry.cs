@@ -59,7 +59,6 @@ public class colorCostArry
     {
         downValue[(int)info] = num;
     }
-
     public int this[int index]
     {
         get { return getCost(index); }

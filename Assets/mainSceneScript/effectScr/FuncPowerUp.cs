@@ -4,12 +4,14 @@ using System;
 
 public class FuncPowerUp : MonoCard{
     int puv = 2000;
+    int myTarget = -1;
 
     Func<int,int,bool> check;
     Func<bool> trigger;
 
     bool isSelfUp = false;
 
+    bool isUp = false;
 	// Use this for initialization
 	void Start ()
 	{
@@ -23,33 +25,43 @@ public class FuncPowerUp : MonoCard{
         if (trigger == null || check == null)
             return;
 
+        if (isUp)
+        {
+            isUp = false;
+            ms.powChanListChangerClear(ID, player);
+        }
+
         //check situation
         if (sc.isOnBattleField() && trigger())
         {
-            int target = player;
+            isUp = true;
+
+            int target = myTarget;
             int f = 3;
             int num = ms.getNumForCard(f, target);
 
-            //check exist in upList
+             //check exist in upList
             for (int i = 0; i < num; i++)
             {
                 int x = ms.getFieldRankID(f, i, target);
 
                 //requirement add upList
-                if (x >= 0 && check(x, target) && (ID != x || isSelfUp) && !ms.checkChanListExist(x, target, ID, player))
+                if (x >= 0 && check(x, target) && (ID != x || isSelfUp))// && !ms.checkChanListExist(x, target, ID, player))
                     ms.alwaysChagePower(x, target, puv, ID, player,check);
             }
-        }
-        else
-            ms.powChanListChangerClear(ID, player);
 
+        }
 	}
 
-    public void set(int upValue, Func<bool> tri, Func<int, int, bool> che)
+    public void set(int upValue, Func<bool> tri, Func<int, int, bool> che, int _myTarget=-1)
     {
         puv = upValue;
         trigger = tri;
         check = che;
+        myTarget = _myTarget;
+
+        if (myTarget < 0)
+            myTarget = sc.player;
     }
 
     public void set(int upValue, Func<bool> tri)
@@ -57,9 +69,9 @@ public class FuncPowerUp : MonoCard{
         set(upValue, tri, nonCheck);
     }
 
-    public void setTrueTrigger(int upValue, Func<int, int, bool> che)
+    public void setTrueTrigger(int upValue, Func<int, int, bool> che, int _myTarget=-1)
     {
-        set(upValue, nonCheck, che);
+        set(upValue, nonCheck, che, _myTarget);
     }
 
     bool nonCheck(int x,int target)
@@ -77,4 +89,8 @@ public class FuncPowerUp : MonoCard{
         isSelfUp = true;
     }
 
+    public void setPUV(int x)
+    {
+        puv = x;
+    }
 }

@@ -9,20 +9,13 @@ public class WX08_029 : MonoCard {
         var com = gameObject.AddComponent<CrossBase>();
         com.upBase = 15000;
 
-        var ig = gameObject.AddComponent<EffectTemplete>();
-        ig.setTrigger(EffectTemplete.triggerType.Ignition);
-        ig.addEffect(igni, true, EffectTemplete.checkType.Default);
-        ig.addEffect(igni_2, false, EffectTemplete.checkType.Default);
+        var ig = sc.AddEffectTemplete(EffectTemplete.triggerType.useAttackArts, igni,true);
+        ig.addEffect(igni_2);
 
-        var he = gameObject.AddComponent<EffectTemplete>();
-        he.setTrigger(EffectTemplete.triggerType.isHeavened);
-        he.addEffect(heaven, false, EffectTemplete.checkType.Default);
+        sc.AddEffectTemplete(EffectTemplete.triggerType.isHeavened, heaven, false, true);
 
-        var bu = gameObject.AddComponent<EffectTemplete>();
-        bu.setTrigger(EffectTemplete.triggerType.Burst);
-        bu.addEffect(burst, false, EffectTemplete.checkType.Default);
-        bu.addEffect(burst_2, false, EffectTemplete.checkType.Default);
-    }
+        sc.AddEffectTemplete(EffectTemplete.triggerType.Burst, burst);
+     }
 
     // Update is called once per frame
     void Update()
@@ -31,36 +24,26 @@ public class WX08_029 : MonoCard {
 
     }
 
-    bool check(int x, int target)
-    {
-        return ms.checkClass(x, target, cardClassInfo.精械_電機);
-    }
-
     void igni()
     {
-        sc.setFuncEffect(-1, Motions.CostHandDeath, player, Fields.HAND, check);
+        sc.setPayCost(cardColorInfo.緑, 1);
     }
 
     void igni_2()
     {
-        sc.funcTargetIn(1 - player, Fields.SIGNIZONE);
-        sc.setEffect(-1, 0, Motions.FREEZE);
+        sc.setEnAbilityForMe(ability.resiBanish);
     }
 
     void heaven()
     {
-        sc.setFuncEffect(-1, Motions.EnaCharge, 1 - player, Fields.SIGNIZONE, ms.checkFreeze);
+        sc.funcTargetIn(player, Fields.ENAZONE);
+        sc.setEffect(-1, 0, Motions.GoHand);
     }
 
     void burst()
     {
-        sc.setFieldAllEffect(1 - player, Fields.SIGNIZONE, Motions.EffectDown);
+        sc.setEffect(0, player, Motions.NotDamageThisTurn);
     }
 
-    void burst_2()
-    {
-        sc.funcTargetIn(1 - player, Fields.SIGNIZONE);
-        sc.setEffect(-1, 0, Motions.FREEZE);
-    }
 }
 
