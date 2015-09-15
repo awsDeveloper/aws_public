@@ -163,6 +163,29 @@ public enum Motions
     WarmHole,
 }
 
+public enum OneFrameIDType
+{
+    TrashSummonID,
+    IgnitionUpID,
+    TraIgniUpID,
+    BanishedID,
+    BanishingID,
+    removingID,
+    crashedID,
+    effectDownedID,
+    downID,
+    stopAttackedID,
+    exitID,
+    EffectGoTrashID,
+    ChantSpellID,
+    ChantArtsID,
+    TargetNowID,
+    CounterID,
+    cipID,
+    BurstEffectID,
+    AttackerID,
+}
+
 public enum DialogNumType
 {
     YesNo,
@@ -514,26 +537,27 @@ public class DeckScript : MonoBehaviour
     bool systemCardInitialized = false;
 
 
-    //１フレーム系
-	int TrashSummonID = -1;
+    //１フレーム系　統一化の際見栄えが悪くなった
+    Dictionary<OneFrameIDType, int> OneFrameIDs = new Dictionary<OneFrameIDType, int>();
+    int TrashSummonID { get { return getOneFrameID(OneFrameIDType.TrashSummonID); } set { setOneFrameID(OneFrameIDType.TrashSummonID, value); } }
 
-    int IgnitionUpID = -1;
-    int TraIgniUpID = -1;
+    int IgnitionUpID { get { return getOneFrameID(OneFrameIDType.IgnitionUpID); } set { setOneFrameID(OneFrameIDType.IgnitionUpID, value); } }
+    int TraIgniUpID { get { return getOneFrameID(OneFrameIDType.TraIgniUpID); } set { setOneFrameID(OneFrameIDType.TraIgniUpID, value); } }
     int IgniEffID = -1;//1フレちがう
 
     bool turnEndFlag = false;
     bool turnStartFlag = false;
 
-	int BanishedID = -1;
-	int BanishingID = -1;
+    int BanishedID { get { return getOneFrameID(OneFrameIDType.BanishedID); } set { setOneFrameID(OneFrameIDType.BanishedID, value); } }
+    int BanishingID { get { return getOneFrameID(OneFrameIDType.BanishingID); } set { setOneFrameID(OneFrameIDType.BanishingID, value); } }
 
     int[] crossedIDs = new int[] { -1, -1 };
     public int[] CrossedIDs { get { return crossedIDs; } }
 
-    int removingID = -1;
+    int removingID { get { return getOneFrameID(OneFrameIDType.removingID); } set { setOneFrameID(OneFrameIDType.removingID, value); } }
     public int RemovingID { get { return removingID; } }
 
-    int crashedID = -1;
+    int crashedID { get { return getOneFrameID(OneFrameIDType.crashedID); } set { setOneFrameID(OneFrameIDType.crashedID, value); } }
     public int CrashedID { get { return crashedID; } }
     bool lancerCrashed = false;
     public int LancerCrashedID
@@ -546,16 +570,16 @@ public class DeckScript : MonoBehaviour
         }
     }
 
-    int crasherID = -1;
+    int crasherID = -1;//１フレ違う
     public int CrasherID { get { return crasherID; } }
 
-    int effectDownedID = -1;
+    int effectDownedID { get { return getOneFrameID(OneFrameIDType.effectDownedID); } set { setOneFrameID(OneFrameIDType.effectDownedID, value); } }
     public int EffectDownedID { get { return effectDownedID; } }
 
-    int downID = -1;
+    int downID { get { return getOneFrameID(OneFrameIDType.downID); } set { setOneFrameID(OneFrameIDType.downID, value); } }
     public int DownID { get { return downID; } }
 
-    int stopAttackedID = -1;
+    int stopAttackedID { get { return getOneFrameID(OneFrameIDType.stopAttackedID); } set { setOneFrameID(OneFrameIDType.stopAttackedID, value); } }
     public int StopAttackedID
     {
         get
@@ -564,28 +588,31 @@ public class DeckScript : MonoBehaviour
         }
     }
 
-    int exitID = -1;
+    int exitID { get { return getOneFrameID(OneFrameIDType.exitID); } set { setOneFrameID(OneFrameIDType.exitID, value); } }
     Fields exitField = Fields.Non;
 
-	int EffectGoTrashID = -1;
-	int sigToTraID = -1;
-	int WentTrashID = -1;
-	int WentTrashFrom = -1;
-    int ChantSpellID = -1;
-    int ChantArtsID = -1;
-	int TargetNowID= -1;
-	int EffecterNowID= -1;
-	int CounterID = -1;
-    int cipID = -1;
-    int notCipID = -1;
-	int BurstEffectID = -1;
-	int BurstEffectIDBuf = -1;
+    int EffectGoTrashID { get { return getOneFrameID(OneFrameIDType.EffectGoTrashID); } set { setOneFrameID(OneFrameIDType.EffectGoTrashID, value); } }
+    int ChantSpellID { get { return getOneFrameID(OneFrameIDType.ChantSpellID); } set { setOneFrameID(OneFrameIDType.ChantSpellID, value); } }
+    int ChantArtsID { get { return getOneFrameID(OneFrameIDType.ChantArtsID); } set { setOneFrameID(OneFrameIDType.ChantArtsID, value); } }
+
+    int TargetNowID { get { return getOneFrameID(OneFrameIDType.TargetNowID); } set { setOneFrameID(OneFrameIDType.TargetNowID, value); } }
+	int EffecterNowID= -1;//１フレちがう
+
+
+    int CounterID { get { return getOneFrameID(OneFrameIDType.CounterID); } set { setOneFrameID(OneFrameIDType.CounterID, value); } }
+
+    int cipID { get { return getOneFrameID(OneFrameIDType.cipID); } set { setOneFrameID(OneFrameIDType.cipID, value); } }
+    int notCipID = -1;//１フレちがう
+
+    int BurstEffectID { get { return getOneFrameID(OneFrameIDType.BurstEffectID); } set { setOneFrameID(OneFrameIDType.BurstEffectID, value); } }
+	int BurstEffectIDBuf = -1;//１フレちがう
+
 	bool BurstUpFlag = false;
 	bool LifeAddFlag = false;
 	bool[] costDownResetFlag = new bool[2];
 
-	int AttackerID = -1;
-	int AttackFrontRank = -1;
+    int AttackerID { get { return getOneFrameID(OneFrameIDType.AttackerID); } set { setOneFrameID(OneFrameIDType.AttackerID, value); } }
+    int AttackFrontRank = -1;//１フレちがう
 
     int[] BattledID = new int[2] { -1, -1 };
     int[] BattleFinishID = new int[2] { -1, -1 };
@@ -797,6 +824,21 @@ public class DeckScript : MonoBehaviour
 
 
     //funcs
+    public int getOneFrameID(OneFrameIDType _type)
+    {
+        if (!OneFrameIDs.ContainsKey(_type))
+            return -1;
+
+        return OneFrameIDs[_type];
+    }
+    void setOneFrameID(OneFrameIDType _type, int _id)
+    {
+        if (!OneFrameIDs.ContainsKey(_type))
+            OneFrameIDs.Add(_type, -1);
+
+        OneFrameIDs[_type] = _id;
+    }
+
     public int getStartedPhase()
     {
         return startedPhase;
@@ -1713,17 +1755,17 @@ public class DeckScript : MonoBehaviour
 
 	public int getSigToTraID ()
 	{
-		return sigToTraID;
+        return getExitID(Fields.SIGNIZONE, Fields.TRASH);
 	}
 
 	public int getWentTrashID ()
 	{
-		return WentTrashID;
+        return getExitID(-1, (int)Fields.TRASH);
 	}
 
 	public int getWentTrashFrom ()
 	{
-		return WentTrashFrom;
+		return (int)exitField;
 	}
 
 	public int getAttackerID ()
@@ -2408,9 +2450,19 @@ public class DeckScript : MonoBehaviour
         else if (mode == 1) TraIgniUpID = -1;
     }
 
-    void oneFrameUpdate()
+    void oneFrameIDsClear()
     {
         igniUpDown(0);//igniUp
+        igniUpDown(1);//traIgniUp
+
+        OneFrameIDs.Clear();
+    }
+    
+    void oneFrameUpdate()
+    {
+        oneFrameIDsClear();
+
+/*        igniUpDown(0);//igniUp
         igniUpDown(1);//traIgniUp
 
         exitID = -1;
@@ -2418,31 +2470,29 @@ public class DeckScript : MonoBehaviour
         cipID = -1;
         BurstEffectID = -1;
         CounterID = -1;
-        LifeAddFlag = false;
         TargetNowID = -1;
         ChantSpellID = -1;
         ChantArtsID = -1;
         AttackerID = -1;
         EffectGoTrashID = -1;
         stopAttackedID = -1;
+        BanishedID = -1;
+        BanishingID = -1;
+        removingID = -1;
+        effectDownedID = -1;
+        downID = -1;
+
+        crashedID = -1;*/
+        lancerCrashed = false;
 
         crossedIDs[0] = -1;
         crossedIDs[1] = -1;
 
+        LifeAddFlag = false;
         turnEndFlag = false;
         turnStartFlag = false;
 
-        startedPhase = -1;
-
-        BanishedID = -1;
-        BanishingID = -1;
-
-        removingID = -1;
-
-        sigToTraID = -1;
-
-        WentTrashID = -1;
-        WentTrashFrom = -1;
+        startedPhase = -1; 
 
         costDownResetFlag[0] = false;
         costDownResetFlag[1] = false;
@@ -2454,12 +2504,6 @@ public class DeckScript : MonoBehaviour
         BattleFinishID[1] = -1;
 
         LrigAttackNow = false;
-
-        crashedID = -1;
-        lancerCrashed = false;
-
-        effectDownedID = -1;
-        downID = -1;
 
         if (requipUpFlag)
         {
@@ -4355,12 +4399,6 @@ public class DeckScript : MonoBehaviour
 			if(tellEffectID==ID+player%2*50)
 				EffectGoTrashID=tellEffectID;
 
-			if(field [player % 2, moveID [player]] == Fields.SIGNIZONE)
-				sigToTraID=ID+player%2*50;
-
-			//went系
-			WentTrashID=ID+player%2*50;
-			WentTrashFrom=(int)field [player % 2, moveID [player]];
 
 			//本題
 			ExitFunction (moveID [player], player % 2);
