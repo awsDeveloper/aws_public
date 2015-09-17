@@ -209,6 +209,9 @@ public class cardstatus
     public string crossRightName = "";
     public string crossLeftName = "";
 
+    public cardstatus()
+    {
+    }
     public cardstatus(string cardId)
     {
         TextAsset textAsset = Singleton<DataToString>.instance.getResourceData(cardId);

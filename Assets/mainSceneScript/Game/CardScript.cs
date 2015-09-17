@@ -15,6 +15,7 @@ public enum ability
     resiArts,            //アーツ耐性
     FreezeThrough,      //正面凍結時アサシン
     TwoChargeAfterCrash,//このシグニが対戦相手のライフクロスをクラッシュしたとき、あなたのデッキの上からカードを２枚エナゾーンに置く。
+    resiYourWhiteCardEff,//相手の白のカードの効果を受けない
 }
 
 

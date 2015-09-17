@@ -36,7 +36,9 @@ public class WX05_005 : MonoBehaviour
 		BodyScript.useLimit = trashColorNum(player,5) < 10;
 
 		//checkEquip
-		checkEquip ();
+//		checkEquip ();
+        if(BodyScript.isOnBattleField())
+            ManagerScript.setColorChangeIDs(ID, player, cardColorInfo.黒);
 
 
 		//attackArts
@@ -157,7 +159,7 @@ public class WX05_005 : MonoBehaviour
 		field = ManagerScript.getFieldInt (ID, player);
 	}
 	
-	void equip (int x, int eplayer)
+/*	void equip (int x, int eplayer)
 	{
 		if (x < 0)
 			return;
@@ -190,9 +192,9 @@ public class WX05_005 : MonoBehaviour
 		if(ManagerScript.alwaysReturnColor(x, eplayer, ID, player))
 			equipList.RemoveAt (index);
 	}
-	
-	void checkEquip ()
-	{
+
+    void checkEquip()
+    {
 		//requip check
 		if (ManagerScript.requipFlag)
 			equipClear ();
@@ -259,7 +261,7 @@ public class WX05_005 : MonoBehaviour
 		}
 
 		return false;
-	}
+	}*/
 
 	int trashColorNum(int plaer, int color)
 	{

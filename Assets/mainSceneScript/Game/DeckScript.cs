@@ -790,6 +790,11 @@ public class DeckScript : MonoBehaviour
     bool[] notDamagingFlag = new bool[2];
 
     List<zonePowrUp> zonePowerList = new List<zonePowrUp>();
+
+    List<int> colorChangeIDs = new List<int>();//エナ以外の色を変更するカードのIDのリスト
+    List<cardColorInfo> colorChangeColor = new List<cardColorInfo>();//対応するカラーのリスト
+
+    cardstatus[,] cardStatusBuf = new cardstatus[2, 50];
 	//最後尾
 
 	//通信
@@ -863,6 +868,20 @@ public class DeckScript : MonoBehaviour
         OneFrameIDs[_type] = _id;
     }
 
+    public CardScript getSystemScr(int myID, int myPlayer)//できるだけ使わないように
+    {
+        return SystemCardScr;
+    }
+
+    public void setColorChangeIDs(int ID, int player, cardColorInfo color)
+    {
+        if (colorChangeIDs.Contains(getFusionID(ID, player)))
+            return;
+
+        colorChangeIDs.Add(getFusionID(ID, player));
+        colorChangeColor.Add(color);
+    }
+
     public int getStartedPhase()
     {
         return startedPhase;
@@ -895,6 +914,11 @@ public class DeckScript : MonoBehaviour
 
         if(AlwysEffFlags.getUpperID(eff, target) == getFusionID(ID,player))
             AlwysEffFlags.flagDown(eff, target);
+    }
+
+    public bool isSystemTargetIDCountZero()
+    {
+        return SystemCardScr.effectTargetID.Count == 0;
     }
 
     public bool isTargetIDCountZero(int ID, int player)
@@ -1287,11 +1311,25 @@ public class DeckScript : MonoBehaviour
 		return card [player, ID].GetComponent<CardScript> ().Power;
 	}
 
-	public int getCardColor (int ID, int player)
+	public int getCardColor (int x, int target)
 	{
-		if (ID < 0)
+		if (x < 0)
 			return -1;
-		return card [player, ID].GetComponent<CardScript> ().CardColor;
+
+        if (field[target, x] != Fields.ENAZONE)
+        {
+            for (int i = 0; i < colorChangeIDs.Count; i++)
+            {
+                int index = colorChangeIDs.Count - 1 - i;
+                int _id=colorChangeIDs[index] % 50;
+                int _player=colorChangeIDs[index] / 50;
+
+                if(!checkResistance(x,target,_id,_player))
+                    return (int)colorChangeColor[index];
+            }
+        }
+
+		return card [target, x].GetComponent<CardScript> ().CardColor;
 	}
 
 	public int getSigniColor (int ID, int player)
@@ -2149,6 +2187,31 @@ public class DeckScript : MonoBehaviour
             i--;
         }
     }
+
+    void colorChangeCheck()
+    {
+        for (int i = 0; i < colorChangeIDs.Count; i++)
+        {
+            if (!getCardScr(colorChangeIDs[i]).isOnBattleField())
+            {
+                colorChangeIDs.RemoveAt(i);
+                colorChangeColor.RemoveAt(i);
+                i--;
+            }
+        }
+    }
+
+    void cardStatusBufSet()
+    {
+        for (int i = 0; i < cardStatusBuf.Length; i++)
+        {
+            int l=cardStatusBuf.GetLength(1);
+            if (cardStatusBuf[i / l, i % l] == null)
+                cardStatusBuf[i / l, i % l] = new cardstatus();
+
+            cardStatusBuf[i / l, i % l].cardColor = getCardColor(i % l, i / l);
+        }
+    }
 		
 	// Update is called once per frame
 	void Update ()
@@ -2220,7 +2283,11 @@ public class DeckScript : MonoBehaviour
         //alwaysPowerUpのチェック
        alwaysPowerUpCheck();
 
-        
+       //color changeのチェック
+       colorChangeCheck();
+
+        //この時点のカードの情報を保存する
+       cardStatusBufSet();
 		
 		//showCursor
 		if (targetShowList.Count > 0 && targetShowCursor == null)
@@ -8051,6 +8118,17 @@ public class DeckScript : MonoBehaviour
     {
         CardScript sc = SystemCard.GetComponent<CardScript>();
 
+        //targetable 入れたら削除
+        if (targetable != null)
+        {
+            if (targetable.Count==0)
+                return;
+
+            for (int i = 0; i < targetable.Count; i++)
+                sc.Targetable.Add(targetable[i]);
+            targetable.Clear();
+        }
+
         sc.effectFlag = true;
         sc.effectTargetID.Add(targetID);
         sc.effectMotion.Add((int)m);
@@ -8066,13 +8144,6 @@ public class DeckScript : MonoBehaviour
                 sc.GUIcancelEnable = true;
         }
 
-        //targetable 入れたら削除
-        if (targetable != null)
-        {
-            for (int i = 0; i < targetable.Count; i++)
-                sc.Targetable.Add(targetable[i]);
-            targetable.Clear();
-        }
     }
 
     public void SetSystemCardFromCard(int targetID, Motions m,int myID,int myPlayer)
@@ -11220,7 +11291,24 @@ public class DeckScript : MonoBehaviour
             || checkNickelFlag(ID, player, effecterID, effecterPlayer)
             || checkResiArts(ID, player, effecterID, effecterPlayer)
             || checkResiLrigEff(ID, player, effecterID, effecterPlayer)
-            || (getCardScr(ID, player).resiEffect && effecterPlayer != player);
+            || checkResiYourWhiteCardEff(ID, player, effecterID, effecterPlayer)
+            || (getCardScr(ID, player).resiEffect && effecterPlayer != player)
+            ;
+    }
+
+    bool cardStatusBufColorCheck(int x, int target, cardColorInfo info)
+    {
+        return cardStatusBuf[target, x].cardColor == (int)info;
+    }
+
+    bool checkResiYourWhiteCardEff(int ID, int player, int effecter, int effectPlayer)
+    {
+        CardScript sc = getCardScr(ID, player);
+        return checkAbility(ID, player, ability.resiYourWhiteCardEff) 
+            && cardStatusBufColorCheck(effecter, effectPlayer, cardColorInfo.白)
+            && effectPlayer != player
+            && sc.isOnBattleField()
+            ;
     }
 
     bool checkResiLrigEff(int ID, int player, int effecter, int effectPlayer)
@@ -13662,4 +13750,5 @@ public class DeckScript : MonoBehaviour
     {
         return getFusionID(myID, myPlayer) == signiSumLimitChangedID[target];
     }
+
 }

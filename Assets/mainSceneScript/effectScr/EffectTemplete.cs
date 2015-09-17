@@ -164,7 +164,8 @@ public class EffectTemplete : MonoCard {
     {
         True,
         Default,
-        custom
+        custom,
+        system,
     }
 
     public enum option
@@ -384,41 +385,58 @@ public class EffectTemplete : MonoCard {
                 return effectList[eIndex].funcList[fIndex].check();
 
             case checkType.Default:
-                bool flagBuf = sc.effectFlag;
-                sc.effectFlag = false;
+                return DefauldCheck(sc, eIndex, fIndex);
 
-                effectList[eIndex].funcList[fIndex].action();
-                bool flag = sc.effectFlag;
-
-                for (int i = 0; i < sc.effectMotion.Count; i++)
-                {
-                    Motions m=(Motions)sc.effectMotion[i];
-                    int x = sc.effectTargetID[i]%50;
-                    int target = sc.effectTargetID[i]/50;
-                    switch (m)
-                    {
-                        case Motions.PayCost:
-                            if (!ms.checkCost(x, target))
-                                flag = false;
-                            break;
-
-                        case Motions.Down:
-                            if (ms.getIDConditionInt(x, target) != (int)Conditions.Up)
-                                flag = false;
-                            break;
-
-                    }
-                }
-
-                sc.effectFlag = flagBuf;
-                sc.effectTargetID.Clear();
-                sc.effectMotion.Clear();
-                sc.Targetable.Clear();
-
-                return flag;
+            case checkType.system:
+                return DefauldCheck(ms.getSystemScr(ID,player), eIndex, fIndex);
+ 
         }
 
         return true;
+    }
+
+    bool DefauldCheck(CardScript _sc, int eIndex, int fIndex)
+    {
+        bool flagBuf = _sc.effectFlag;
+        List<int> targetBuf = new List<int>(_sc.effectTargetID);
+        List<int> motionBuf = new List<int>(_sc.effectMotion);
+        List<int> targetableBuf = new List<int>(_sc.Targetable);
+
+        _sc.effectFlag = false;
+        _sc.effectTargetID.Clear();
+        _sc.effectMotion.Clear();
+        _sc.Targetable.Clear();
+
+
+        effectList[eIndex].funcList[fIndex].action();
+        bool flag = _sc.effectFlag;
+
+        for (int i = 0; i < _sc.effectMotion.Count; i++)
+        {
+            Motions m = (Motions)_sc.effectMotion[i];
+            int x = _sc.effectTargetID[i] % 50;
+            int target = _sc.effectTargetID[i] / 50;
+            switch (m)
+            {
+                case Motions.PayCost:
+                    if (!ms.checkCost(x, target))
+                        flag = false;
+                    break;
+
+                case Motions.Down:
+                    if (!ms.getCardScr(x, target).isUp())
+                        flag = false;
+                    break;
+
+            }
+        }
+
+        _sc.effectFlag = flagBuf;
+        _sc.effectTargetID = new List<int>(targetBuf);
+        _sc.effectMotion = new List<int>(motionBuf);
+        _sc.Targetable = new List<int>(targetableBuf);
+
+        return flag;
     }
 
     public void doAfterGettingYes()//manager用
@@ -491,7 +509,7 @@ public class EffectTemplete : MonoCard {
 
     void effect()
     {
-        if (!isGotYes || !ms.isTargetIDCountZero(sc.ID,sc.player))
+        if (!isGotYes || !ms.isTargetIDCountZero(sc.ID,sc.player) || !ms.isSystemTargetIDCountZero())
             return;
 
         sc.Targetable.Clear();
