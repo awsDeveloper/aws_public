@@ -40,5 +40,11 @@ public class ThreeClassBase : MonoCard {
             upFlag = false;
         }
     }
+
+    public void set(cardClassInfo _class, int _base)
+    {
+        myClass = _class;
+        upBase = _base;
+    }
 }
 

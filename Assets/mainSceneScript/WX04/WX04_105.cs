@@ -15,8 +15,6 @@ public class WX04_105 : MonoBehaviour {
 		BodyScript=Body.GetComponent<CardScript>();
 		ID=BodyScript.ID;
 		player=BodyScript.player;
-		BodyScript.MultiEnaFlag=true;
-		BodyScript.GuardFlag=true;
 		
 		Manager=Body.GetComponent<CardScript>().Manager;
 		ManagerScript=Manager.GetComponent<DeckScript>();

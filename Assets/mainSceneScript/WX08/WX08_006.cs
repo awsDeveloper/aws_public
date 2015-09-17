@@ -19,7 +19,7 @@ public class WX08_006 : MonoCard {
         //alwys
         ms.upAlwaysFlag(alwysEffs.Arachne, 1 - player, ID, player);
 
-        if (ms.getStartedPhase() == (int)Phases.AttackPhase && ms.getTurnPlayer() == 1 - player)
+        if (sc.isOnBattleField() && ms.getStartedPhase() == (int)Phases.AttackPhase && ms.getTurnPlayer() == 1 - player)
         {
             sc.funcTargetIn(1 - player, Fields.SIGNIZONE, ms.havingCharm);
             sc.setEffect(-1, 0, Motions.EnaCharge);

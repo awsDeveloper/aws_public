@@ -161,6 +161,9 @@ public enum Motions
     DontGrow,
     NotDamageThisTurn,
     WarmHole,
+    ShowZoneGoBottom,
+    SetDialog,              //効果の途中でダイアログフラグを立てる
+    SigniZonePowerUp,
 }
 
 public enum OneFrameIDType
@@ -184,6 +187,7 @@ public enum OneFrameIDType
     cipID,
     BurstEffectID,
     AttackerID,
+    FreezedID,
 }
 
 public enum DialogNumType
@@ -291,6 +295,24 @@ class IgniCostDecrease
         isEndFinishFlag = isEndFinish;
         downCost = cost;
         igniField = applyField;
+    }
+}
+
+class zonePowrUp
+{
+    public int powerUpValue = -1;
+    public int zoneRank = -1;
+    public int changer = -1;
+    public int target = -1;
+    public int turnCount = -1;
+
+    public zonePowrUp(int _powerUpValue, int _zoneRank, int _changer, int _target, int _turnCount)
+    {
+        powerUpValue = _powerUpValue;
+        zoneRank = _zoneRank;
+        changer = _changer;
+        target = _target;
+        turnCount = _turnCount;
     }
 }
 
@@ -766,6 +788,8 @@ public class DeckScript : MonoBehaviour
     List<string> usedList = new List<string>();
 
     bool[] notDamagingFlag = new bool[2];
+
+    List<zonePowrUp> zonePowerList = new List<zonePowrUp>();
 	//最後尾
 
 	//通信
@@ -874,13 +898,13 @@ public class DeckScript : MonoBehaviour
     }
 
     public bool isTargetIDCountZero(int ID, int player)
-    {
-        if (SystemEffectFlag)
+    {//正直わかんない
+/*        if (SystemEffectFlag)
             return SystemCardScr.effectTargetID.Count == 0;
 //        else if (EffecterNowID == -1)
 //            return true;
 
-//        return getCardScr(EffecterNowID).effectTargetID.Count == 0;
+//        return getCardScr(EffecterNowID).effectTargetID.Count == 0;*/
         return getCardScr(ID,player).effectTargetID.Count == 0;
     }
 
@@ -989,6 +1013,10 @@ public class DeckScript : MonoBehaviour
 		return array;
 	}
 
+    public void powChanListChangerClear(int changerFusionID)
+    {
+        powChanListChangerClear(changerFusionID % 50, changerFusionID / 50);
+    }
 	public void powChanListChangerClear(int changerID, int changerPlayer)
 	{
 		for (int i = 0; i < powChanList.Count; i++)
@@ -1326,6 +1354,13 @@ public class DeckScript : MonoBehaviour
         return com.isCrossing();
     }
 
+    public bool checkAbility(int x, int target, ability a)
+    {
+        if (x < 0)
+            return false;
+        return getCardScr(x, target).checkAbility(a);
+    }
+
 
     public bool checkClass(int fusionID, cardClassInfo info)
     {
@@ -1518,7 +1553,7 @@ public class DeckScript : MonoBehaviour
         return alwaysChagePower(x, target, up, ID, player, null);
 	}
 
-    public bool alwaysChagePower(int x, int target, int up, int ID, int player,System.Func<int,int,bool> check)
+    public bool alwaysChagePower(int x, int target, int up, int ID, int player, System.Func<int, int, bool> check, bool isZoneTarget = false)
     {
 
         if (Rian_pow_Flag[1 - player] || checkResistance(x, target, ID, player))
@@ -1527,21 +1562,18 @@ public class DeckScript : MonoBehaviour
         CardScript sc = card[target, x].GetComponent<CardScript>();
         CardScript effecterScr = card[player, ID].GetComponent<CardScript>();
 
-        if (effecterScr.lostEffect)
+        if (effecterScr.lostEffect && !isZoneTarget)//zoneを対象としたダウンは効果を失っても続く
             return false;
 
         //violence
         for (int i = 0; i < ViolenceCount && up < 0; i++)
-        {
             up *= 2;
-        }
 
         sc.changePower += up;
 
-        powChanList.Add(new powerChange(x + 50 * target, ID + 50 * player, up,check));
+        powChanList.Add(new powerChange(x + 50 * target, ID + 50 * player, up, check));
 
         return true;
-
     }
 
     public bool checkChanListExist(int x, int target,int ID,int player)
@@ -1667,12 +1699,86 @@ public class DeckScript : MonoBehaviour
         return checkModeCost(ID, player, false);
 	}
 
+    //色代用効果に対応するべくアルゴリズムを変更したver.
+    public bool checkCost2nd(int player, List<int> costColorList, List<int> payedCardList,bool isMelhenGrow)
+    {
+        if (costColorList.Count == 0)
+            return true;
+
+        if(payedCardList==null)
+            payedCardList=new List<int>();
+
+        cardColorInfo color = (cardColorInfo)costColorList[costColorList.Count - 1];
+        costColorList.RemoveAt(costColorList.Count - 1);
+
+        List<int> subCostColorList=new List<int>(costColorList);
+        List<int> subPayedCardList=new List<int>(payedCardList);
+
+        int num = fieldAllNum(Fields.ENAZONE, player);
+        bool flag = false;
+        for (int i = 0; i < num; i++)
+        {
+            int x = fieldRankID(Fields.ENAZONE, i, player);
+            int fID=x + 50 * player;
+            if (!checkPayingTarget(color, fID, isMelhenGrow))
+                continue;
+
+            subPayedCardList.Add(fID);
+            if (!payedCardList.Contains(fID) && checkCost2nd(player, subCostColorList, subPayedCardList,isMelhenGrow))
+            {
+                payedCardList.Add(fID);
+                flag = true;
+                break;
+            }
+        }
+
+        if (!flag)
+            return false;
+
+        return checkCost2nd(player, costColorList, payedCardList, isMelhenGrow);
+    }
+
+    bool checkPayingTarget(cardColorInfo info, int fusionID, bool isMelhenGrow)
+    {
+        CardScript sc = getCardScr(fusionID);
+        if (info == cardColorInfo.無色
+            || sc.MultiEnaFlag
+            || info == cardColorInfo.白 && checkClass(fusionID, cardClassInfo.精像_美巧) && (melhenFlag[fusionID/50] || isMelhenGrow || sc.WhiteEnaFlag))
+            return true;
+
+        return checkColor(fusionID % 50, fusionID / 50, info);
+    }
+
+    List<int> creatCostColorList(int ID,int player, colorCostArry array)
+    {
+        List<int> list = new List<int>();
+
+        for (int i = 0;true; i--)
+        {
+            int hosei = IgniCostDecSum(ID, player, i);
+            for (int k = 0; k < array.getCost(i) - hosei; k++)
+                list.Add(i);
+
+            if (i == 0)
+                i = array.Length();
+
+            if (i == 1)
+                break;
+        }
+        return list;
+    }
+
     public bool checkModeCost(int ID, int player,bool isGrow)
     {
          if (ID < 0)
             return false;
         CardScript sc = getCardScr(ID, player);
-        int multi = MultiEnaNum(player);
+        if (isGrow)
+            return checkCost2nd(player, creatCostColorList(ID, player, sc.GrowCost), null, sc.MelhenGrowFlag && isGrow);
+        else
+            return checkCost2nd(player, creatCostColorList(ID, player, sc.Cost), null, sc.MelhenGrowFlag && isGrow);
+
+/*        int multi = MultiEnaNum(player);
         int costSum = 0;
 
         int bikou = 0;
@@ -1710,7 +1816,7 @@ public class DeckScript : MonoBehaviour
 
         if (multi < 0 || costSum > enaNum[player])
             return false;
-        return true;
+        return true;*/
     }
 	
 	public void setSpellCostDown (int color, int num, int player, int SpellOrArts)
@@ -1988,6 +2094,61 @@ public class DeckScript : MonoBehaviour
         showCardText = GameObject.Find("showCardText").GetComponent<UnityEngine.UI.Text>();
         showCardImage = GameObject.Find("showCardImage").GetComponent<UnityEngine.UI.RawImage>();
 	}
+
+    bool loadingPics()
+    {
+        for (int player = 0; player < 2; player++)
+        {
+            if (NowLoading[player])
+            {
+                bool flag = true;
+                int count = 0;
+
+                for (int i = 0; i < card.GetLength(1); i++)
+                {
+                    string key = SerialNumString[player, i];
+                    Texture tex = Singleton<pics>.instance.getTexture(key);
+                    if (tex == null)
+                    {
+                        flag = false;
+                    }
+                    else
+                        count++;
+                }
+
+                if (flag)
+                    DeckCreat(player);
+            }
+        }
+        return NowLoading[0] || NowLoading[1];
+    }
+
+    void zoneTargetPowerUp()
+    {
+        foreach (var item in zonePowerList)
+        {
+            int x = fieldRankID(Fields.SIGNIZONE, item.zoneRank, item.target);
+            if (x >= 0 && !checkChanListExist(x, item.target, item.changer % 50, item.changer / 50))
+                alwaysChagePower(x, item.target, item.powerUpValue, item.changer % 50, item.changer / 50, null, true);
+        }
+
+    }
+
+    void alwaysPowerUpCheck()
+    {
+        zoneTargetPowerUp();
+
+        for (int i = 0; i < powChanList.Count; i++)
+        {
+            int x = powChanList[i].changedID;
+
+            if (powChanList[i].check == null || powChanList[i].check(x % 50, x / 50))
+                continue;
+
+            powChanListRemove(i);
+            i--;
+        }
+    }
 		
 	// Update is called once per frame
 	void Update ()
@@ -2027,31 +2188,8 @@ public class DeckScript : MonoBehaviour
 */		
 
 		//loading pics
-		for (int player = 0; player < 2; player++)
-		{
-			if(NowLoading[player])
-			{
-				bool flag = true;
-				int count=0;
 
-				for (int i = 0; i < card.GetLength(1); i++)
-				{
-					string key = SerialNumString[player,i];
-					Texture tex=Singleton<pics>.instance.getTexture(key);
-					if(tex == null)
-					{
-						flag=false;
-					}
-					else 
-						count++;
-				}
-
-				if(flag)
-					DeckCreat(player);
-			}
-		}
-
-		if(NowLoading[0] || NowLoading[1])
+		if(loadingPics())
 			return;
 
         checkUgui();
@@ -2080,20 +2218,9 @@ public class DeckScript : MonoBehaviour
        oneFrameUpdate();
 
         //alwaysPowerUpのチェック
-       for (int i = 0; i < powChanList.Count; i++)
-       {
-           if (powChanList[i].check != null)
-           {
-               int x = powChanList[i].changedID;
-               if (!powChanList[i].check(x % 50, x / 50))
-               {
-                   powChanListRemove(i);
-                   i--;
-               }
-           }
-       }
- 
+       alwaysPowerUpCheck();
 
+        
 		
 		//showCursor
 		if (targetShowList.Count > 0 && targetShowCursor == null)
@@ -5137,20 +5264,25 @@ public class DeckScript : MonoBehaviour
 //		showCardBurstIcon=script.BurstIcon;*/
 	}
 	
-	void SigniZoneUp (int player)
+	void SigniZoneUp (int player, bool all=false)
 	{
 		bool flag = checkSigniRockFlag (player);
 		
 		for (int i=0; i<TargetSigniZoneCursor.Length; i++)
 		{
-			if (signiCondition [player, i] == Conditions.no 
+            bool check = signiCondition [player, i] == Conditions.no 
                 && SigniNotSummonCount[player, i] == 0
-                && (!flag || (flag && signiRockFlag [player, i])))
+                && (!flag || signiRockFlag [player, i]);
+
+            if (all)
+                check = true;
+
+			if (check)
 			{
 				if (player == 0)
-					TargetSigniZoneCursor [i].transform.position = vec3Add (SIGNIZONE, new Vector3 (SigniWidth * i, 0f, 0f));
+					TargetSigniZoneCursor [i].transform.position = vec3Add (SIGNIZONE, new Vector3 (SigniWidth * i, 0.025f, 0f));
 				else
-					TargetSigniZoneCursor [i].transform.position = vec3Player2 (vec3Add (SIGNIZONE, new Vector3 (SigniWidth * i, 0f, 0f)));
+					TargetSigniZoneCursor [i].transform.position = vec3Player2 (vec3Add (SIGNIZONE, new Vector3 (SigniWidth * i, 0.025f, 0f)));
 			}
 		}
 	}
@@ -5687,7 +5819,25 @@ public class DeckScript : MonoBehaviour
 			{
 				if (targetCursorList.Count == 0 && enaColorList.Count > 0)
 				{
-					int mNum = MultiEnaNum (selectEnaPlayer);
+                    for (int i = 0; i < fieldAllNum(Fields.ENAZONE,selectEnaPlayer); i++)
+                    {
+                        int x = fieldRankID(Fields.ENAZONE, i, selectEnaPlayer);
+                        int fID = getFusionID(x, selectEnaPlayer);
+                        if (clickCursorID.Contains(fID) || !checkPayingTarget((cardColorInfo)enaColorList[selectEnaNum - 1], fID, melhenFlag[selectEnaPlayer]))
+                            continue;
+
+                        List<int> sub_payed = new List<int>(clickCursorID);
+                        sub_payed.Add(fID);
+
+                        List<int> sub_color = new List<int>();
+                        for (int k = 0; k < selectEnaNum - 1; k++)
+                            sub_color.Add(enaColorList[k]);
+
+                        if (checkCost2nd(selectEnaPlayer, sub_color, sub_payed, melhenFlag[selectEnaPlayer]))
+                            setTargetCursorID(x, selectEnaPlayer);
+                    }
+                    //アルゴリズムを変更した
+/*					int mNum = MultiEnaNum (selectEnaPlayer);
 
 
                     int bNum = 0;
@@ -5731,28 +5881,19 @@ public class DeckScript : MonoBehaviour
 					for (int i=0; i<enaNum[selectEnaPlayer]; i++)
 					{
 						int id = fieldRankID (Fields.ENAZONE, i, selectEnaPlayer);
-/*						bool flag = true;
-
-						for (int j=0; j<clickCursorID.Count; j++)
-						{
-							if (clickCursorID [j] == id + selectPlayer * 50)
-								flag = false;
-						}*/
 
 						int clr = card [selectEnaPlayer, id].GetComponent<CardScript> ().CardColor;
                         int targetEnacolor=enaColorList[selectEnaNum - 1];
 
-                        if (!clickCursorID.Contains(id + selectEnaPlayer * 50)) //flag)
+                        if (!clickCursorID.Contains(id + selectEnaPlayer * 50))
                         {
                             if ((card[selectEnaPlayer, id].GetComponent<CardScript>().MultiEnaFlag && multiEnable)
                                 || ( targetEnacolor == 1 && checkClass(id,selectEnaPlayer, cardClassInfo.精像_美巧) && bikouEnable)
                                 || targetEnacolor == 0 
                                 || clr == enaColorList[selectEnaNum - 1])
                                 setTargetCursorID(id, selectEnaPlayer);
-/*                            else if (enaColorList[selectEnaNum - 1] == 0 || clr == enaColorList[selectEnaNum - 1])
-                                setTargetCursorID(id, selectEnaPlayer);*/
                         }
-					}
+					}*/
 				}
 				
 				if (Input.GetMouseButtonDown (0))
@@ -7251,6 +7392,17 @@ public class DeckScript : MonoBehaviour
             if(SigniNotSummonCount[i / 3, i % 3]>0)
                 SigniNotSummonCount[i / 3, i % 3]--;            
         }
+
+        for (int i = 0; i < zonePowerList.Count; i++)
+        {
+            zonePowerList[i].turnCount--;
+            if (zonePowerList[i].turnCount == 0)
+            {
+                powChanListChangerClear(zonePowerList[i].changer);
+                zonePowerList.RemoveAt(i);
+                i--;
+            }
+        }
     }
 /*	void EndPhaseMove_p1(){
 		if(moveID[0]==-1 && rotaID[0]==-1){
@@ -7667,10 +7819,11 @@ public class DeckScript : MonoBehaviour
 			{
                 lancerFlag = false;//ランサーの効果でクラッシュしたら終わり
 
-                clickCursorID.RemoveAt(0);
+                endCrash();
+/*                clickCursorID.RemoveAt(0);
 				chainMotion [1] = -1;
 
-                crasherID = -1;
+                crasherID = -1;*/
             }
 		}
 
@@ -7760,10 +7913,11 @@ public class DeckScript : MonoBehaviour
 			Crash (clickCursorID [1] % 50, attacked);
 			if (moveID [attacked] == -1 && rotaID [attacked] == -1)
 			{
-				clickCursorID.Clear ();
+                endCrash();
+/*				clickCursorID.Clear ();
 				chainMotion [1] = -1;
 
-                crasherID = -1;
+                crasherID = -1;*/
 			}
 		}
 
@@ -7794,6 +7948,20 @@ public class DeckScript : MonoBehaviour
 
 	}
 
+    void endCrash()
+    {
+        clickCursorID.Clear();
+        chainMotion[1] = -1;
+
+        if (checkAbility(crasherID % 50, crasherID / 50, ability.TwoChargeAfterCrash))
+        {
+            getCardScr(crasherID).setEffect(crasherID, 0, Motions.TopEnaCharge);
+            getCardScr(crasherID).setEffect(crasherID, 0, Motions.TopEnaCharge);
+        }
+        crasherID = -1;
+
+    }
+
     int isAddedIgniID(int ID, int player)
     {
         for (int i = 0; i < AddIgniList.Count; i++)
@@ -7805,39 +7973,6 @@ public class DeckScript : MonoBehaviour
         return -1;
     }
 
-/*    int isEnDoubleCrashID(int ID, int player)
-	{
-		for(int i=0;i<EnDoubleCrashID.Count;i++)
-		{
-			if(EnDoubleCrashID[i]==ID+player%2*50)
-				return i;
-		}
-
-		return -1;
-	}
-
-	int isEnResiBanishID(int ID,int player)
-	{
-        for (int i = 0; i < EnResiBanishID.Count; i++)
-        {
-            if (EnResiBanishID[i] == ID + player % 2 * 50)
-                return i;
-        }
-		
-		return -1;
-	}
-
-
-	int isEnLancerID(int ID,int player)
-	{
-		for(int i=0;i<EnLancerID.Count;i++)
-		{
-			if(EnLancerID[i]==ID+player%2*50)
-				return i;
-		}
-		
-		return -1;
-	}*/
 
 	bool isShowZoneID(int ID,int player)
 	{
@@ -8411,7 +8546,9 @@ public class DeckScript : MonoBehaviour
                 else
                     cost = copyCostArray(card[player % 2, ID].GetComponent<CardScript>().Cost);
 
-				for (int i=0; i>=0; i--)
+                //まとめた
+                enaColorList = creatCostColorList(ID, player, cost);
+/*				for (int i=0; i>=0; i--)
 				{
                     int hosei = IgniCostDecSum(ID, player, i);
  
@@ -8422,7 +8559,7 @@ public class DeckScript : MonoBehaviour
 						i = 6;
 					if (i == 1)
 						i = -1;
-				}
+				}*/
 
 				if (enaColorList.Count > 0)
 				{
@@ -9205,11 +9342,9 @@ public class DeckScript : MonoBehaviour
 		
 			if(isUpEffect(sc) && !effectFlag)
 			{
-
 				effectFlag = true;
 				effecter [0] = i;
-
-				//animation
+ 				//animation
                 if (sc.effectMotion.Count > 0 && sc.effectMotion[0] != (int)Motions.UpIgnition)
                 {
                     if (trueIgnitionID == -1)
@@ -9557,8 +9692,13 @@ public class DeckScript : MonoBehaviour
             else if (clickCursorID.Count == 0)
             {
                 //showZoneGoTop
-                if (sc.effectMotion[cursorIndex] == (int)Motions.ShowZoneGoTop)
+                if (sc.effectMotion[cursorIndex] == (int)Motions.ShowZoneGoTop || sc.effectMotion[cursorIndex] == (int)Motions.ShowZoneGoBottom)
                 {
+                    Motions m = Motions.GoDeck;
+                    if (sc.effectMotion[cursorIndex] == (int)Motions.ShowZoneGoBottom)
+                        m = Motions.GoDeckBottom;
+
+                    
                     sc.effectMotion.RemoveAt(cursorIndex);
                     sc.effectTargetID.RemoveAt(cursorIndex);
                     sc.Targetable.Clear();
@@ -9573,8 +9713,9 @@ public class DeckScript : MonoBehaviour
                             break;
                         }
 
+   
                         sc.Targetable.Add(x);
-                        sc.effectMotion.Insert(cursorIndex, (int)Motions.GoDeck);
+                        sc.effectMotion.Insert(cursorIndex, (int)m);
                         sc.effectTargetID.Insert(cursorIndex, -1);
                     }
                 }
@@ -9896,7 +10037,9 @@ public class DeckScript : MonoBehaviour
             || m == Motions.CostGoTrash
             || m == Motions.GoTrash
             || m == Motions.GoDeck
-            || m == Motions.GoDeckBottom;
+            || m == Motions.GoDeckBottom
+            || m == Motions.WarmHole
+            ;
     }
 
     void stopEffect(CardScript sc)
@@ -9932,7 +10075,7 @@ public class DeckScript : MonoBehaviour
 
             return false;
         }
-        
+
         if (m == Motions.Draw)
         {
             //cmrたん
@@ -9958,6 +10101,14 @@ public class DeckScript : MonoBehaviour
             {
                 sc.effectTargetID.RemoveAt(0);
                 sc.effectMotion.RemoveAt(0);
+            }
+        }
+        else if (m == Motions.SetDialog)
+        {
+            if (sc.messages.Count == 0)
+            {
+                sc.setDialogNum((DialogNumType)sc.getParameta(parametaKey.settingDialogNum));
+                return false;
             }
         }
         else if (m == Motions.NotDamageThisTurn)
@@ -10071,7 +10222,7 @@ public class DeckScript : MonoBehaviour
 
             //場にいたころのパワー、ランクを取得
             int power = getCardPower(effectID, effectPlayer % 2);
-            int rank= getRank(effectID, effectPlayer % 2);
+            int rank = getRank(effectID, effectPlayer % 2);
 
             //バニッシュ
             EnaCharge(effectID, effectPlayer);
@@ -10083,14 +10234,15 @@ public class DeckScript : MonoBehaviour
                 toldBanishing = false;
 
                 //パワーサムの代入
-                switch(m){
+                switch (m)
+                {
                     case Motions.PowerSumBanish:
                         powerSum += power;
                         int maxVal = sc.getParameta(parametaKey.powerSumBanishValue);
-                        
+
                         sc.Targetable.Clear();
                         sc.maxPowerTargetIn(maxVal - powerSum);
-                            
+
                         if (sc.Targetable.Count > 0)
                         {
                             sc.effectTargetID.Insert(1, -1);
@@ -10104,7 +10256,7 @@ public class DeckScript : MonoBehaviour
                         break;
 
                     case Motions.WarmHole:
-                        SigniNotSummonCount[effectPlayer%2, rank]=2;
+                        SigniNotSummonCount[effectPlayer % 2, rank] = 2;
                         break;
                 }
             }
@@ -10173,8 +10325,10 @@ public class DeckScript : MonoBehaviour
         }
         else if (m == Motions.FREEZE)
         {
-            getCardScr(effectID, effectPlayer % 2).Freeze = true;
+            if (!checkFreeze(effectID, effectPlayer % 2))
+                setOneFrameID(OneFrameIDType.FreezedID, sc.effectTargetID[0]);
 
+            getCardScr(effectID, effectPlayer % 2).Freeze = true;
             Singleton<SoundPlayer>.instance.playSE("freeze");
         }
         else if (m == Motions.AddIgniEnd)
@@ -10400,10 +10554,7 @@ public class DeckScript : MonoBehaviour
                 }
 
                 if (sc.Targetable.Count == 0)
-                {
-                    sc.effectTargetID.RemoveAt(0);
-                    sc.effectMotion.RemoveAt(0);
-                }
+                    return true;
 
                 return false;
             }
@@ -10580,6 +10731,7 @@ public class DeckScript : MonoBehaviour
         else if (m == Motions.TopCrash)
         {
             int id = fieldRankID(Fields.LIFECLOTH, LifeClothNum[effectPlayer % 2] - 1, effectPlayer % 2);
+            sc.effectTargetID[0] = id + 50 * (effectPlayer % 2);//移動対象がtargetに入るように工夫
             if (id >= 0)
                 Crash(id, effectPlayer);
         }
@@ -10589,6 +10741,7 @@ public class DeckScript : MonoBehaviour
             notBurst = true;
 
             int id = fieldRankID(Fields.LIFECLOTH, LifeClothNum[effectPlayer % 2] - 1, effectPlayer % 2);
+            sc.effectTargetID[0] = id + 50 * (effectPlayer % 2);//移動対象がtargetに入るように工夫
             if (id >= 0)
                 Crash(id, effectPlayer);
 
@@ -10811,6 +10964,31 @@ public class DeckScript : MonoBehaviour
                 }
             }
         }
+        else if (m == Motions.SigniZonePowerUp)
+        {
+            if (selectSigniZone == -1)
+            {
+                if (waitYou(effectPlayer % 2))
+                {
+                    if (canRead())
+                        selectSigniZone = int.Parse(readMessage());
+                }
+                else
+                {
+                    selectSigniZoneFlag = true;
+                    SigniZoneUp(effectPlayer % 2, true);
+                    selectSigniPlayer = selecter;
+                }
+
+                return false;
+            }
+            else
+            {
+                int turnCount = 2;
+                zonePowerList.Add(new zonePowrUp(sc.powerUpValue, selectSigniZone, EffecterNowID, effectPlayer % 2, turnCount));
+                selectSigniZone = -1;
+            }
+        }
         else if (m == Motions.Summon || m == Motions.RebornEndPhase || m == Motions.TempResonaSummon
             || m == Motions.JupiterResona || m == Motions.NotCipSummon || m == Motions.NotCipTempResona
             || (m == Motions.DownSummonFromTrash && field[effectPlayer % 2, effectID] == Fields.TRASH))
@@ -10984,7 +11162,9 @@ public class DeckScript : MonoBehaviour
 	void effectBody(CardScript sc,int playerNum)
 	{
 		int effectPlayer = sc.effectTargetID [0] / 50 + playerNum;
-        bool notResist = EffecterNowID < 0 || 
+        bool notResist = EffecterNowID < 0 ||
+            sc.effectMotion[0] == (int)Motions.TopSetCharm ||
+            sc.effectMotion[0] == (int)Motions.SetCharm ||
             ( !CheckEffectResist(sc.effectTargetID[0] % 50, sc.effectTargetID[0] / 50, EffecterNowID % 50, EffecterNowID / 50)
             && !GoNextTrunFlag);
 
@@ -11268,7 +11448,7 @@ public class DeckScript : MonoBehaviour
 		return num;
 	}
 
-    public int BikouEnaNum(int player)
+    int BikouEnaNum(int player)
     {
         int num = 0;
         for (int i = 0; i < enaNum[player]; i++)

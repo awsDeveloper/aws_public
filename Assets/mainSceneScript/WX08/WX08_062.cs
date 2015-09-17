@@ -5,6 +5,7 @@ public class WX08_062 : MonoCard {
 
 	// Use this for initialization
 	void Start () {
+        gameObject.AddComponent<ThreeClassBase>().set(cardClassInfo.精械_電機, 14000);
 	
 	}
 	

@@ -47,4 +47,10 @@ public class FuncChangeBase : MonoBehaviour {
     {
         func = f;
     }
+
+    public void set(System.Func<bool> f, int _base)
+    {
+        setFunc(f);
+        baseValue = _base;
+    }
 }

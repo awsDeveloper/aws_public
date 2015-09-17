@@ -8,6 +8,9 @@ public class EffectTemplete : MonoCard {
     Func<bool> trigger;
     bool useYesNo = false;
 
+    bool oneceTurn = false;
+    bool thisTurnUsed = false;
+
     List<effectPack> effectList = new List<effectPack>();
 
     bool isGotYes = false;//DialogToggleでyesを受け取った
@@ -53,7 +56,7 @@ public class EffectTemplete : MonoCard {
 
         public string str = "";
         public int boxIndex = -1;//checkBoxのindexとの紐つけ
-        public checkType myCheckType = checkType.Default;
+        public checkType myCheckType = checkType.custom;
 
          public checkAndEffect(Func<bool> c, Func<bool> e,string checkStr)
         {
@@ -136,6 +139,12 @@ public class EffectTemplete : MonoCard {
     {
         return sc.isCrossing() && Cip();
     }
+
+    bool removed()
+    {
+        return sc.isRemovedThisSigni();
+    }
+
     public enum triggerType
     {
         Cip,
@@ -148,6 +157,7 @@ public class EffectTemplete : MonoCard {
         attack,
         mySigniHeavened,
         crossCip,
+        removed,
     }
 
     public enum checkType
@@ -192,19 +202,11 @@ public class EffectTemplete : MonoCard {
         list.Add(new checkAndEffect(_check, _action, ""));
         addEffect(list, 1, true, _option);
     }
- 
+
     public void addEffect(Action _action, option _option, checkType _type = checkType.Default)
     {
-        switch (_type)
-        {
-            case checkType.True:
-                addEffect(_action, _option, trueReturn);
-                break;
-
-            case checkType.Default:
-                addEffect(_action, _option, null);
-                break;
-        }
+        addEffect(_action, _option, CheckTypeToAction(_type));
+        effectList[effectList.Count - 1].funcList[0].myCheckType = _type;
     }
 
     public void addEffect(List<checkAndEffect> _funcList, int _max, bool _maxSelect, bool _isCost)
@@ -220,23 +222,50 @@ public class EffectTemplete : MonoCard {
         addEffect(_action, isCostToOption(_isCost), _type);
     }
 
+    public void addFuncList(int index,Action _action, checkType _type = checkType.Default) {
+        var _var = new checkAndEffect(CheckTypeToAction(_type), _action, "");
+        _var.myCheckType = _type;
+        effectList[index].funcList.Add(_var);
+    }
+
+    public void changeCheckStr(int index, string[] str)
+    {
+        for (int i = 0; i < effectList[index].funcList.Count; i++)
+            effectList[index].funcList[i].str = str[i];
+    }
+
+    Func<bool> CheckTypeToAction(checkType _type)
+    {
+        
+        switch (_type)
+        {
+            case checkType.True:
+                return trueReturn;
+
+            case checkType.Default:
+                return null;
+        }
+
+        return null;//別の値返した方がいいかも
+    }
 
     bool trueReturn()
     {
         return true;
     }
 
-    public void setTrigger(Func<bool> func, bool _useYesNo = false)
+    public void setTrigger(Func<bool> func, bool _useYesNo = false, bool _oneceTurn=false)
     {
         trigger = func;
         useYesNo = _useYesNo;
+        oneceTurn = _oneceTurn;
     }
 
-    public void setTrigger(triggerType T, bool _useYesNo = false)
+    public void setTrigger(triggerType T, bool _useYesNo = false, bool _oneceTurn = false)
     {
         MethodInfo mInfo = typeof(EffectTemplete).GetMethod(T.ToString(), BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
         Func<bool> tri = (Func<bool>)Delegate.CreateDelegate(typeof(Func<bool>), this, mInfo);
-        setTrigger(tri, _useYesNo);
+        setTrigger(tri, _useYesNo,_oneceTurn);
         if (T == triggerType.useAttackArts)
             sc.attackArts = true;
         //        Debug.Log(trigger);
@@ -277,6 +306,9 @@ public class EffectTemplete : MonoCard {
         receive();
 
         effect();
+
+        if (ms.getStartedPhase() == (int)Phases.UpPhase)
+            thisTurnUsed = false;
     }
 
     public bool isTriggered()
@@ -287,14 +319,22 @@ public class EffectTemplete : MonoCard {
         return trigger();
     }
 
+    bool onceTurnCheck()
+    {
+        return !oneceTurn || !thisTurnUsed;
+    }
+
     void triggerCheck()
     {
-        if (manualMode || !trigger())//manual modeではトリガーチェックで実行されない
+        if (manualMode || !onceTurnCheck() || !trigger())//manual modeではトリガーチェックで実行されない
             return;
 
         triggerInit();
 
-        if (useYesNo && checkCost())
+        if (!checkCost())
+            return;
+
+        if (useYesNo)
         {
             sc.setDialogNum(DialogNumType.YesNo);
             isUpper = true;
@@ -306,6 +346,7 @@ public class EffectTemplete : MonoCard {
     void triggerInit()
     {
         effectIndex = 0;
+        thisTurnUsed = true;
     }
 
     bool checkCost()

@@ -14,6 +14,7 @@ public enum ability
     DontAttack,         //攻撃できない
     resiArts,            //アーツ耐性
     FreezeThrough,      //正面凍結時アサシン
+    TwoChargeAfterCrash,//このシグニが対戦相手のライフクロスをクラッシュしたとき、あなたのデッキの上からカードを２枚エナゾーンに置く。
 }
 
 
@@ -26,6 +27,7 @@ public enum parametaKey
     powerSumBanishValue,
     ClassNumBanishTarget,
     changeBaseValue,
+    settingDialogNum,
 }
 
 public enum dialogUpConditions//dialogが立った時の状況
@@ -99,10 +101,11 @@ public class CardScript : MonoBehaviour
         public int changePower = 0;
 
         public int BurstIcon = -1;*/
-	public bool effectFlag = false;
-	public int ID = -1;
+	
+    public int ID = -1;
 	public int player = -1;
 	public string SerialNumString="";
+    public bool effectFlag = false;
 
 	public int powerUpValue = -1;
 	public int CharmSetRank=-1;
@@ -115,7 +118,8 @@ public class CardScript : MonoBehaviour
 	public bool AntiCheck = false;
 
 	public bool MultiEnaFlag = false;
-	public bool GuardFlag = false;
+    public bool WhiteEnaFlag = false;
+    public bool GuardFlag = false;
     public bool Freeze = false;
 
     public bool growEffectFlag = false;
@@ -218,7 +222,8 @@ public class CardScript : MonoBehaviour
 	public GameObject Manager;
 	public GameObject Brain;
 	public List<int> effectTargetID = new List<int> ();
-	public List<int> effectMotion = new List<int> ();
+
+    public List<int> effectMotion  = new List<int>();
 
     //targetID
     public bool TargetIDEnable = false;
@@ -263,6 +268,7 @@ public class CardScript : MonoBehaviour
     Fields oldField = Fields.Non;
 
     Dictionary<parametaKey, int> parametaDictionary = new Dictionary<parametaKey, int>();
+
 
     bool brainChecke = false;//brainのスクリプト取得が終わっていることを示す
 
@@ -393,7 +399,11 @@ public class CardScript : MonoBehaviour
 
     public void setEffect(int x, int target, Motions m)
     {
-        if (x < 0 && Targetable.Count == 0 && m != Motions.CostBanish && m != Motions.ShowZoneGoTop)//入力ナンバーでターゲットなしは何もしない
+        //入力ナンバーでターゲットなしは何もしない
+        if (x < 0 && Targetable.Count == 0 
+            && m != Motions.CostBanish 
+            && m != Motions.ShowZoneGoTop
+            && m != Motions.ShowZoneGoBottom)
             return;
 
         if (m == Motions.CostBanish && ms.getFieldAllNum((int)Fields.SIGNIZONE, player) == 0)
@@ -667,10 +677,12 @@ public class CardScript : MonoBehaviour
             funcTargetIn(target, field);
         ms = null;
     }
-    public void funcTargetIn(int target, Fields field, System.Func<int, int, bool> func)
+    public void funcTargetIn(int target, Fields field, System.Func<int, int, bool> func=null)
     {
         int f = (int)field;
         int num = ms.getNumForCard(f, target);
+        if (func == null)
+            func = reTrue;
 
         for (int i = 0; i < num; i++)
         {
@@ -706,11 +718,6 @@ public class CardScript : MonoBehaviour
     }
 
 
-
-    public void funcTargetIn(int target, Fields field)
-    {
-        funcTargetIn(target, field, reTrue);
-    }
     public bool isUp()
     {
         return isOnBattleField() && ms.getIDConditionInt(ID, player) == (int)Conditions.Up;
@@ -772,6 +779,11 @@ public class CardScript : MonoBehaviour
         setEffect(ID, player, Motions.Down);
         return true;
 
+    }
+
+    public void setDown()
+    {
+        setEffect(ID, player, Motions.Down);
     }
 
     public bool IgnitionPayCost(cardColorInfo info, int num)
@@ -1253,13 +1265,13 @@ public class CardScript : MonoBehaviour
         return x >= 0 && ms.checkFreeze(x, 1 - player);
     }
 
-    public void resonaSummon(Func<int, int, bool> check, int num, bool isCostUse=false)
+    public void resonaSummon(Func<int, int, bool> check, int num, bool isCostUse=false, Fields _field= Fields.SIGNIZONE)
     {
         if (!useResona)
             return;
         useResona = false;
 
-        funcTargetIn(player, Fields.SIGNIZONE, check);
+        funcTargetIn(player, _field, check);
         if (Targetable.Count < num)
         {
             Targetable.Clear();
@@ -1267,6 +1279,9 @@ public class CardScript : MonoBehaviour
         }
 
         setSystemCardFromCard(-1, Motions.CostGoTrash, num, Targetable, false, null);
+        if (_field == Fields.HAND)
+            ms.SetSystemCardFromCard(50 * player, Motions.HandSort, ID, player);
+
         ms.SetSystemCardFromCard(ID + 50 * player, Motions.Summon, ID, player);
 
         if (isCostUse)
