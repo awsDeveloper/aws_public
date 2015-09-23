@@ -1,0 +1,12 @@
+﻿#Name アイドル・ディフェンス
+#Type 1
+#Parent PR-100
+#Color 1
+#Cost 7/1/0/0/0/0/
+#Text
+
+使用タイミング【アタックフェイズ】
+このターン、対戦相手がアーツまたはスペルを使用していた場合、このアーツを使用するためのコストは<imgsrc="http://www.takaratomy.co.jp/products/wixoss/wxwp/images/icon_txt_white_01.png"width="26"height="23"alt="白×1"/><imgsrc="http://www.takaratomy.co.jp/products/wixoss/wxwp/images/icon_txt_null_04.png"width="26"height="23"alt="無×4"/>になる。両方を使用していた場合、このアーツを使用するためのコストは<imgsrc="http://www.takaratomy.co.jp/products/wixoss/wxwp/images/icon_txt_white_00.png"width="26"height="23"alt="白×0"/>になる。
+いずれか1つを選ぶ。
+「このターン、対戦相手のシグニアタックステップをスキップする。」
+「このターン、対戦相手のルリグアタックステップをスキップする。」

@@ -1,0 +1,10 @@
+﻿#Name ロック・ユー
+#Type 1
+#Parent PR-072
+#Color 3
+#Cost 0/0/0/0/0/0/
+#Text
+
+使用タイミング
+【アタックフェイズ】【スペルカットイン】
+このターン、対戦相手のスペルを使用するためのコストは<imgsrc="http://www.takaratomy.co.jp/products/wixoss/wxwp/images/icon_txt_null_03.png"width="26"height="23"alt="無×3"/>増える。あなたのルリグが＜ピルルク＞の場合、このターン、対戦相手のアーツを使用するためのコストは<imgsrc="http://www.takaratomy.co.jp/products/wixoss/wxwp/images/icon_txt_null_03.png"width="26"height="23"alt="無×3"/>増える。（カットインされたスペルはこの効果の影響を受けない）
