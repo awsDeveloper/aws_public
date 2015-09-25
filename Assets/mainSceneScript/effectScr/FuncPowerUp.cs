@@ -53,6 +53,12 @@ public class FuncPowerUp : MonoCard{
         }
 	}
 
+    public void setForMe(int upValue, Func<bool> tri)
+    {
+        set(upValue, tri, forMe);
+        setIsSelfUp();
+    }
+
     public void set(int upValue, Func<bool> tri, Func<int, int, bool> che, int _myTarget=-1)
     {
         puv = upValue;
@@ -92,5 +98,10 @@ public class FuncPowerUp : MonoCard{
     public void setPUV(int x)
     {
         puv = x;
+    }
+
+    bool forMe(int x, int target)
+    {
+        return x == ID && player == target;
     }
 }

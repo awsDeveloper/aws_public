@@ -1232,6 +1232,12 @@ public class DeckScript : MonoBehaviour
 		return sc.LrigType;
 	}
 
+    public bool checkLrigType(int player, LrigTypeInfo info)
+    {
+        CardScript sc=getCardScr(getLrigID(player), player);
+        return  (int)info == sc.LrigType || (int)info == sc.LrigType_2;
+    }
+
     public int getLrigLevelLimit(int player)
     {
         int id = getLrigID(player);
@@ -6151,15 +6157,6 @@ public class DeckScript : MonoBehaviour
 			||s=="WX03"
 			)
 			return true;
-
-		if(s=="PR"){
-			string[] num=serialNum.Split('-');
-			int n=-1;
-			int.TryParse(num[1],out n);
-
-			if( n>=0 && n<=40)
-				return true;
-		}
 
 		return false;
 	}
