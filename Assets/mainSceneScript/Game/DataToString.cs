@@ -209,6 +209,8 @@ public class cardstatus
     public string crossRightName = "";
     public string crossLeftName = "";
 
+    public string ParentCard = "";
+
     public cardstatus()
     {
     }
@@ -227,6 +229,7 @@ public class cardstatus
         {
             if (s[ii].IndexOf("BurstIcon") >= 0 && s[ii + 1].IndexOf("True") >= 0) BurstIcon = true;
             else if (s[ii].IndexOf("Name") >= 0) cardname = s[ii + 1];
+            else if (s[ii].IndexOf("#Parent") >= 0) ParentCard = s[ii + 1];
             else if (s[ii].IndexOf("LrigType2") >= 0) lrigType_2 = int.Parse(s[ii + 1]);
             else if (s[ii].IndexOf("LrigType") >= 0) lrigType = int.Parse(s[ii + 1]);
             else if (s[ii].IndexOf("Type") >= 0) type = int.Parse(s[ii + 1]);

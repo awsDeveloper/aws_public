@@ -27,12 +27,8 @@ public class getPlaneScrript : MonoBehaviour{
 			check = check.Replace ("\r", "");
 
 			//serialNum
-			string sNum = gameObject.transform.parent.gameObject.GetComponent<CardScript> ().SerialNumString;
-			
+            string sNum = script.getParent();//gameObject.transform.parent.gameObject.GetComponent<CardScript> ().SerialNumString;			
 			string[] s = sNum.Split ('-');
-
-			//main texture
-//			renderer.material.mainTexture = (Texture)Resources.Load (s [0] + "/" + sNum);
 
 			//component
             if (check != string.Empty && !notGetScr)

@@ -1371,4 +1371,12 @@ public class CardScript : MonoBehaviour
         com.addEffect(targetInputEffect_end);
         return com;
     }
+
+    public string getParent()
+    {
+        if (status.ParentCard == "")
+            return SerialNumString;
+
+        return status.ParentCard;
+    }
 }
