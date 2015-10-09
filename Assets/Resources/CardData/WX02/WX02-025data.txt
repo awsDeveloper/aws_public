@@ -1,4 +1,4 @@
-#Name 悪魔姫 アンナ・ミラージュ
+#Name 悪魔姫　アンナ・ミラージュ
 #Level 4
 #Power 12000
 #BurstIcon True

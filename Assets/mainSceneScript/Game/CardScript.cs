@@ -16,6 +16,14 @@ public enum ability
     FreezeThrough,      //正面凍結時アサシン
     TwoChargeAfterCrash,//このシグニが対戦相手のライフクロスをクラッシュしたとき、あなたのデッキの上からカードを２枚エナゾーンに置く。
     resiYourWhiteCardEff,//相手の白のカードの効果を受けない
+    Lanaje,             //対戦相手のシグニがこのシグニによってバニッシュされる場合、エナゾーンに置かれる代わりにトラッシュに置かれる。
+    resiEffect,         //効果耐性
+    resiSigniEffect,    //シグニ耐性
+    resiLrigEffect,     //ルリグ耐性
+    TwoBanishAfterCrash,//このシグニが対戦相手のライフクロスをクラッシュしたとき、対戦相手のシグニを２体までバニッシュする。
+    TopChargeAfterAttack,//このシグニがアタックしたとき、あなたのデッキの一番上のカードをエナゾーンに置く。
+    resiNotArts,            //アーツ以外への耐性
+
 }
 
 
@@ -55,7 +63,8 @@ public class CardScript : MonoBehaviour
         get { return status.level; }
         set { status.level = value; }
     }
-    public colorCostArry Cost { get { return status.Cost; } }
+    public colorCostArry Cost;
+    public colorCostArry OrigiCost { get { return status.Cost; } }
     public colorCostArry GrowCost { get { return status.growCost; } }
     public int Limit { get { return status.Limit; } }
 
@@ -69,9 +78,9 @@ public class CardScript : MonoBehaviour
     public int Class_2 { get { return status.cardClass[1]; } }
 
     public int secondClass_1 { get { return status.secondClass[0]; } }
-    public int secondClass_2 { get { return status.secondClass[1]; } } 
+    public int secondClass_2 { get { return status.secondClass[1]; } }
 
-    public int Power = -1;
+    public int Power { get { return basePower + changePower; } }
     public int OriginalPower { get { return status.power; } }
     public int basePower = -1;
     public int changePower = 0;
@@ -87,22 +96,7 @@ public class CardScript : MonoBehaviour
             return 0;
         }
     }
-    /*	public int[] GrowCost = new int[6]{-1,0,0,0,0,0};
-        public int Limit = -1;
-        public int LrigType = -1;
-        public int LrigType_2 = -1;
-        public int LrigLimit = -1;
-        public int LrigLimit_2 = 0;
-        public int Class_1 = -1;
-        public int Class_2 = -1;
 
-        public int Power = -1;
-        public int OriginalPower = -1;
-        public int basePower = -1;
-        public int changePower = 0;
-
-        public int BurstIcon = -1;*/
-	
     public int ID = -1;
 	public int player = -1;
 	public string SerialNumString="";
@@ -237,9 +231,19 @@ public class CardScript : MonoBehaviour
     public bool PayedCostFlag = false;//払ったときに立つ
 
 
-    public bool resiEffect = false;
-    public bool resiLrigEffect = false;
-/*	public bool resiSigniEffect=false;
+    public bool resiEffect
+    {
+        get { return checkAbility(ability.resiEffect); }
+        set { setAbilitySelf(ability.resiEffect, value); }
+    }
+
+    public bool resiLrigEffect    
+    {
+        get { return checkAbility(ability.resiLrigEffect); }
+        set { setAbilitySelf(ability.resiLrigEffect, value); }
+    }
+
+/*	public bool resiSigniEffect
 	public bool resiArtsEffect=false;
 	public bool resiSpellEffect=false;*/
 
@@ -276,7 +280,7 @@ public class CardScript : MonoBehaviour
     class FlagSet{
        public bool self = false;
        public bool other = false;
-
+       public int otherCount = 0;
        public FlagSet()
        {
        }
@@ -297,6 +301,7 @@ public class CardScript : MonoBehaviour
         CardColor = OrigColor;
         basePower = OriginalPower;
         BurstIcon = origiBurstIcon;
+        Cost = new colorCostArry(OrigiCost);
 
         foreach (var item in System.Enum.GetValues(typeof(ability)))
             abilityFlags.Add((ability)item, new FlagSet());
@@ -308,7 +313,7 @@ public class CardScript : MonoBehaviour
         if (!checkBrainScr())
             return;
 
-        Power = basePower + changePower;
+//        Power = basePower + changePower;
 
         //効果を失う
         if (lostEffect)
@@ -723,6 +728,10 @@ public class CardScript : MonoBehaviour
     {
         return isOnBattleField() && ms.getIDConditionInt(ID, player) == (int)Conditions.Up;
     }
+    public bool isDown()
+    {
+        return isOnBattleField() && ms.getIDConditionInt(ID, player) == (int)Conditions.Down;
+    }
 
     public void maxPowerBanish(int maxPower)
     {
@@ -735,6 +744,9 @@ public class CardScript : MonoBehaviour
         int target = 1 - player;
         int f = (int)Fields.SIGNIZONE;
         int num = ms.getNumForCard(f, target);
+
+        if (AlwysEffFlags.checkFlagUp(alwysEffs.Orichaltia, player) && maxPower == 7000 && !ms.checkName(ID, player, "羅石　オリハルティア"))
+            maxPower = 15000;
 
         for (int i = 0; i < num; i++)
         {
@@ -1088,13 +1100,31 @@ public class CardScript : MonoBehaviour
         if (key == ability.assassin && checkFreezeThrough())
             return true;
 
+        //チェロンによるバニッシュ耐性
+        if (key == ability.resiYourEffBanish && AlwysEffFlags.checkFlagUp(alwysEffs.Cheron, player)
+            && havingCross && ms.checkClass(ID, player, cardClassInfo.精像_美巧))
+            return true;
+
         return abilityFlags[key].other || (abilityFlags[key].self && !lostEffect);
+    }
+    public int getAbilityOtherCount(ability key)
+    {
+        if (!abilityFlags.ContainsKey(key))
+            return -1;
+
+        return abilityFlags[key].otherCount;
     }
 
     public void setAbility(ability key, bool _value)
     {
         if (abilityFlags.ContainsKey(key))
+        {
             abilityFlags[key].other = _value;
+            if (_value)
+                abilityFlags[key].otherCount++;
+            else
+                abilityFlags[key].otherCount = 0;
+        }
     }
     public void setAbilitySelf(ability key, bool _value)
     {
@@ -1327,17 +1357,17 @@ public class CardScript : MonoBehaviour
         Cost.setDownValue(info, num);
     }
 
-    public EffectTemplete AddEffectTemplete(Func<bool> tri)
+    public EffectTemplete AddEffectTemplete(Func<bool> tri, bool isUseYesNo = false)
     {
         var com = ms.getFront(ID, player).AddComponent<EffectTemplete>();
-        com.setTrigger(tri);
+        com.setTrigger(tri,isUseYesNo);
         return com;
     }
 
-    public EffectTemplete AddEffectTemplete(EffectTemplete.triggerType t)
+    public EffectTemplete AddEffectTemplete(EffectTemplete.triggerType t, bool isUseYesNo=false)
     {
         var com = ms.getFront(ID, player).AddComponent<EffectTemplete>();
-        com.setTrigger(t);
+        com.setTrigger(t,isUseYesNo);
         return com;
     }
 
@@ -1362,7 +1392,8 @@ public class CardScript : MonoBehaviour
         TargetID.Clear();
     }
 
-    public EffectTemplete AddEffectTemp_useTargetInput(EffectTemplete.triggerType t, Action a, Action targetableInAction, bool isCost = false, bool isUseYesNo = false)
+    public EffectTemplete AddEffectTemp_useTargetInput
+        (EffectTemplete.triggerType t, Action a, Action targetableInAction, bool isCost = false, bool isUseYesNo = false)
     {
         var com = ms.getFront(ID, player).AddComponent<EffectTemplete>();
         com.setTrigger(t, isUseYesNo);
@@ -1378,5 +1409,58 @@ public class CardScript : MonoBehaviour
             return SerialNumString;
 
         return status.ParentCard;
+    }
+
+    public bool isShareClassExist(int target)
+    {
+        if (ms.getFieldAllNum((int)Fields.SIGNIZONE, target) != 3)
+            return false;
+
+        foreach (var item in System.Enum.GetValues(typeof(cardClassInfo)))
+        {
+            cardClassInfo _class = (cardClassInfo)item;
+            if (_class.ToString().Contains("または"))
+                continue;
+
+            int count=0;
+
+            for (int i = 0; i < 3; i++)
+            {
+                int x = ms.getFieldRankID((int)Fields.SIGNIZONE, i, target);
+                if (!ms.checkClass(x, target, _class))
+                    break;
+                count++;
+            }
+
+            if (count == 3)
+                return true;
+        }
+
+        return false;
+    }
+
+    public bool FieldContainsName(int target, string key, Fields _f)
+    {
+        return getFuncNum(new checkFuncs(ms, key, false).check, target, _f) > 0;
+    }
+
+    public void addParameta_CostDown(cardColorInfo _color, int num, bool isArts)
+    {
+        addParameta(parametaKey.CostDownColor, (int)_color);
+        addParameta(parametaKey.CostDownNum, num);
+
+        int ia = 0;
+        if (isArts)
+            ia = 1;
+        addParameta(parametaKey.SpellOrArts, ia);
+    }
+
+    public bool isFrontSigniBanished()
+    {
+        if (!isOnBattleField() || ms.getBanishedID() == -1 || ms.getBanishedID() / 50 == player)
+            return false;
+
+        int rank = ms.getRank(ID, player);
+        return 2 - rank == ms.getExitRank();
     }
 }

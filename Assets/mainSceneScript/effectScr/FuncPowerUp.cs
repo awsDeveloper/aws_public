@@ -12,11 +12,13 @@ public class FuncPowerUp : MonoCard{
     bool isSelfUp = false;
 
     bool isUp = false;
+
+    bool isLeader = false;
 	// Use this for initialization
 	void Start ()
 	{
 		beforeStart();
-
+        checkLeader();
 	}
 
 	// Update is called once per frame
@@ -25,11 +27,9 @@ public class FuncPowerUp : MonoCard{
         if (trigger == null || check == null)
             return;
 
-        if (isUp)
-        {
-            isUp = false;
-            ms.powChanListChangerClear(ID, player);
-        }
+
+        if (isLeader)
+            checkIsUp();
 
         //check situation
         if (sc.isOnBattleField() && trigger())
@@ -46,8 +46,8 @@ public class FuncPowerUp : MonoCard{
                 int x = ms.getFieldRankID(f, i, target);
 
                 //requirement add upList
-                if (x >= 0 && check(x, target) && (ID != x || isSelfUp))// && !ms.checkChanListExist(x, target, ID, player))
-                    ms.alwaysChagePower(x, target, puv, ID, player,check);
+                if (x >= 0 && check(x, target) && (ID != x || isSelfUp))
+                    ms.alwaysChagePower(x, target, puv, ID, player, check);
             }
 
         }
@@ -59,15 +59,24 @@ public class FuncPowerUp : MonoCard{
         setIsSelfUp();
     }
 
-    public void set(int upValue, Func<bool> tri, Func<int, int, bool> che, int _myTarget=-1)
+    public void set(int upValue, Func<bool> tri, Func<int, int, bool> che, int _myTarget=-1, bool forMe=false)
     {
         puv = upValue;
         trigger = tri;
         check = che;
         myTarget = _myTarget;
 
+        if (trigger == null)
+            trigger = nonCheck;
+
+        if (check == null)
+            check = nonCheck;
+
         if (myTarget < 0)
             myTarget = sc.player;
+
+        if (forMe)
+            setIsSelfUp();
     }
 
     public void set(int upValue, Func<bool> tri)
@@ -78,6 +87,55 @@ public class FuncPowerUp : MonoCard{
     public void setTrueTrigger(int upValue, Func<int, int, bool> che, int _myTarget=-1)
     {
         set(upValue, nonCheck, che, _myTarget);
+    }
+
+    void checkLeader()//複数のfuncPowerUpを付けた時用
+    {
+        bool flag = false;
+        foreach (var item in gameObject.GetComponents<FuncPowerUp>())
+        {
+            if (item.getIsLeader())
+            {
+                flag = true;
+                break;
+            }
+        }
+
+        if (!flag)
+            isLeader = true;
+    }
+    void checkIsUp()
+    {
+        bool flag = false;
+        FuncPowerUp[] arry=gameObject.GetComponents<FuncPowerUp>();
+        foreach (var item in arry)
+        {
+            if (item.getIsUp())
+            {
+                flag = true;
+                ms.powChanListChangerClear(ID, player);
+                break;
+            }
+        }
+
+        if (!flag)
+            return;
+
+        foreach (var item in arry)
+            item.DownIsUp();
+    }
+
+    public bool getIsLeader()
+    {
+        return isLeader;
+    }
+    public bool getIsUp()
+    {
+        return isUp;
+    }
+    public void DownIsUp()
+    {
+        isUp = false;
     }
 
     bool nonCheck(int x,int target)

@@ -33,6 +33,13 @@ public class colorCostArry
         cost[(int)info] = num;
     }
 
+    public colorCostArry(colorCostArry orig)
+    {
+        ResetDownValue();
+        for (int i = 0; i < cost.Length; i++)
+            cost[i] = orig[i];
+    }
+
     void ResetDownValue()
     {
         downValue = new int[cost.Length];

@@ -24,18 +24,15 @@ public class WD07_004 : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		//cip
-		if(LrigID!=ID && ManagerScript.getLrigID(player)==ID){
-			ManagerScript.ionaFlag[1-player]=true;
-		}
+        ManagerScript.upAlwaysFlag(alwysEffs.Iona, 1 - player, ID, player);
 		
 		//pig
-		if(LrigID==ID && ManagerScript.getLrigID(player)!=ID){
+/*		if(LrigID==ID && ManagerScript.getLrigID(player)!=ID){
 			ManagerScript.ionaFlag[1-player]=false;	
 		}
 		
 		
 		LrigID=ManagerScript.getLrigID(player);
-	
+*/	
 	}
 }

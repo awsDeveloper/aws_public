@@ -1,6 +1,5 @@
 ﻿#Name 幻水　ウニ
 #Type 2
-#Parent WX09-030
 #Class 5:0
 #Color 3
 #Level 1

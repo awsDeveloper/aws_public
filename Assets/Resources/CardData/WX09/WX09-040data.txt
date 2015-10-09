@@ -1,6 +1,5 @@
 ﻿#Name 天右の書記　サンダルフォン
 #Type 2
-#Parent WX09-024
 #Class 4:0
 #Color 1
 #Level 1

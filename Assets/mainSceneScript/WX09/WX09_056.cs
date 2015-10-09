@@ -5,6 +5,7 @@ public class WX09_056 : MonoCard {
 
 	// Use this for initialization
 	void Start () {
+        gameObject.AddComponent<CrossBase>().upBase = 5000;
 	
 	}
 	

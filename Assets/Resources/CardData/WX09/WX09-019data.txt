@@ -3,6 +3,7 @@
 #Class 2:2
 #Color 4
 #Level 4
+#Power 0
 #BurstIcon True
 #Text
 

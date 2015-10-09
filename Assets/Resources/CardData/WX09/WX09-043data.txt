@@ -1,6 +1,5 @@
 ﻿#Name 幻竜　パキケロ
 #Type 2
-#Parent WX09-026
 #Class 5:3
 #Color 2
 #Level 1

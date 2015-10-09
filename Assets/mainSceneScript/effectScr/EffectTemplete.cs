@@ -19,6 +19,8 @@ public class EffectTemplete : MonoCard {
     int effectIndex = -1;
 
     bool manualMode = false;
+
+    int triggerCount = 0;
   
     class effectPack
     {
@@ -57,6 +59,7 @@ public class EffectTemplete : MonoCard {
         public string str = "";
         public int boxIndex = -1;//checkBoxのindexとの紐つけ
         public checkType myCheckType = checkType.custom;
+        public Action defaultCheckFunc = null;
 
          public checkAndEffect(Func<bool> c, Func<bool> e,string checkStr)
         {
@@ -75,6 +78,15 @@ public class EffectTemplete : MonoCard {
         void excuteEffect()
         {
             effect();
+        }
+
+        //check type defaultのときeffectの代わりに実行される関数を登録
+        public void setDefaultCheckFunc(Action _act)
+        {
+            if (myCheckType != checkType.Default)
+                return;
+
+            defaultCheckFunc = _act;
         }
     }
 
@@ -145,6 +157,10 @@ public class EffectTemplete : MonoCard {
         return sc.isRemovedThisSigni();
     }
 
+    bool Banished(){
+        return ms.getOneFrameID(OneFrameIDType.BanishedID) == ID + 50 * player;
+    }
+
     public enum triggerType
     {
         Cip,
@@ -158,6 +174,7 @@ public class EffectTemplete : MonoCard {
         mySigniHeavened,
         crossCip,
         removed,
+        Banished,
     }
 
     public enum checkType
@@ -177,6 +194,9 @@ public class EffectTemplete : MonoCard {
 
     public static bool hasOption(option target, option checker)
     {
+        if (checker == option.non)
+            return target == option.non;
+
         return (target & checker) == checker;
     }
 
@@ -221,6 +241,12 @@ public class EffectTemplete : MonoCard {
     public void addEffect(Action _action, bool _isCost=false, checkType _type = checkType.Default)
     {
         addEffect(_action, isCostToOption(_isCost), _type);
+    }
+
+    public void addEffectDefault(Action _action, Action defaultCheckFunc,bool _isCost = false)
+    {
+        addEffect(_action, isCostToOption(_isCost), checkType.Default);
+        effectList[effectList.Count - 1].funcList[0].setDefaultCheckFunc(defaultCheckFunc);
     }
 
     public void addFuncList(int index,Action _action, checkType _type = checkType.Default) {
@@ -269,26 +295,7 @@ public class EffectTemplete : MonoCard {
         setTrigger(tri, _useYesNo,_oneceTurn);
         if (T == triggerType.useAttackArts)
             sc.attackArts = true;
-        //        Debug.Log(trigger);
-        /*
-                switch (T)
-                {
-                    case triggerType.Chant:
-                        trigger = Chant;
-                        break;
-                    case triggerType.Cip:
-                        trigger = Cip;
-                        break;
-                    case triggerType.Ignition:
-                        trigger = Ignition;
-                        break;
-                    case triggerType.Burst:
-                        trigger = Burst;
-                        break;
-                    case triggerType.useResona:
-                        trigger = useResona;
-                        break;
-                }*/
+
     }
 
 
@@ -327,13 +334,22 @@ public class EffectTemplete : MonoCard {
 
     void triggerCheck()
     {
-        if (manualMode || !onceTurnCheck() || !trigger())//manual modeではトリガーチェックで実行されない
+        if (manualMode || !onceTurnCheck())//manual modeではトリガーチェックで実行されない
             return;
+
+        if (trigger())
+            triggerCount++;
+
+        if (triggerCount == 0 || !ms.isTargetIDCountZero(sc.ID, sc.player))
+            return;
+
+        triggerCount--;
 
         triggerInit();
 
-        if (!checkCost())
+        if (!checkCost() || !checkEffectFlagUp())
             return;
+
 
         if (useYesNo)
         {
@@ -354,8 +370,9 @@ public class EffectTemplete : MonoCard {
     {
         for (int i = 0; i < effectList.Count; i++)
         {
-            if (!effectList[i].isCost)
+            if (!hasOption(option.cost | option.ifThen, effectList[i].myOption))
                 continue;
+
 
             bool flag = false;
             for (int j = 0; j < effectList[i].funcList.Count; j++)
@@ -372,6 +389,16 @@ public class EffectTemplete : MonoCard {
         }
 
         return true;
+    }
+
+    bool checkEffectFlagUp()//どれかしらではeffectFlagが立つことを確認する
+    {
+        for (int i = 0; i < effectList.Count; i++)
+            for (int j = 0; j < effectList[i].funcList.Count; j++)
+                if (funcCheck(i, j))
+                    return true;
+
+        return false;
     }
 
     bool funcCheck(int eIndex,int fIndex)
@@ -407,8 +434,14 @@ public class EffectTemplete : MonoCard {
         _sc.effectMotion.Clear();
         _sc.Targetable.Clear();
 
+        //check時用の関数が登録してあるか確認する
+        var item = effectList[eIndex].funcList[fIndex];
+        if (item.defaultCheckFunc != null)
+            item.defaultCheckFunc();
+        else
+            item.action();
 
-        effectList[eIndex].funcList[fIndex].action();
+
         bool flag = _sc.effectFlag;
 
         for (int i = 0; i < _sc.effectMotion.Count; i++)
@@ -452,19 +485,22 @@ public class EffectTemplete : MonoCard {
         sc.checkBox.Clear();
 
         int count = 0;
-        int lastNum = -1;
+        //たぶんlastNumいらない
+//        int lastNum = -1;
 
         for (int i = 0; i < effectList[effectIndex].funcList.Count; i++)
         {
             if (funcCheck(effectIndex,i))
             {
-                lastNum = i;
+//                lastNum = i;
                 count++;
+
 
                 //checkBoxの生成
                 effectList[effectIndex].funcList[i].boxIndex = sc.checkBox.Count;
                 sc.checkStr.Add(effectList[effectIndex].funcList[i].str);
                 sc.checkBox.Add(false);
+
             }
             else
                 effectList[effectIndex].funcList[i].boxIndex = -1;
@@ -478,9 +514,10 @@ public class EffectTemplete : MonoCard {
             sc.DialogCountMax = effectList[effectIndex].max;
             sc.DialogMaxSelect = effectList[effectIndex].maxSelect;
         }
-        else if (count == 1 && lastNum >= 0)
+        else if (count == 1)// && lastNum >= 0)
         {
-            sc.checkBox[lastNum] = true;
+            sc.checkBox[0] = true;
+            //            sc.checkBox[lastNum] = true;
             isGotYes = true;
             effect();
         }

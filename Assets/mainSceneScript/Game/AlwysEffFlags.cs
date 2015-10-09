@@ -5,6 +5,12 @@ using System.Collections.Generic;
 public enum alwysEffs
 {
     Arachne,
+    ShubNiggurath,
+    Kosaki,
+    Iona,
+    FiaVix,
+    Orichaltia,
+    Cheron,
 }
 
 public static class AlwysEffFlags{

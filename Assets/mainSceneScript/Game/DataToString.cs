@@ -62,7 +62,12 @@ public class DataToString{
         if (cds.lrigType >= 0)
         {
             LrigTypeInfo lgtp = (LrigTypeInfo)cds.lrigType;
-            CardInformationForShow += ("ルリグタイプ " + lgtp + "\r\n");
+            CardInformationForShow += ("ルリグタイプ " + lgtp );
+
+            if (cds.lrigType_2 > 0)
+                CardInformationForShow += " / " + (LrigTypeInfo)cds.lrigType_2;
+
+            CardInformationForShow += "\r\n";
         }
 
         if (cds.level >= 0) 
@@ -183,6 +188,7 @@ public enum cardClassInfo
 
     地獣または空獣 = 5152,
     鉱石または宝石 = 2021,
+    アームまたはウェポン= 1011,
 }
 
 public class cardstatus
@@ -216,32 +222,52 @@ public class cardstatus
     }
     public cardstatus(string cardId)
     {
+        loading(cardId); 
+    }
+
+    void loading(string cardId)
+    {
         TextAsset textAsset = Singleton<DataToString>.instance.getResourceData(cardId);
 
-       if (textAsset == null)
-           return;
-        
-        string[] s = textAsset.text.Replace("\r","").Split(' ', '\n');
+        if (textAsset == null)
+            return;
+
+        string[] s = textAsset.text.Replace("\r", "").Split(' ', '\n');
         cardname = "";
         int textindex = 0;
 
         for (int ii = 0; ii < s.Length; ii++)
         {
-            if (s[ii].IndexOf("BurstIcon") >= 0 && s[ii + 1].IndexOf("True") >= 0) BurstIcon = true;
-            else if (s[ii].IndexOf("Name") >= 0) cardname = s[ii + 1];
-            else if (s[ii].IndexOf("#Parent") >= 0) ParentCard = s[ii + 1];
-            else if (s[ii].IndexOf("LrigType2") >= 0) lrigType_2 = int.Parse(s[ii + 1]);
-            else if (s[ii].IndexOf("LrigType") >= 0) lrigType = int.Parse(s[ii + 1]);
+            if (s[ii].IndexOf("BurstIcon") >= 0 && s[ii + 1].IndexOf("True") >= 0)
+                BurstIcon = true;
+            else if (s[ii].IndexOf("Name") >= 0)
+                cardname = s[ii + 1];
+            else if (s[ii].IndexOf("#Parent") >= 0)
+            {
+                loading(s[ii + 1]);
+                ParentCard = s[ii + 1];
+                return;
+            }
+            else if (s[ii].IndexOf("LrigType2") >= 0) 
+                lrigType_2 = int.Parse(s[ii + 1]);
+            else if (s[ii].IndexOf("LrigType") >= 0)
+            {
+                string[] lt = s[ii + 1].Split('/');
+                lrigType = int.Parse(lt[0]);
+
+                if (lt.Length == 2)
+                    lrigType_2 = int.Parse(lt[1]);
+            }
             else if (s[ii].IndexOf("Type") >= 0) type = int.Parse(s[ii + 1]);
             else if (s[ii].IndexOf("Level") >= 0) level = int.Parse(s[ii + 1]);
             else if (s[ii].IndexOf("GrowCost") >= 0)
             {
                 string[] gcs = s[ii + 1].Split('/');
-//                Debug.Log(gcs.Length.ToString() + "    " + growCost.Length.ToString());
+                //                Debug.Log(gcs.Length.ToString() + "    " + growCost.Length.ToString());
                 for (int iii = 0; iii < growCost.Length() && iii < gcs.Length; iii++)
                 {
                     growCost[iii] = int.Parse(gcs[iii]);
-//                    Debug.Log(iii.ToString() + "      " + gcs[iii]);
+                    //                    Debug.Log(iii.ToString() + "      " + gcs[iii]);
                 }
             }
             else if (s[ii].IndexOf("Color") >= 0) cardColor = int.Parse(s[ii + 1]);
@@ -274,6 +300,12 @@ public class cardstatus
                     cardClass[iii] = int.Parse(gcs[iii]);
                 }
 
+                if (gcs.Length == 3)
+                {
+                    secondClass[0] = cardClass[0];
+                    secondClass[1] = int.Parse(gcs[2]);
+                }
+
             }
             else if (s[ii].IndexOf("Text") >= 0) textindex = ii;
         }
@@ -289,7 +321,7 @@ public class cardstatus
                     if (start + 1 >= 0 && goal - start - 1 > 0)
                     {
                         string cName = s[ii].Substring(start + 1, goal - start - 1);
-                        if (s[ii].Replace(cName,"").Contains("左"))
+                        if (s[ii].Replace(cName, "").Contains("左"))
                             crossRightName = cName;
                         else
                             crossLeftName = cName;
@@ -301,6 +333,5 @@ public class cardstatus
                 cardtext += "\r\n";
             }
         }
-
     }
-};
+}

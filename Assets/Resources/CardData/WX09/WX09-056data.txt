@@ -1,6 +1,5 @@
 ﻿#Name コードアンチ　クトガ
 #Type 2
-#Parent WX09-036
 #Class 3:1
 #Color 5
 #Level 1

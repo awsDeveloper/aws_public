@@ -1,6 +1,5 @@
 ﻿#Name 羅植　ユウガオ
 #Type 2
-#Parent WX09-033
 #Class 2:2
 #Color 4
 #Level 1
