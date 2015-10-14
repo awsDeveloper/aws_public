@@ -15,9 +15,9 @@ public class WX08_067 : MonoCard {
 	
 	}
 
-    void chant()//まとめたほうがいいかも
+    void chant()//まとめたほうがいいかも -- DialogEffTempleteにまとめた
     {
-        sc.setEffect(ID, player, Motions.SetDialog);
+        sc.setEffect(0, player, Motions.SetDialog);
         sc.addParameta(parametaKey.settingDialogNum, (int)DialogNumType.Level);
         count = -1;
     }

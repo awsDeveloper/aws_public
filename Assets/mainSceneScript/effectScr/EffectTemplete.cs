@@ -21,7 +21,9 @@ public class EffectTemplete : MonoCard {
     bool manualMode = false;
 
     int triggerCount = 0;
-  
+
+    bool AfterUseDestroy = false;
+
     class effectPack
     {
         public List<checkAndEffect> funcList = new List<checkAndEffect>();
@@ -161,6 +163,11 @@ public class EffectTemplete : MonoCard {
         return ms.getOneFrameID(OneFrameIDType.BanishedID) == ID + 50 * player;
     }
 
+    bool attackThisTurnArcDistractOnly()
+    {
+        return sc.isAttacking() && ms.isNotUsedOtherArts("アーク・ディストラクト");
+    }
+
     public enum triggerType
     {
         Cip,
@@ -175,6 +182,7 @@ public class EffectTemplete : MonoCard {
         crossCip,
         removed,
         Banished,
+        attackThisTurnArcDistractOnly,
     }
 
     public enum checkType
@@ -206,6 +214,11 @@ public class EffectTemplete : MonoCard {
             return option.cost;
 
         return option.non;
+    }
+
+    public void setAfterUseDestroy()
+    {
+        AfterUseDestroy = true;
     }
 
     public void setManualMode()
@@ -307,7 +320,7 @@ public class EffectTemplete : MonoCard {
 
 	// Update is called once per frame
 	void Update () {
-        if (trigger == null)
+        if (trigger == null || sc.lostEffect)
             return;
         triggerCheck();
 
@@ -573,6 +586,11 @@ public class EffectTemplete : MonoCard {
         if (effectIndex < effectList.Count)
             afterGettingYes();
         else
+        {
             effectIndex = -1;
+
+            if (AfterUseDestroy)
+                Destroy(this);
+        }
     }
 }

@@ -22,8 +22,9 @@ public enum ability
     resiLrigEffect,     //ルリグ耐性
     TwoBanishAfterCrash,//このシグニが対戦相手のライフクロスをクラッシュしたとき、対戦相手のシグニを２体までバニッシュする。
     TopChargeAfterAttack,//このシグニがアタックしたとき、あなたのデッキの一番上のカードをエナゾーンに置く。
-    resiNotArts,            //アーツ以外への耐性
-
+    resiNotArts,         //アーツ以外への耐性
+    LrigColorEna,        //このシグニがエナゾーンにあるかぎり、あなたは自分のルリグと同じ色のエナを支払う際に、代わりにあなたのエナゾーンからこのシグニをトラッシュに置いてもよい。
+    YourTurnResiEff,    //対戦相手のターンの間、このシグニは対戦相手の効果を受けない。
 }
 
 
@@ -119,6 +120,9 @@ public class CardScript : MonoBehaviour
 
     public bool growEffectFlag = false;
     public bool chantEffectFlag = false;
+
+    //アンコールコスト
+    public colorCostArry encoreCost = new colorCostArry(cardColorInfo.無色, 0);
 
     //クロス関連
     public bool havingCross{get{return CrossLeftName!="" || CrossRightName!="";}}
@@ -668,6 +672,9 @@ public class CardScript : MonoBehaviour
 
     public bool isAttacking()
     {
+        if(ms.checkType(ID,player, cardTypeInfo.ルリグ) && isOnBattleField())
+            return ms.LrigAttackNow && ms.getTurnPlayer() == player;
+
         return ms.getAttackerID() == ID + 50 * player;
     }
 
@@ -990,10 +997,13 @@ public class CardScript : MonoBehaviour
         DialogUpCondition = dialogUpConditions.cip;
     }
 
-    public void setDialogNum(DialogNumType type)
+    public void setDialogNum(DialogNumType type, int selecter=-1)
     {
         DialogFlag = true;
         DialogNum = (int)type;
+
+        if (selecter >= 0)
+            effectSelecter = selecter;
     }
     public void setDialogNum(DialogNumType type, cardColorInfo info, int num)
     {
@@ -1105,6 +1115,10 @@ public class CardScript : MonoBehaviour
             && havingCross && ms.checkClass(ID, player, cardClassInfo.精像_美巧))
             return true;
 
+        //相手ターン限定の効果耐性
+        if (key == ability.resiEffect && checkAbility(ability.YourTurnResiEff) && ms.getTurnPlayer() != player)
+            return true;
+
         return abilityFlags[key].other || (abilityFlags[key].self && !lostEffect);
     }
     public int getAbilityOtherCount(ability key)
@@ -1172,6 +1186,10 @@ public class CardScript : MonoBehaviour
         return aID / 50 == player && ms.checkColor(aID%50, aID/50, info) && ms.getCardScr(aID % 50, aID / 50).isHeaven();
     }
 
+    public bool notResona(int x, int target)
+    {
+        return !ms.checkType(x, target, cardTypeInfo.レゾナ);
+    }
     public bool notResonaAndUtyu(int x, int target)
     {
         return !ms.checkType(x, target, cardTypeInfo.レゾナ) && ms.checkClass(x, target, cardClassInfo.精羅_宇宙);
@@ -1357,10 +1375,10 @@ public class CardScript : MonoBehaviour
         Cost.setDownValue(info, num);
     }
 
-    public EffectTemplete AddEffectTemplete(Func<bool> tri, bool isUseYesNo = false)
+    public EffectTemplete AddEffectTemplete(Func<bool> tri, bool isUseYesNo = false, bool onceTurn=false)
     {
         var com = ms.getFront(ID, player).AddComponent<EffectTemplete>();
-        com.setTrigger(tri,isUseYesNo);
+        com.setTrigger(tri, isUseYesNo, onceTurn);
         return com;
     }
 

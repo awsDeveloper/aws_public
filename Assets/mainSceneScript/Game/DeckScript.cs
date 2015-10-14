@@ -164,6 +164,9 @@ public enum Motions
     ShowZoneGoBottom,
     SetDialog,              //効果の途中でダイアログフラグを立てる
     SigniZonePowerUp,
+    CantUseSpellAndArts,    //このターン、アーツとスペルを使用できない。
+    EffectLostTempSummon,
+    ArcDistract,
 }
 
 public enum OneFrameIDType
@@ -188,6 +191,7 @@ public enum OneFrameIDType
     BurstEffectID,
     AttackerID,
     FreezedID,
+    DoubleCrashedID,
 }
 
 public enum DialogNumType
@@ -198,7 +202,8 @@ public enum DialogNumType
     color,
     TopBottom,
     UpDown,
-    Level
+    Level,
+    Type,
 }
 
 
@@ -451,6 +456,10 @@ public class DeckScript : MonoBehaviour
 	private List<int> dontAttackList = new List<int> ();
 	private bool showGUIFlag = false;
 	private bool lancerFlag = false;
+    
+    bool encoreSelectflag = false;
+    bool encoreAnswear = false;
+    bool encoreReaded = false;
 
 	bool SpellCutInSelectFlag = false;
 	bool SpellCutInFlag = false;
@@ -545,6 +554,21 @@ public class DeckScript : MonoBehaviour
         }
     }
     List<abilitySet> enAbilityList = new List<abilitySet>();
+
+    class EffTempSet
+    {
+        public int receiver = -1;
+        public int giver = -1;
+        public EffectTemplete temp;
+
+        public EffTempSet(int receiverID, int giverID, EffectTemplete e)
+        {
+            receiver = receiverID;
+            giver = giverID;
+            temp=e;
+        }
+    }
+    List<EffTempSet> enEffTempList = new List<EffTempSet>();
 
     List<int> LostEffectIDList = new List<int>();
 
@@ -786,7 +810,7 @@ public class DeckScript : MonoBehaviour
 
     int oneHandDeathSelecter = -1;
 
-    List<string> usedList = new List<string>();
+    List<int> usedList = new List<int>();
 
     bool[] notDamagingFlag = new bool[2];
 
@@ -796,6 +820,11 @@ public class DeckScript : MonoBehaviour
     List<cardColorInfo> colorChangeColor = new List<cardColorInfo>();//対応するカラーのリスト
 
     cardstatus[,] cardStatusBuf = new cardstatus[2, 50];
+    int lastGoTrashCharmID = -1;
+
+    bool[] cantUseArtsFlag = new bool[2];
+    bool[] cantUseSpellFlag = new bool[2];
+
 	//最後尾
 
 	//通信
@@ -897,11 +926,22 @@ public class DeckScript : MonoBehaviour
     {
         for (int i = 0; i < usedList.Count; i++)
         {
-            if (checkName(ID, player, usedList[i]))
+            if (checkName(ID, player, getCardScr(usedList[i]).Name))
                 return true;
         }
 
         return false;
+    }
+
+    public bool isNotUsedOtherArts(string s)
+    {
+        for (int i = 0; i < usedList.Count; i++)
+        {
+            if (!checkName(usedList[i], s) && checkType(usedList[i], cardTypeInfo.アーツ))
+                return false;
+        }
+
+        return true;
     }
 
     public void upAlwaysFlag(alwysEffs eff, int target, int ID, int player)
@@ -1125,6 +1165,14 @@ public class DeckScript : MonoBehaviour
 	{
 		return enaColorNum[player, color];
 	}
+
+    public int getGoTrashCharmID()
+    {
+        if (getExitID(-1, -1)== -1 || getExitID(-1, -1) != lastGoTrashCharmID)
+            return -1;
+
+        return lastGoTrashCharmID;
+    }
 
     public int getEffectExitID(int from, int to)
     {
@@ -1876,11 +1924,13 @@ public class DeckScript : MonoBehaviour
     bool checkPayingTarget(cardColorInfo info, int fusionID, bool isMelhenGrow)
     {
         CardScript sc = getCardScr(fusionID);
+        int target=fusionID/50;
         if (info == cardColorInfo.無色
             || sc.MultiEnaFlag
             || (info == cardColorInfo.白 && checkClass(fusionID, cardClassInfo.精像_美巧) && (melhenFlag[fusionID/50] || isMelhenGrow))
             || (info == cardColorInfo.白 && sc.WhiteEnaFlag)
             || checkPayingOsaki(info, fusionID)
+            || sc.checkAbility(ability.LrigColorEna) && checkColor(getLrigID(target), target,info)
             )
             return true;
 
@@ -2580,11 +2630,12 @@ public class DeckScript : MonoBehaviour
 					DialogScript=sc;
 					DialogStr = sc.DialogStr;
 					DialogNum = sc.DialogNum;
+                    DialogNumType _dtype = (DialogNumType)DialogNum;
 
                     //countMax
-                    if (DialogNum == 3)//色
+                    if (_dtype == DialogNumType.color)//色
                         DialogCountMax = 5;
-                    else if (DialogNum == 6)//レベル
+                    else if (_dtype== DialogNumType.Level || _dtype == DialogNumType.Type)//DialogNum == 6)//レベル
                         DialogCountMax = 4;
                     else if (DialogNum == 4 || DialogNum == 5)//上下、アップダウン
                         DialogCountMax = 1;
@@ -3564,7 +3615,7 @@ public class DeckScript : MonoBehaviour
             if (/*GUI.Button(new Rect(buttonPos.x - w / 20, h - buttonPos.y, w / 10, w / 60), "") && Input.GetMouseButtonUp(0)
                 && */moveID[0] == -1 && moveID[1] == -1 && moveID[2] == -1 && moveID[3] == -1
                 && (!FlagUpcheck() || (selectCursorFlag && (phase == Phases.EnaPhase || phase == Phases.AttackPhase)))
-                && !selectSigniZoneFlag && !selectCardFlag && /*(!selectCursorFlag||phase==Phases.EnaPhase) && */!guardSelectflag && !SpellCutInSelectFlag
+                && !selectSigniZoneFlag && !selectCardFlag && /*(!selectCursorFlag||phase==Phases.EnaPhase) && */!guardSelectflag && !SpellCutInSelectFlag && !encoreSelectflag
                 && !stopFlag && !deckRefleshFlag[0] && !deckRefleshFlag[1] && !receiveFlag && isAttackEnd()
                 && phase != Phases.UpPhase && phase != Phases.DrawPhase && phase != Phases.EndPhase && phase != Phases.PrePhase)
             {
@@ -3591,11 +3642,13 @@ public class DeckScript : MonoBehaviour
 
     void YesNoGUI()
     {
-        bool flag = guardSelectflag || SpellCutInSelectFlag || selectAttackAtrs;
+        bool flag = guardSelectflag || SpellCutInSelectFlag || selectAttackAtrs || encoreSelectflag;
 
         string str3 = "ガードしますか？";
         if (SpellCutInSelectFlag)
             str3 = "スペルカットインしますか？";
+        if (encoreSelectflag)
+            str3 = "アンコールを使用しますか？";
         else if (selectAttackAtrs)
             str3 = "プレイヤー " + (attackAtrsPlayer + 1) + "\nアーツを使用しますか？";
 
@@ -3692,6 +3745,11 @@ public class DeckScript : MonoBehaviour
                 selectCardFlag = true;
                 selectCardListSpellCutIn(SpellCutInPlayer);
             }
+            else if (encoreSelectflag)
+            {
+                encoreSelectflag = false;
+                encoreAnswear = true;
+            }
             else if (selectAttackAtrs)
             {
                 selectAttackAtrs = false;
@@ -3716,9 +3774,11 @@ public class DeckScript : MonoBehaviour
             //フラグによる分岐
             if (guardSelectflag)
                 guardSelectflag = false;
-            if (SpellCutInSelectFlag)
+            else if (SpellCutInSelectFlag)
                 SpellCutInSelectFlag = false;
-            if (selectAttackAtrs)
+            else if (encoreSelectflag)
+                encoreSelectflag = false;
+            else if (selectAttackAtrs)
             {
                 attackAtrsPlayer = 1 - attackAtrsPlayer;
                 if (isTrans)
@@ -3869,7 +3929,7 @@ public class DeckScript : MonoBehaviour
                 }
             }
         }
-        else if (DialogNum == 1 || DialogNum == 3 || DialogNum == 4 || DialogNum == 5 || DialogNum == 6)
+        else if (DialogNum == 1 || DialogNum == 3 || DialogNum == 4 || DialogNum == 5 || DialogNum == 6 || DialogNum == 7)
         {
             GUI.Box(boxRect, "");
 
@@ -3895,6 +3955,10 @@ public class DeckScript : MonoBehaviour
                 case 6:
                     dstr = "宣言するレベル";
                     dstr += " -> " + (DialogCount + 1);
+                    break;
+                case 7:
+                    dstr = "宣言するタイプ";
+                    dstr += " -> " + (cardTypeInfo)DialogCount;
                     break;
             }
 
@@ -6926,7 +6990,8 @@ public class DeckScript : MonoBehaviour
 
                             return;
                         }
-                        else if (card[player, selectedID].GetComponent<CardScript>().Type == 3)
+                        else if (checkType(selectedID,player, cardTypeInfo.スペル) && !cantUseSpellFlag[player]) 
+                            //card[player, selectedID].GetComponent<CardScript>().Type == 3)
                         {
                             selectClickID = selectedID;
                             motion = Motions.ChantSpell;
@@ -6943,10 +7008,8 @@ public class DeckScript : MonoBehaviour
                         }
                     }
                     else if (field[player, selectedID] == Fields.SIGNIZONE ||
-                        (field[player, selectedID] == Fields.LRIGZONE) && fieldRank[player, selectedID] == lrigZoneNum[player] - 1)
+                        selectedID == getLrigID(player))//(field[player, selectedID] == Fields.LRIGZONE) && fieldRank[player, selectedID] == lrigZoneNum[player] - 1)
                     {
-
-                        //						card[player,selectedID].GetComponent<CardScript>().Ignition=true;
                         UpIgnition(selectedID, player);
 
                         //通信
@@ -6968,9 +7031,8 @@ public class DeckScript : MonoBehaviour
 
                         //通信用
                         if (isTrans && player == 0)
-                        {
                             messagesBuf.Add(ArtsStr);
-                        }
+                        
 
                         return;
                     }
@@ -7035,8 +7097,8 @@ public class DeckScript : MonoBehaviour
 		{
 			if (GUImoveID >= 0 &&
                 ( checkType(GUImoveID%50,GUImoveID/50, cardTypeInfo.レゾナ) || //レゾナまたはメインに使えるアーツ
-				(card [player, GUImoveID % 50].GetComponent<CardScript> ().Type == 1
-				&& !card [player, GUImoveID % 50].GetComponent<CardScript> ().notMainArts)))
+				(checkType(GUImoveID, cardTypeInfo.アーツ) ///card [player, GUImoveID % 50].GetComponent<CardScript> ().Type == 1
+				&& !card [player, GUImoveID % 50].GetComponent<CardScript> ().notMainArts) && !cantUseArtsFlag[player]))
 			{
 		
 				//通信用
@@ -7058,9 +7120,7 @@ public class DeckScript : MonoBehaviour
 				GUImoveID = -1;
 				//通信用
 				if (isTrans && player == 0)
-				{
 					messagesBuf.Clear ();
-				}
 			}
 		}
 		else if (motion == Motions.Draw){
@@ -7241,8 +7301,9 @@ public class DeckScript : MonoBehaviour
 				//通信
 				if (messagesBuf.Count > 1 && isTrans && messagesBuf [1] == "" + GUImoveID)
 					sendMessageBuf ();
+
 				CardScript sc = card [GUImoveID / 50, GUImoveID % 50].GetComponent<CardScript> ();
-				if(sc.Type == 1)
+                if (sc.Type == 1 && !cantUseArtsFlag[GUImoveID / 50])
 					ChantArts (GUImoveID % 50, GUImoveID / 50);
 
 				else if(!useAttackArtsUp)
@@ -7347,6 +7408,8 @@ public class DeckScript : MonoBehaviour
             GridCount[i] = 0;
             HandSummonMaxLim[i] = -1;
             notDamagingFlag[i] = false;
+            cantUseArtsFlag[i] = false;
+            cantUseSpellFlag[i] = false;
  		}
 
 		
@@ -7370,6 +7433,12 @@ public class DeckScript : MonoBehaviour
         //こっちにまとめた
         while (enAbilityList.Count > 0)
             enAbilityListRemoveAt(0);
+
+        while (enEffTempList.Count > 0)
+        {
+            Destroy(enEffTempList[0].temp);
+            enEffTempList.RemoveAt(0);
+        }
 
         //ロストした効果の復活
         while (LostEffectIDList.Count > 0)
@@ -7552,6 +7621,7 @@ public class DeckScript : MonoBehaviour
                 SigniNotSummonCount[i / 3, i % 3]--;            
         }
 
+        //ゾーンを対象としたパワー減少
         for (int i = 0; i < zonePowerList.Count; i++)
         {
             zonePowerList[i].turnCount--;
@@ -7563,39 +7633,6 @@ public class DeckScript : MonoBehaviour
             }
         }
     }
-/*	void EndPhaseMove_p1(){
-		if(moveID[0]==-1 && rotaID[0]==-1){
-			if(handSortFlag[0] && clickCursorID.Count==0){
-				motion=Motions.Draw;
-				movePhase[0]=0;
-				rotaPhase[0]=-1;						
-			}
-			else if(handNum[0]>6 && clickCursorID.Count==0){
-				selectNum=handNum[0]-6;
-				selectCursorFlag=true;
-				setTargetCursorField(Fields.HAND,0);
-				return;
-			}
-			else if(clickCursorID.Count>0){
-				motion=Motions.GoTrash;
-				movePhase[0]=0;
-				rotaPhase[0]=-1;
-			}
-			else if(LabelCount>=standartTime*5 && handNum[0]<=6){
-				phase=Phases.UpPhase;
-				clickCursorID.Clear();
-			}
-		}
-		
-		if(motion==Motions.GoTrash){
-			GoTrash_p1(clickCursorID[0]);
-			if(moveID[0]==-1 && rotaID[0]==-1 && clickCursorID.Count>0)
-				clickCursorID.RemoveAt(0);
-		}
-		else if(motion==Motions.Draw){
-			DrawCard(0);
-		}
-	}*/
 
     void setBattleID(int player, int id1, int id2)
     {
@@ -8052,6 +8089,7 @@ public class DeckScript : MonoBehaviour
 			}
 		}
 
+        //double crash 1
 		if (chainMotion [1] == 6 && !selectCursorFlag)
 		{
 			if (moveID [attacked] == -2)
@@ -8071,12 +8109,13 @@ public class DeckScript : MonoBehaviour
 			}
 		}
 
-        //choice 7
-		if (chainMotion [1] == 7 && !selectCursorFlag)
+        //double crash 2
+        if (chainMotion[1] == 7 && !selectCursorFlag)
 		{
 			Crash (clickCursorID [1] % 50, attacked);
 			if (moveID [attacked] == -1 && rotaID [attacked] == -1)
 			{
+                setOneFrameID(OneFrameIDType.DoubleCrashedID, clickCursorID[1]);
                 endCrash();
 /*				clickCursorID.Clear ();
 				chainMotion [1] = -1;
@@ -8328,7 +8367,17 @@ public class DeckScript : MonoBehaviour
                     enAbilityListRemoveAt(i);
                 else i++;
             }
- 
+            for (int i = 0; i < enEffTempList.Count; )
+            {
+                var set = enEffTempList[i];
+                if (set.receiver == getFusionID(ID, player % 2))
+                {
+                    Destroy(set.temp);
+                    enEffTempList.RemoveAt(i);
+                }
+                else i++;
+            }
+
 
             //起動効果付与
             if (AddIgniList.Count > 0)
@@ -8355,8 +8404,11 @@ public class DeckScript : MonoBehaviour
 
 			//チャームの墓地送り
 			int k = GetCharm(ID,player);
-			if(k >= 0)
-				SetSystemCard(k+player%2*50,Motions.GoTrash);
+            if (k >= 0)
+            {
+                lastGoTrashCharmID = k + player % 2 * 50;
+                SetSystemCard(k + player % 2 * 50, Motions.GoTrash);
+            }
 
             //underCardの墓地送り
             while (underCards[fieldRank[player % 2, ID]].Count > 0)
@@ -8570,7 +8622,12 @@ public class DeckScript : MonoBehaviour
 		if(getCardScr(lID,player).attackArts)
 			selectCardList.Add(lID+50*player);
 
-        for (int i = 0; i < 3; i++)
+        addAttackArts(player, Fields.SIGNIZONE);
+        addAttackArts(player, Fields.LRIGDECK);
+        addAttackArts(player, Fields.TRASH);
+
+
+ /*       for (int i = 0; i < 3; i++)
         {
             int x = fieldRankID(Fields.SIGNIZONE, i, player);
             if(x >= 0 && getCardScr(x,player).attackArts)
@@ -8582,8 +8639,19 @@ public class DeckScript : MonoBehaviour
 			int x = fieldRankID (Fields.LRIGDECK, i, player);
 			if (card [player, x].GetComponent<CardScript> ().attackArts)
 				selectCardList.Add (x + player * 50);
-		}
+		}*/
 	}
+
+    void addAttackArts(int player, Fields _F)
+    {
+        int num = getNumForCard((int)_F, player);
+        for (int i = 0; i < num; i++)
+        {
+            int x = fieldRankID(_F, i, player);
+            if (x >= 0 && getCardScr(x, player).attackArts)
+                selectCardList.Add(x + 50 * player);
+        }
+    }
 		
 	void PayCostAndSort (int ID, int player)
 	{
@@ -8664,13 +8732,40 @@ public class DeckScript : MonoBehaviour
         return array;
     }
 
+    colorCostArry CreatEncoredCostArray(int ID, int player)
+    {
+        CardScript sc = getCardScr(ID, player % 2);
+        return new colorCostArry(sc.Cost, sc.encoreCost);
+    }
+
+
+    bool canUseEncoreCost(int ID,int player)
+    {
+        CardScript sc = getCardScr(ID, player % 2);
+        return !sc.encoreCost.isEmpty() && checkCost2nd(player, creatCostColorList(ID, player, CreatEncoredCostArray(ID,player)), null, false);
+    }
+
+
+
 	void PayModeCost (int ID, int player, bool isGrow)
 	{
+        CardScript sc = getCardScr(ID, player % 2);
+
         if (waitYou(player % 2) && clickCursorID.Count == 0)
 		{
 			moveID [player] = -2;
 			if (canRead ())
 			{
+                if (canUseEncoreCost(ID, player) && !encoreReaded)
+                {
+                    encoreReaded = true;
+                    if (readMessage() == YesStr)
+                        encoreAnswear = true;
+                }
+
+                if (!canRead())
+                    return;
+
 				string r = readMessage ();
 				if (r == YesStr)
 				{
@@ -8681,6 +8776,7 @@ public class DeckScript : MonoBehaviour
 
 					readMessage ();
 					moveID [player] = -1;
+                    encoreReaded = false;
 				}
 				else if (r == NoStr)
 				{
@@ -8690,117 +8786,93 @@ public class DeckScript : MonoBehaviour
 				}
 			}
 		}
-		else if (movePhase [player] == 0 && moveID [player] == -1)
+		else
 		{
-            if (clickCursorID.Count == 0)
-			{
-				//toldPayedCost　の初期化
-				toldPayedCost=false;
+            if (movePhase[player] == 0 && moveID[player] == -1)
+            {
+                moveID[player] = -3;
 
-                //check
-                if(!checkModeCost(ID,player%2,isGrow))
+                if (canUseEncoreCost(ID,player))
                 {
-                    shortageFlag = true;
-
-                    //通信
-                    if (isTrans && player % 2 == 0)
-                    {
-                        messagesBuf.Add(NoStr);
-                        sendMessageBuf();
-                    }
-
+                    encoreSelectflag = true;
                     return;
                 }
+            }
 
-                colorCostArry cost;
-                if (isGrow)
+            if (movePhase[player] == 0 && moveID[player] == -3)
+            {
+                if (clickCursorID.Count == 0)
                 {
-                    cost = copyCostArray( card[player % 2, ID].GetComponent<CardScript>().GrowCost);
-                }
-                else
-                    cost = copyCostArray(card[player % 2, ID].GetComponent<CardScript>().Cost);
+                    moveID[player] = -1;
 
-                //まとめた
-                enaColorList = creatCostColorList(ID, player, cost);
-/*				for (int i=0; i>=0; i--)
-				{
-                    int hosei = IgniCostDecSum(ID, player, i);
- 
-					for (int j=0; j<cost[i] - hosei; j++)
-						enaColorList.Add (i);
+                    //toldPayedCost　の初期化
+                    toldPayedCost = false;
 
-					if (i == 0)
-						i = 6;
-					if (i == 1)
-						i = -1;
-				}*/
-
-				if (enaColorList.Count > 0)
-				{
-					//数
-/*					if (enaNum [player % 2] < enaColorList.Count)
-					{
-						enaColorList.Clear ();
-						shortageFlag = true;
-						
-						//通信
-						if (isTrans && player % 2 == 0)
-						{
-							messagesBuf.Add (NoStr);
-							sendMessageBuf ();
-						}
-						
-						return;
-					}
-
-					//色
-					int Multi = MultiEnaNum (player % 2);
-					for (int i=1; i<cost.Length; i++)
-					{
-						if (cost [i] > enaColorNum [player % 2, i] + Multi)
-						{
-							enaColorList.Clear ();
-							shortageFlag = true;
-							
-							//通信
-							if (isTrans && player % 2 == 0)
-							{
-								messagesBuf.Add (NoStr);
-								sendMessageBuf ();
-							}
-							
-							return;
-						}
-						else if (cost [i] > enaColorNum [player % 2, i])
-							Multi -= cost [i] - enaColorNum [player % 2, i];
-					}*/
-					
-					//通信
-					if (isTrans && player % 2 == 0)
-						messagesBuf.Add (YesStr);
-
-                    if (isGrow && getCardScr(ID, player % 2).MelhenGrowFlag && !melhenFlag[player % 2])
+                    //check
+                    if (!checkModeCost(ID, player % 2, isGrow))
                     {
-                        melhenUpFlag = true;
-                        melhenFlag[player % 2] = true;
+                        shortageFlag = true;
+
+                        //通信
+                        if (isTrans && player % 2 == 0)
+                        {
+                            messagesBuf.Add(NoStr);
+                            sendMessageBuf();
+                        }
+
+                        return;
                     }
 
-					selectEnaFlag = true;
-					selectEnaPlayer = player % 2;
-					selectEnaNum = enaColorList.Count;
-					moveID [player] = -2;
-				}
-				else if (isTrans && player % 2 == 0)
-				{
-					//通信
-					messagesBuf.Add (YesStr);
-					messagesBuf.Add (sprt);
-					sendMessageBuf ();
-				}
-			}
+                    colorCostArry cost;
+                    if (isGrow)
+                        cost = copyCostArray(sc.GrowCost);
+                    else if (encoreAnswear)
+                        cost = CreatEncoredCostArray(ID, player % 2);
+                    else
+                        cost = copyCostArray(sc.Cost);
+
+
+
+                    //まとめた
+                    enaColorList = creatCostColorList(ID, player, cost);
+                    if (enaColorList.Count > 0)
+                    {
+
+                        //通信
+                        if (isTrans && player % 2 == 0)
+                            messagesBuf.Add(YesStr);
+
+                        if (isGrow && getCardScr(ID, player % 2).MelhenGrowFlag && !melhenFlag[player % 2])
+                        {
+                            melhenUpFlag = true;
+                            melhenFlag[player % 2] = true;
+                        }
+
+                        selectEnaFlag = true;
+                        selectEnaPlayer = player % 2;
+                        selectEnaNum = enaColorList.Count;
+                        moveID[player] = -2;
+                    }
+                    else if (isTrans && player % 2 == 0)
+                    {
+                        //通信
+                        messagesBuf.Add(YesStr);
+                        messagesBuf.Add(sprt);
+                        sendMessageBuf();
+                    }
+                }
+            }
 		}
 
-		if (clickCursorID.Count > 0)
+        if (encoreAnswear)
+        {
+            encoreAnswear = false;
+            var effs = getCardEffects(ID, player % 2);
+            var temp = sc.AddEffectTemplete(EffectTemplete.triggerType.Chant, effs.getEffect(CardEffectType.GoLrigDeckThisCard));
+            temp.setAfterUseDestroy();
+        }
+
+        if (clickCursorID.Count > 0)
 		{
             if (melhenUpFlag)
             {
@@ -8812,7 +8884,7 @@ public class DeckScript : MonoBehaviour
 			{
 				toldPayedCost=true;
 
-				CardScript sc=getCardScr(ID,player % 2);
+//				CardScript sc=getCardScr(ID,player % 2);
 
 				if(sc.PayedCostEnable){
 					for (int i = 0; i < clickCursorID.Count; i++) {
@@ -9723,8 +9795,8 @@ public class DeckScript : MonoBehaviour
 
     void endEffect(CardScript sc, int playerNum)
     {
-        if(!usedList.Contains(sc.Name))
-            usedList.Add(sc.Name);
+        if (!usedList.Contains(sc.ID + sc.player * 50))
+            usedList.Add(sc.ID + sc.player * 50);
 
         IgniEffID = -1;
 
@@ -10282,11 +10354,32 @@ public class DeckScript : MonoBehaviour
                 sc.effectMotion.RemoveAt(0);
             }
         }
+        else if (m == Motions.ArcDistract)
+        {
+            int fID = getFusionID(getLrigID(effectPlayer % 2), effectPlayer % 2);
+/*            var obj = getFront(fID % 50, fID / 50);
+            if (obj.GetComponent<CardEffects>() == null)
+                obj.AddComponent<CardEffects>();
+            var _cardEff = obj.GetComponent<CardEffects>();*/
+            var _cardEff = getCardEffects(fID % 50, fID / 50);
+
+            var eff = getCardScr(fID % 50, fID / 50).AddEffectTemplete(EffectTemplete.triggerType.attackThisTurnArcDistractOnly, true);
+            eff.addEffect(_cardEff.getEffect(CardEffectType.GoLrigTrashLrigUnder), EffectTemplete.option.ifThen);
+            eff.addEffect(_cardEff.getEffect(CardEffectType.GoLrigTrashLrigUnder), EffectTemplete.option.ifThen);
+            eff.addEffect(_cardEff.getEffect(CardEffectType.UpThisCard));
+
+            enEffTempList.Add(new EffTempSet(fID, EffecterNowID, eff));
+        }
+        else if (m == Motions.CantUseSpellAndArts)
+        {
+            cantUseArtsFlag[effectPlayer % 2] = true;
+            cantUseSpellFlag[effectPlayer % 2] = true;
+        }
         else if (m == Motions.SetDialog)
         {
             if (sc.messages.Count == 0)
             {
-                sc.setDialogNum((DialogNumType)sc.getParameta(parametaKey.settingDialogNum));
+                sc.setDialogNum((DialogNumType)sc.getParameta(parametaKey.settingDialogNum), effectPlayer % 2);
                 return false;
             }
         }
@@ -10401,7 +10494,7 @@ public class DeckScript : MonoBehaviour
 
             //ラナジェによるフラグアップ
             bool lanajeUp = false;
-            if (!enajeFlag[effectPlayer % 2]  && checkAbility(client, ability.Lanaje))
+            if (!enajeFlag[effectPlayer % 2] && checkAbility(client, ability.Lanaje))
             {
                 lanajeUp = true;
                 enajeFlag[effectPlayer % 2] = true;
@@ -10536,6 +10629,14 @@ public class DeckScript : MonoBehaviour
         else if (m == Motions.LostEffectEnd)
         {
             changeLostEffect(effectID, effectPlayer % 2, true, EffecterNowID % 50, EffecterNowID / 50, true);
+        }
+        else if (m == Motions.EffectLostTempSummon)
+        {
+            sc.effectTargetID.Insert(1, sc.effectTargetID[0]);
+            sc.effectMotion.Insert(1, (int)Motions.LostEffectEnd);
+
+            sc.effectTargetID.Insert(2, sc.effectTargetID[0]);
+            sc.effectMotion.Insert(2, (int)Motions.RebornEndPhase);
         }
         else if (m == Motions.EnAbility)
         {
@@ -12545,6 +12646,7 @@ public class DeckScript : MonoBehaviour
 			|| stopFlag 
 			|| guardSelectflag 
 			|| SpellCutInSelectFlag
+            || encoreSelectflag
 			|| cipCheck
 			|| DialogFlag
 			|| selectAttackAtrs
@@ -13925,4 +14027,14 @@ public class DeckScript : MonoBehaviour
         return getFusionID(myID, myPlayer) == signiSumLimitChangedID[target];
     }
 
+    CardEffects getCardEffects(int ID, int player)
+    {
+        int fID = getFusionID(ID, player%2);
+        var obj = getFront(fID % 50, fID / 50);
+        if (obj.GetComponent<CardEffects>() == null)
+            obj.AddComponent<CardEffects>();
+        var _cardEff = obj.GetComponent<CardEffects>();
+
+        return _cardEff;
+    }
 }

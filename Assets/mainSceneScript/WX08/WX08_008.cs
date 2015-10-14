@@ -14,7 +14,7 @@ public class WX08_008 : MonoCard {
 
         if (sc.isCiped())
         {
-            sc.funcTargetIn(player, Fields.MAINDECK);
+            sc.funcTargetIn(player, Fields.MAINDECK, new checkFuncs(ms, cardTypeInfo.シグニ).check);
             sc.setEffect(-2, 0, Motions.Summon);
         }
 	}

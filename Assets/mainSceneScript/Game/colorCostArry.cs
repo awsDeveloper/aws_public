@@ -39,6 +39,12 @@ public class colorCostArry
         for (int i = 0; i < cost.Length; i++)
             cost[i] = orig[i];
     }
+    public colorCostArry(colorCostArry c1, colorCostArry c2)
+    {
+        ResetDownValue();
+        for (int i = 0; i < cost.Length; i++)
+            cost[i] = c1[i]+c2[i];
+    }
 
     void ResetDownValue()
     {
@@ -80,5 +86,14 @@ public class colorCostArry
     public int getOriCost(cardColorInfo info)
     {
         return cost[(int)info];
+    }
+
+    public bool isEmpty()
+    {
+        for (int i = 0; i < Length(); i++)
+            if (getCost(i) > 0)
+                return false;
+
+        return true;
     }
 }
