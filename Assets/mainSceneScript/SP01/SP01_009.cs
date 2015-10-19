@@ -21,6 +21,8 @@ public class SP01_009 : MonoBehaviour
 		
 		Manager = Body.GetComponent<CardScript> ().Manager;
 		ManagerScript = Manager.GetComponent<DeckScript> ();
+
+        BodyScript.attackArts = true;
 	}
 	// Update is called once per frame
 	void Update ()

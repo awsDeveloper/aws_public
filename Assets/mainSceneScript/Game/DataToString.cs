@@ -155,7 +155,8 @@ public enum LrigTypeInfo
     アン,
     タウィル,
     サシェ,
-    ミュウ
+    ミュウ,
+    アイヤイ,
 }
 
 public enum cardClassInfo
@@ -165,6 +166,7 @@ public enum cardClassInfo
     精武_アーム = 10,
     精武_ウェポン = 11,
     精武_毒牙 = 12,
+    精武_遊具 = 13,
 
     精羅_鉱石 = 20,
     精羅_宝石 = 21,
@@ -203,7 +205,7 @@ public class cardstatus
 
     public colorCostArry Cost = new colorCostArry(cardColorInfo.無色, 0);
     public int Limit = -1;
-    public int lrigLimit = -1;
+    public int lrigLimit = 0;//初期値を-1から0に変更した
     public int lrigLimit_2 = 0;
     public int power=-1;
     public bool BurstIcon=false;

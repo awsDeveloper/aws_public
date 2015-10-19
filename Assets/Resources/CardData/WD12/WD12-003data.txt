@@ -1,0 +1,7 @@
+﻿#Name アイヤイ★ダイヤ
+#Type 0
+#LrigType 16
+#Color 4
+#Level 2
+#GrowCost 0/0/0/0/1/0/
+#Limit 5

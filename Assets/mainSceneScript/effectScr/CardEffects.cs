@@ -8,9 +8,48 @@ public enum CardEffectType
     GoLrigTrashLrigUnder,
     UpThisCard,
     GoLrigDeckThisCard,
+    DownThisCard,
+    OneDraw,
+    ThisSigniGoHand,
+    TopEnaCharge,
+    ThreeTopEnaCharge,
+    PayCostOneGreen,
 }
 
 public class CardEffects : MonoCard {
+    void PayCostOneGreen()
+    {
+        sc.setPayCost(cardColorInfo.緑, 1);
+    }
+
+    void ThreeTopEnaCharge()
+    {
+        TopEnaCharge();
+        TopEnaCharge();
+        TopEnaCharge();
+    }
+
+    void TopEnaCharge()
+    {
+        sc.setEffect(0, player, Motions.TopEnaCharge);
+    }
+
+    void ThisSigniGoHand()
+    {
+        sc.setEffect(ID, player, Motions.GoHand);
+    }
+
+    void OneDraw()
+    {
+        sc.setEffect(0, player, Motions.Draw);
+    }
+
+    void DownThisCard()
+    {
+        if (sc.isUp())
+            sc.setDown();
+    }
+
     void GoLrigTrashLrigUnder()
     {
         ms.targetableExceedIn(player, sc);

@@ -23,7 +23,8 @@ public class DialogEffTemplete : MonoCard {
 
         temp.addEffect(eff);
         temp.addEffect(eff_1);
-        temp.addEffect(eff_2);
+        if(afterCountEffect != null)
+            temp.addEffect(eff_2);
 
     }
 

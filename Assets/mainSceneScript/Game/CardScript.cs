@@ -222,7 +222,7 @@ public class CardScript : MonoBehaviour
 	public GameObject Brain;
 	public List<int> effectTargetID = new List<int> ();
 
-    public List<int> effectMotion  = new List<int>();
+    public List<int> effectMotion = new List<int>();
 
     //targetID
     public bool TargetIDEnable = false;
@@ -266,6 +266,8 @@ public class CardScript : MonoBehaviour
 
     public bool costGoTrashIDenable = false;
 
+    public bool NotSystemGrow = false;//システムではなくグロウエフェクトでグロウするフラグ
+
     Func<bool> checkCanUse;
     bool checkCanUseSugukesu = true;
 
@@ -277,6 +279,7 @@ public class CardScript : MonoBehaviour
     Fields oldField = Fields.Non;
 
     Dictionary<parametaKey, int> parametaDictionary = new Dictionary<parametaKey, int>();
+
 
 
     bool brainChecke = false;//brainのスクリプト取得が終わっていることを示す
@@ -1198,6 +1201,10 @@ public class CardScript : MonoBehaviour
     {
         return !ms.checkType(x, target, cardTypeInfo.レゾナ) && ms.checkClass(x, target, cardClassInfo.精生_凶蟲);
     }
+    public bool notResonaAndYugu(int x, int target)
+    {
+        return !ms.checkType(x, target, cardTypeInfo.レゾナ) && ms.checkClass(x, target, cardClassInfo.精武_遊具);
+    }
 
     public void setFieldAllEffect(int target,Fields F, Motions m, Func<int,int,bool> che=null)
     {
@@ -1240,9 +1247,38 @@ public class CardScript : MonoBehaviour
         return true;
     }
 
-    public void beforeChantClassDownDownCost(cardClassInfo cls, cardColorInfo clr, int downValue)
+    public void beforeChantDownCost(cardClassInfo cls, cardColorInfo clr, int downValue, Fields _F, Motions m)
     {
         if (!chantEffectFlag)
+            return;
+        chantEffectFlag = false;
+
+        int spellOrArs = boolParse(ms.checkType(ID, player, cardTypeInfo.アーツ));
+        addParameta(parametaKey.CostDownColor, (int)clr);
+        addParameta(parametaKey.CostDownNum, downValue);
+        addParameta(parametaKey.SpellOrArts, spellOrArs);
+
+        int target = player;
+        int f = (int)_F;
+        int num = ms.getNumForCard(f, target);
+
+        for (int i = 0; i < num; i++)
+        {
+            int x = ms.getFieldRankID(f, i, target);
+            if (x >= 0 && ms.checkClass(x, target, cls) && (ms.getCardScr(x, target).isUp() || m != Motions.Down))
+                Targetable.Add(x + 50 * target);
+        }
+
+        if (Targetable.Count == 0)
+            return;
+
+        setSystemCardFromCard(-1, m, Targetable.Count, Targetable, true, classDownDownCostInputReturn);
+    }
+
+    public void beforeChantClassDownDownCost(cardClassInfo cls, cardColorInfo clr, int downValue)
+    {
+        beforeChantDownCost(cls, clr, downValue, Fields.HAND, Motions.Down);
+/*        if (!chantEffectFlag)
             return;
 
         chantEffectFlag = false;
@@ -1269,11 +1305,7 @@ public class CardScript : MonoBehaviour
             return;
 
         setSystemCardFromCard(-1, Motions.Down, Targetable.Count, Targetable, true, classDownDownCostInputReturn);
-
-/*        cursorCancel = true;
-
-        for (int i = 0; i < Targetable.Count; i++)
-            setEffect(-1, 0, Motions.DownAndCostDown);*/
+        */
     }
 
     int boolParse(bool flag)
@@ -1382,10 +1414,10 @@ public class CardScript : MonoBehaviour
         return com;
     }
 
-    public EffectTemplete AddEffectTemplete(EffectTemplete.triggerType t, bool isUseYesNo=false)
+    public EffectTemplete AddEffectTemplete(EffectTemplete.triggerType t, bool isUseYesNo = false, bool onceTurn = false)
     {
         var com = ms.getFront(ID, player).AddComponent<EffectTemplete>();
-        com.setTrigger(t,isUseYesNo);
+        com.setTrigger(t,isUseYesNo, onceTurn);
         return com;
     }
 
@@ -1480,5 +1512,19 @@ public class CardScript : MonoBehaviour
 
         int rank = ms.getRank(ID, player);
         return 2 - rank == ms.getExitRank();
+    }
+
+    public bool isMe(int x, int target)
+    {
+        return ID == x && player == target;
+    }
+    public bool isMe(int fID)
+    {
+        return fID >= 0 && ID == fID % 50 && player == fID / 50;
+    }
+
+    public Action getEffects(CardEffectType T)
+    {
+        return ms.getCardEffects(ID, player).getEffect(T);
     }
 }

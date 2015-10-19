@@ -6,14 +6,14 @@ public class WX07_005 : MonoCard {
     // Use this for initialization
     void Start()
     {
-
+        gameObject.AddComponent<DialogEffTemplete>().set(EffectTemplete.triggerType.mySigniHeavened, DialogNumType.playerSelect, heavened, null);
     }
 
     // Update is called once per frame
     void Update()
     {
         crossCip();
-        heavened();
+//        heavened();
         ignition();
 
     }
@@ -28,13 +28,19 @@ public class WX07_005 : MonoCard {
         sc.setEffect(-1, 0, Motions.PowerUpEndPhase);
     }
 
-    void heavened()
+/*    void heavened()
     {
         if (sc.mySigniNotHeaven())
             return;
 
         for (int i = 0; i < 5; i++)
             sc.setEffect(0, 1-player, Motions.TopGoTrash);
+    }*/
+
+    void heavened(int count)
+    {
+        for (int i = 0; i < 5; i++)
+            sc.setEffect(0, (count + player) % 2, Motions.TopGoTrash);
     }
 
     void ignition()

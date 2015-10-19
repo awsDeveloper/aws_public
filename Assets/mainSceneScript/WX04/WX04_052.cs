@@ -63,15 +63,14 @@ public class WX04_052 : MonoBehaviour {
 			int target=player;
 			int f=7;
 			int num=ManagerScript.getNumForCard(f,target);
-			
-			for (int i = num-1; i > num-4; i--) {
-				int x=ManagerScript.getFieldRankID(f,i,target);
-				
-				if(x>=0 && checkClass(x,target))
-				{
-					BodyScript.Targetable.Add(x+50*target);
-				}
-			}
+
+            for (int i = 0; i < num; i++)
+            {
+                int x = ManagerScript.getFieldRankID(f, i, target);
+
+                if (x >= 0 && checkClass(x, target))
+                    BodyScript.Targetable.Add(x + 50 * target);
+            }
 
 			if(BodyScript.Targetable.Count>0)
 			{

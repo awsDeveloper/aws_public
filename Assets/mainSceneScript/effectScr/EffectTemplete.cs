@@ -168,6 +168,49 @@ public class EffectTemplete : MonoCard {
         return sc.isAttacking() && ms.isNotUsedOtherArts("アーク・ディストラクト");
     }
 
+    bool GrowEffect()
+    {
+        if (!sc.growEffectFlag)
+            return false;
+
+        sc.growEffectFlag = false;
+        return true;
+    }
+
+    bool MySigniYourSigniBanished()
+    {
+        if (!sc.isOnBattleField())
+            return false;
+        int my = ms.getOneFrameID(OneFrameIDType.BanisherID);
+        int your = ms.getOneFrameID(OneFrameIDType.BanishedID);
+
+        return ms.checkType(my, cardTypeInfo.シグニ) && my / 50 == player && your / 50 == 1 - player;
+    }
+
+    bool ThisSigniYourSigniBanished()
+    {
+        int my = ms.getOneFrameID(OneFrameIDType.BanisherID);
+        int your = ms.getOneFrameID(OneFrameIDType.BanishedID);
+
+        return ms.checkType(my, cardTypeInfo.シグニ) && sc.isMe(my) && your / 50 == 1 - player;
+    }
+
+    bool MySigniEffectSummon()
+    {
+        int cID= ms.getCipSigniID();
+        return (sc.isMe(cID) || sc.isOnBattleField()) && ms.getEffecterNowID() != -1 && cID != -1 && cID / 50 == player;
+    }
+
+    bool MyResonaCiped()
+    {
+       return sc.isMyResonaCiped();
+    }
+
+    bool ThisSigniGoHandFromEnazone()
+    {
+        return sc.isMe(ms.getExitID(Fields.ENAZONE, Fields.HAND));
+    }
+
     public enum triggerType
     {
         Cip,
@@ -183,6 +226,12 @@ public class EffectTemplete : MonoCard {
         removed,
         Banished,
         attackThisTurnArcDistractOnly,
+        GrowEffect,
+        MySigniYourSigniBanished,
+        ThisSigniYourSigniBanished,
+        MySigniEffectSummon,
+        MyResonaCiped,
+        ThisSigniGoHandFromEnazone,
     }
 
     public enum checkType
@@ -353,7 +402,7 @@ public class EffectTemplete : MonoCard {
         if (trigger())
             triggerCount++;
 
-        if (triggerCount == 0 || !ms.isTargetIDCountZero(sc.ID, sc.player))
+        if (triggerCount == 0 || !ms.isTargetIDCountZero(sc.ID, sc.player) || sc.effectFlag )
             return;
 
         triggerCount--;
