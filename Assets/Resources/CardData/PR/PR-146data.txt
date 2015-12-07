@@ -1,0 +1,12 @@
+﻿#Name 羅植　ツバキ
+#Type 2
+#Parent PR-141
+#Class 2:2
+#Color 4
+#Level 3
+#Power 8000
+#BurstIcon True
+#Text
+
+起->【緑】このシグニを場からトラッシュに置く：あなたのトラッシュから無色のカード1枚を手札に加える。
+☆->：カードを１枚引く。
